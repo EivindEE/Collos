@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
+//TEST
 public class ImageProcessor {
 	BufferedImage bufferedImage;
 	Map<CompressedColor, BigDecimal> colorFreq = new HashMap<CompressedColor, BigDecimal>();
