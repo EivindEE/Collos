@@ -60,28 +60,14 @@ public class ImageProcessor {
 		System.out.println("Times for ImageProcessor:");
 		long runTime = 0;
 		long totalRunTime = 0;
+		File imageFolder = new File("src/main/webapp/resources/testimg");
 		for(int i = 0; i < numberOfRuns; i++){
 			long startTime = System.currentTimeMillis();
-			processor.setImage(new File("img/flickr-images-1.jpg"));
-			processor.readColors();
-			mapList.add(processor.colorFreq);
-
-			processor.setImage(new File("img/flickr-images-2.jpg"));
-			processor.readColors();
-			mapList.add(processor.colorFreq);
-
-			processor.setImage(new File("img/flickr-images-3.jpg"));
-			processor.readColors();
-			mapList.add(processor.colorFreq);
-
-			processor.setImage(new File("img/black.jpg"));
-			processor.readColors();
-			mapList.add(processor.colorFreq);
-
-			processor.setImage(new File("img/black.jpg"));
-			processor.readColors();
-			mapList.add(processor.colorFreq);
-
+			for(File f : imageFolder.listFiles()){				
+				processor.setImage(f);
+				processor.readColors();
+				mapList.add(processor.colorFreq);
+			}
 			long endTime = System.currentTimeMillis();
 			runTime = (endTime-startTime) ;
 			totalRunTime += runTime;
@@ -95,25 +81,11 @@ public class ImageProcessor {
 
 		for(int i = 0; i < numberOfRuns; i++){
 			long startTime = System.currentTimeMillis();
-			primitiveProcessor.setImage(new File("img/flickr-images-1.jpg"));
-			primitiveProcessor.readColors();
-			primitiveMapList.add(primitiveProcessor.colorFreq);
-
-			primitiveProcessor.setImage(new File("img/flickr-images-2.jpg"));
-			primitiveProcessor.readColors();
-			primitiveMapList.add(primitiveProcessor.colorFreq);
-
-			primitiveProcessor.setImage(new File("img/flickr-images-3.jpg"));
-			primitiveProcessor.readColors();
-			primitiveMapList.add(primitiveProcessor.colorFreq);
-
-			primitiveProcessor.setImage(new File("img/black.jpg"));
-			primitiveProcessor.readColors();
-			primitiveMapList.add(primitiveProcessor.colorFreq);
-
-			primitiveProcessor.setImage(new File("img/black.jpg"));
-			primitiveProcessor.readColors();
-			primitiveMapList.add(primitiveProcessor.colorFreq);
+			for(File f : imageFolder.listFiles()){				
+				primitiveProcessor.setImage(f);
+				primitiveProcessor.readColors();
+				primitiveMapList.add(primitiveProcessor.colorFreq);
+			}
 
 			long endTime = System.currentTimeMillis();
 			runTime = (endTime-startTime);

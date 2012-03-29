@@ -1,6 +1,7 @@
 package edu.uib.info323.controller;
 
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,15 +38,20 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() {
 		List<String> urls = new LinkedList<String>();
-		urls.add("black.jpg");
-		urls.add("white.jpg");
-		urls.add("flickr-images-1.jpg");
-		urls.add("flickr-images-2.jpg");
-		urls.add("flickr-images-3.jpg");
+		File imageFolder = new File("src/main/webapp/resources/testimg");
+		for(File f :imageFolder.listFiles()){
+			urls.add(f.getName());
+		}
+		LOGGER.debug("Returning file list: " + urls);
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);
 		ModelAndView mav = new ModelAndView("home", model);
 		return mav;
+	}
+	
+	public static void main(String[] args) {
+		HomeController controller = new HomeController();
+		controller.home();
 	}
 
 }

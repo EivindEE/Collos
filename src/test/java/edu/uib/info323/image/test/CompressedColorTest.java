@@ -68,9 +68,9 @@ public class CompressedColorTest extends TestCase {
 		int greenValue = 5;
 		int blueValue = 123;
 		CompressedColor cc = new CompressedColor(redValue, greenValue, blueValue);
-		assertEquals(redValue, cc.getRed());
-		assertEquals(greenValue, cc.getGreen());
-		assertEquals(blueValue, cc.getBlue());
+		assertEquals(redValue/CompressedColor.getDefaultCompression(), cc.getRed());
+		assertEquals(greenValue/CompressedColor.getDefaultCompression(), cc.getGreen());
+		assertEquals(blueValue/CompressedColor.getDefaultCompression(), cc.getBlue());
 	}
 
 	public void testHashCode(){

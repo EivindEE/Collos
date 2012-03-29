@@ -14,5 +14,8 @@
 
 <body class="home">
 	<h1>HELLO WORLD!!!</h1>
+	<c:forEach var="image" items="${images}">
+		<img src="../resources/testimg/${image}">
+	</c:forEach>
 </body>
 </html>
