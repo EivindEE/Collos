@@ -41,7 +41,7 @@ public class PrimitiveImageProcessor {
 
 	public static void main(String[] args) throws IOException {
 		PrimitiveImageProcessor processor = new PrimitiveImageProcessor();
-		processor.setImage(new File("img/IMG_8853.jpg"));
+		processor.setImage(new File("img/flickr-images-1.jpg"));
 		processor.readColors();
 
 		double relativeFreqSum = 0;

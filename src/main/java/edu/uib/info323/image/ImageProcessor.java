@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
@@ -19,7 +17,7 @@ public class ImageProcessor {
 	BufferedImage bufferedImage;
 	Map<CompressedColor, BigDecimal> colorFreq = new HashMap<CompressedColor, BigDecimal>();
 	BigDecimal pixelCount;
-	private BigDecimal threshhold = new BigDecimal("0.01");
+	// private BigDecimal threshhold = new BigDecimal("0.01"); // TODO
 
 	public void setImage(File f) throws IOException{
 		try {
@@ -49,7 +47,7 @@ public class ImageProcessor {
 	}
 
 	public static void main(String[] args) throws IOException {
-		List<Map> mapList = new LinkedList<Map>();
+		List<Map<CompressedColor,BigDecimal>> mapList = new LinkedList<Map<CompressedColor,BigDecimal>>();
 		int numberOfRuns = 10;
 		ImageProcessor processor = new ImageProcessor();
 
@@ -58,15 +56,15 @@ public class ImageProcessor {
 		long totalRunTime = 0;
 		for(int i = 0; i < numberOfRuns; i++){
 			long startTime = System.currentTimeMillis();
-			processor.setImage(new File("img/IMG_8853.jpg"));
+			processor.setImage(new File("img/flickr-images-1.jpg"));
 			processor.readColors();
 			mapList.add(processor.colorFreq);
 
-			processor.setImage(new File("img/IMG_2523.jpg"));
+			processor.setImage(new File("img/flickr-images-2.jpg"));
 			processor.readColors();
 			mapList.add(processor.colorFreq);
 
-			processor.setImage(new File("img/images.jpeg"));
+			processor.setImage(new File("img/flickr-images-3.jpg"));
 			processor.readColors();
 			mapList.add(processor.colorFreq);
 
@@ -85,31 +83,31 @@ public class ImageProcessor {
 		}
 		System.out.println("Average runtime in seconds: " + (totalRunTime/numberOfRuns) / 1000.0 + "\n\n");
 		runTime = totalRunTime = 0;
-		mapList = new LinkedList<Map>();
+		List<Map<CompressedColor,Integer>> primitiveMapList = new LinkedList<Map<CompressedColor,Integer>>();
 		PrimitiveImageProcessor primitiveProcessor = new PrimitiveImageProcessor();
 		System.out.println("Times for PrimitiveImageProcessor:");
 
 		for(int i = 0; i < numberOfRuns; i++){
 			long startTime = System.currentTimeMillis();
-			primitiveProcessor.setImage(new File("img/IMG_8853.jpg"));
+			primitiveProcessor.setImage(new File("img/flickr-images-1.jpg"));
 			primitiveProcessor.readColors();
-			mapList.add(primitiveProcessor.colorFreq);
+			primitiveMapList.add(primitiveProcessor.colorFreq);
 
-			primitiveProcessor.setImage(new File("img/IMG_2523.jpg"));
+			primitiveProcessor.setImage(new File("img/flickr-images-2.jpg"));
 			primitiveProcessor.readColors();
-			mapList.add(primitiveProcessor.colorFreq);
+			primitiveMapList.add(primitiveProcessor.colorFreq);
 
-			primitiveProcessor.setImage(new File("img/images.jpeg"));
+			primitiveProcessor.setImage(new File("img/flickr-images-3.jpg"));
 			primitiveProcessor.readColors();
-			mapList.add(primitiveProcessor.colorFreq);
+			primitiveMapList.add(primitiveProcessor.colorFreq);
 
-			primitiveProcessor.setImage(new File("img/black.png"));
+			primitiveProcessor.setImage(new File("img/black.jpg"));
 			primitiveProcessor.readColors();
-			mapList.add(primitiveProcessor.colorFreq);
+			primitiveMapList.add(primitiveProcessor.colorFreq);
 
-			primitiveProcessor.setImage(new File("img/black.png"));
+			primitiveProcessor.setImage(new File("img/black.jpg"));
 			primitiveProcessor.readColors();
-			mapList.add(primitiveProcessor.colorFreq);
+			primitiveMapList.add(primitiveProcessor.colorFreq);
 
 			long endTime = System.currentTimeMillis();
 			runTime = (endTime-startTime);
@@ -117,29 +115,5 @@ public class ImageProcessor {
 			System.out.printf("Time in seconds on run %d :%.5f \n",i , runTime / 1000.0 );
 		}
 		System.out.println("Average runtime in seconds: " + (totalRunTime/numberOfRuns) / 1000.0);
-	
-		/*
-				ImageProcessor processor = new ImageProcessor();
-				//		CompressedColor color = new CompressedColor(340, 500, -122);
-				processor.setImage(new File("img/IMG_8853.jpg"));
-				processor.readColors();
-				BigDecimal relativeFreqSum = BigDecimal.ZERO;
-				System.out.println("Number of colorbuckets: " + processor.colorFreq.size());
-				for(CompressedColor cc : processor.colorFreq.keySet()){
-					BigDecimal relativeFreq = processor.colorFreq.get(cc).divide(processor.pixelCount, 4, BigDecimal.ROUND_HALF_EVEN);
-					relativeFreqSum = relativeFreqSum.add(relativeFreq);
-					if(relativeFreq.compareTo(processor.threshhold) >= 0){
-						System.out.println("Relative freq: ("+ relativeFreq.multiply(new BigDecimal("100"))+ "), Freq : " + processor.colorFreq.get(cc) + ", for color: " + cc);
-					}
-				}
-				CompressedColor getColor = new CompressedColor(198, 243, 220);
-				System.out.println(processor.colorFreq.get(getColor));
-				System.out.println(getColor.hashCode());
-		
-		
-		
-				System.out.println("Sum of relative frequensies: " + relativeFreqSum);
-
-		 */
 	}
 }
