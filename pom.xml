@@ -3,6 +3,21 @@
   <groupId>edu.uib.info323</groupId>
   <artifactId>Collos</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <build>
+  	<plugins>
+		<!-- Plugin to run and test through maven -->
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.25</version>
+				<configuration>
+					<stopPort>8888</stopPort>
+					<stopKey>foo</stopKey>
+					<scanIntervalSeconds>3</scanIntervalSeconds>
+				</configuration>
+			</plugin>
+  	</plugins>
+  </build>
   <dependencies>
   	<dependency>
   		<groupId>com.googlecode.guice-junit4</groupId>
@@ -22,6 +37,13 @@
   		<groupId>org.slf4j</groupId>
   		<artifactId>slf4j-log4j13</artifactId>
   		<version>1.0.1</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-webmvc</artifactId>
+  		<version>3.1.1.RELEASE</version>
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
