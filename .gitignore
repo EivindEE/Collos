@@ -1,0 +1,6 @@
+img/*
+.classpath
+.project
+.DS_Store
+log/*
+target/
