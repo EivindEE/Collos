@@ -39,6 +39,10 @@ public class PrimitiveImageProcessor {
 		}
 	}
 
+	public Map<CompressedColor, Integer> getColorFrequencies(){
+		return colorFreq;
+	}
+	
 	public static void main(String[] args) throws IOException {
 		PrimitiveImageProcessor processor = new PrimitiveImageProcessor();
 		processor.setImage(new File("img/flickr-images-1.jpg"));
