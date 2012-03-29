@@ -1,12 +1,11 @@
 package edu.uib.info323.image.test;
 
 import java.security.InvalidParameterException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import edu.uib.info323.image.CompressedColor;
 import junit.framework.TestCase;
+import edu.uib.info323.image.CompressedColor;
 
 public class CompressedColorTest extends TestCase {
 	private int rgbMax = 255;
@@ -69,9 +68,9 @@ public class CompressedColorTest extends TestCase {
 		int greenValue = 5;
 		int blueValue = 123;
 		CompressedColor cc = new CompressedColor(redValue, greenValue, blueValue);
-		assertEquals(redValue, redValue);
-		assertEquals(greenValue, greenValue);
-		assertEquals(blueValue, blueValue);
+		assertEquals(redValue, cc.getRed());
+		assertEquals(greenValue, cc.getGreen());
+		assertEquals(blueValue, cc.getBlue());
 	}
 
 	public void testHashCode(){
