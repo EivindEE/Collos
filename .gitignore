@@ -3,4 +3,3 @@ img/*
 .project
 .DS_Store
 log/*
-target/
