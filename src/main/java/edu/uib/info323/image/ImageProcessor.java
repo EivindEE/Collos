@@ -12,8 +12,12 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //TEST
 public class ImageProcessor {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessor.class); 
 	BufferedImage bufferedImage;
 	Map<CompressedColor, BigDecimal> colorFreq = new HashMap<CompressedColor, BigDecimal>();
 	BigDecimal pixelCount;
@@ -32,6 +36,8 @@ public class ImageProcessor {
 		WritableRaster raster = bufferedImage.getRaster();
 		BigDecimal imageHeightInPixels = new BigDecimal(new Integer(raster.getHeight()).toString());
 		BigDecimal imageWidthInPixels = new BigDecimal(new Integer(raster.getWidth()).toString());
+		LOGGER.debug("Image height in pixels: " + imageHeightInPixels);
+		LOGGER.debug("Image width in pixels: " + imageWidthInPixels);
 		//		System.out.println("Number of pixels in width:" + imageWidthInPixels);
 		//		System.out.println("Number of pixels in height:" + imageHeightInPixels);
 		pixelCount = imageHeightInPixels.multiply(imageWidthInPixels);
@@ -68,11 +74,11 @@ public class ImageProcessor {
 			processor.readColors();
 			mapList.add(processor.colorFreq);
 
-			processor.setImage(new File("img/black.png"));
+			processor.setImage(new File("img/black.jpg"));
 			processor.readColors();
 			mapList.add(processor.colorFreq);
 
-			processor.setImage(new File("img/black.png"));
+			processor.setImage(new File("img/black.jpg"));
 			processor.readColors();
 			mapList.add(processor.colorFreq);
 
