@@ -36,7 +36,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
 			for(int y = raster.getMinY(); y < raster.getHeight(); y++){
 				int[] pixel = raster.getPixel(x, y, new int[3]);
-				CompressedColor color = new CompressedColor(pixel[0], pixel[1], pixel[2]);
+				CompressedColor color = new CompressedColor(pixel[0], pixel[1], pixel[2], 8);
 				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
 				colorFreq.put(color,++count);
 			}
@@ -64,7 +64,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 				System.out.printf("Relative freq: ( %.3f), Freq : " + processor.colorFreq.get(cc) + ", for color: " + cc +"\n", relativeFreq);
 			}
 		}
-		CompressedColor getColor = new CompressedColor(198, 243, 220);
+		CompressedColor getColor = new CompressedColor(198, 243, 220, 8);
 		System.out.println(processor.colorFreq.get(getColor));
 		System.out.println(getColor.hashCode());
 
