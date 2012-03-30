@@ -144,7 +144,7 @@ function ColorPalette(palette_div)
     this.palette_div = palette_div;
 
     // setup palette and its mouse handlers
-    this.color_palette = this.palette_div.children("#palette0img");
+    this.color_palette = this.palette_div;
     this.color_palette.bind('click', { 'handler' : this }, function(event) {
         event.preventDefault();
         rel_coords = get_coords(event, 'relative');
@@ -166,6 +166,7 @@ ColorPalette.prototype.set_palette_color_for = function(x, y)
 //    alert(String(this.current_display_color));
     // add to colour selection
     //add_color(this.current_display_color);
+  
 }
 
 ColorPalette.prototype.receive_palette_click = function(x, y)
