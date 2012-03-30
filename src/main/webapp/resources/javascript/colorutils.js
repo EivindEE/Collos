@@ -162,10 +162,10 @@ ColorPalette.prototype.set_palette_color_for = function(x, y)
     var row = parseInt((y - 1)/this.HEIGHT);
     var index = row * this.COLS + col;
     // set display color
-    alert(this.current_display_color = this.COLORS[index]);
-    
+    this.current_display_color = this.COLORS[index];
+//    alert(String(this.current_display_color));
     // add to colour selection
-   // add_color(this.current_display_color);
+    //add_color(this.current_display_color);
 }
 
 ColorPalette.prototype.receive_palette_click = function(x, y)
