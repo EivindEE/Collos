@@ -7,70 +7,44 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ImageProcessorImpl implements ImageProcessor {
-	BufferedImage bufferedImage;
-	Map<CompressedColor, Integer> colorFreq = new HashMap<CompressedColor, Integer>();
-	double pixelCount;
-	private double threshhold = 0.01;
+
+	private BufferedImage bufferedImage;
+	private CompressedColorFactory colorFactory;
+
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.image.ImageProcessor#readColors()
+	 */
+	public HashMap<CompressedColor, Integer> getColorFrequencies() {
+		HashMap<CompressedColor, Integer> colorFreq = new HashMap<CompressedColor, Integer>();
+		WritableRaster raster = bufferedImage.getRaster();
+		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
+			for(int y = raster.getMinY(); y < raster.getHeight(); y++){
+				int[] pixel = raster.getPixel(x, y, new int[3]);
+				CompressedColor color = colorFactory.createCompressedColor(pixel[0], pixel[1], pixel[2]);
+				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
+				colorFreq.put(color,++count);
+			}
+		}
+		return colorFreq;
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.image.ImageProcessor#setImage(java.io.File)
 	 */
 	public void setImage(File f) throws IOException{
 		this.setImage(new FileInputStream(f));
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.uib.info323.image.ImageProcessor#readColors()
-	 */
-	public void readColors() {
-		WritableRaster raster = bufferedImage.getRaster();
-		int imageHeightInPixels = raster.getHeight();
-		int imageWidthInPixels = raster.getWidth();
-		pixelCount = imageHeightInPixels*imageWidthInPixels;
-		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
-			for(int y = raster.getMinY(); y < raster.getHeight(); y++){
-				int[] pixel = raster.getPixel(x, y, new int[3]);
-				CompressedColor color = new CompressedColor(pixel[0], pixel[1], pixel[2], 8);
-				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
-				colorFreq.put(color,++count);
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.uib.info323.image.ImageProcessor#getColorFrequencies()
-	 */
-	public Map<CompressedColor, Integer> getColorFrequencies(){
-		return colorFreq;
-	}
-
-	public static void main(String[] args) throws IOException {
-		ImageProcessorImpl processor = new ImageProcessorImpl();
-		processor.setImage(new File("src/main/webapp/resources/testimg/flickr-images-1.jpg"));
-		processor.readColors();
-
-		double relativeFreqSum = 0;
-		System.out.println("Number of colorbuckets: " + processor.colorFreq.keySet().size());
-		for(CompressedColor cc : processor.colorFreq.keySet()){
-			double relativeFreq = processor.colorFreq.get(cc) / processor.pixelCount;
-			relativeFreqSum += relativeFreq;
-			if(relativeFreq > processor.threshhold){
-				System.out.printf("Relative freq: ( %.3f), Freq : " + processor.colorFreq.get(cc) + ", for color: " + cc +"\n", relativeFreq);
-			}
-		}
-		CompressedColor getColor = new CompressedColor(198, 243, 220, 8);
-		System.out.println(processor.colorFreq.get(getColor));
-		System.out.println(getColor.hashCode());
-
-
-
-		System.out.printf("Sum of relative frequensies: %.5f", relativeFreqSum);
 	}
 
 	public void setImage(InputStream inputStream) throws IOException {
@@ -80,5 +54,40 @@ public class ImageProcessorImpl implements ImageProcessor {
 		catch (IOException e) {
 			throw new IOException("Exception occured while reading image from stream: " + inputStream);
 		}
+	}
+
+	/**
+	 * Sets the compressionrate of the RGB color space.
+	 * Accepted values are ³ 4
+	 * @param imageCompressionRate
+	 */
+	public void setImageCompression(int imageCompressionRate) {
+		if(imageCompressionRate >= 4) {
+			colorFactory.setDefaultCompression(imageCompressionRate);
+		}
+		else {
+			throw new InvalidParameterException("Compression rate must be ³4 but was " + imageCompressionRate );
+		}
+	}
+	
+	/**
+	 * Sets the compressionrate of the RGB color space.
+	 * Accepted values are ³ 4
+	 * @param imageCompressionRate
+	 */
+	public int getImageCompression() {
+		return colorFactory.getDefaultCompression();
+	}
+
+
+
+	public CompressedColorFactory getColorFactory() {
+		return colorFactory;
+	}
+
+
+
+	public void setColorFactory(CompressedColorFactory colorFactory) {
+		this.colorFactory = colorFactory;
 	}
 }
