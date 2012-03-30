@@ -2,28 +2,32 @@ package edu.uib.info323.image;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-public class PrimitiveImageProcessor {
+public class ImageProcessorImpl implements ImageProcessor {
 	BufferedImage bufferedImage;
 	Map<CompressedColor, Integer> colorFreq = new HashMap<CompressedColor, Integer>();
 	double pixelCount;
 	private double threshhold = 0.01;
 
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.image.ImageProcessor#setImage(java.io.File)
+	 */
 	public void setImage(File f) throws IOException{
-		try {
-
-			bufferedImage = ImageIO.read(f);
-		} catch (IOException e) {
-			throw new IOException("Exception occured while reading image from file: " + f);
-		}
+		this.setImage(new FileInputStream(f));
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.image.ImageProcessor#readColors()
+	 */
 	public void readColors() {
 		WritableRaster raster = bufferedImage.getRaster();
 		int imageHeightInPixels = raster.getHeight();
@@ -39,12 +43,15 @@ public class PrimitiveImageProcessor {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.image.ImageProcessor#getColorFrequencies()
+	 */
 	public Map<CompressedColor, Integer> getColorFrequencies(){
 		return colorFreq;
 	}
-	
+
 	public static void main(String[] args) throws IOException {
-		PrimitiveImageProcessor processor = new PrimitiveImageProcessor();
+		ImageProcessorImpl processor = new ImageProcessorImpl();
 		processor.setImage(new File("src/main/webapp/resources/testimg/flickr-images-1.jpg"));
 		processor.readColors();
 
@@ -64,5 +71,14 @@ public class PrimitiveImageProcessor {
 
 
 		System.out.printf("Sum of relative frequensies: %.5f", relativeFreqSum);
+	}
+
+	public void setImage(InputStream inputStream) throws IOException {
+		try {
+			bufferedImage = ImageIO.read(inputStream);
+		}
+		catch (IOException e) {
+			throw new IOException("Exception occured while reading image from stream: " + inputStream);
+		}
 	}
 }
