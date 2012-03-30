@@ -16,7 +16,7 @@ public class CompressedColorTest extends TestCase {
 		Exception exception = null;
 		CompressedColor cc = null;
 		try{
-			cc = new CompressedColor(0, 0, 0);
+			cc = new CompressedColor(0, 0, 0, 8);
 		}
 		catch (InvalidParameterException e) {
 			exception = e;
@@ -27,7 +27,7 @@ public class CompressedColorTest extends TestCase {
 			cc = null;
 		}
 		try{
-			cc = new CompressedColor(255, 255, 255);
+			cc = new CompressedColor(255, 255, 255, 8);
 		}
 		catch (InvalidParameterException e) {
 			exception = e;
@@ -38,7 +38,7 @@ public class CompressedColorTest extends TestCase {
 			cc = null;
 		}
 		try{
-			cc = new CompressedColor(-1, 255, 255);
+			cc = new CompressedColor(-1, 255, 255, 8);
 		}
 		catch (InvalidParameterException e) {
 			exception = e;
@@ -50,7 +50,20 @@ public class CompressedColorTest extends TestCase {
 			cc = null;
 		}
 		try{
-			cc = new CompressedColor(256, 255, 255);
+			cc = new CompressedColor(256, 255, 255, 8);
+		}
+		catch (InvalidParameterException e) {
+			exception = e;
+		}
+		finally{
+			assertNotNull(exception);
+			assertNull(cc);
+			assertEquals(InvalidParameterException.class, exception.getClass());
+			cc = null;
+		}
+		
+		try{
+			cc = new CompressedColor(255, 255, 255, 3);
 		}
 		catch (InvalidParameterException e) {
 			exception = e;
@@ -67,20 +80,22 @@ public class CompressedColorTest extends TestCase {
 		int redValue = 12;
 		int greenValue = 5;
 		int blueValue = 123;
-		CompressedColor cc = new CompressedColor(redValue, greenValue, blueValue);
-		assertEquals(redValue/CompressedColor.getDefaultCompression(), cc.getRed());
-		assertEquals(greenValue/CompressedColor.getDefaultCompression(), cc.getGreen());
-		assertEquals(blueValue/CompressedColor.getDefaultCompression(), cc.getBlue());
+		int compression = 8;
+		CompressedColor cc = new CompressedColor(redValue, greenValue, blueValue, compression);
+		assertEquals("Compression should be " + compression + " but was" + cc.getCompression(), compression, cc.getCompression());
+		assertEquals("Color value should be "+ (redValue/cc.getCompression()) + "but was " + cc.getRed(),redValue/cc.getCompression(), cc.getRed());
+		assertEquals("Color value should be "+ (greenValue/cc.getCompression()) + "but was " + cc.getGreen(),greenValue/cc.getCompression(), cc.getGreen());
+		assertEquals("Color value should be "+ (blueValue/cc.getCompression()) + "but was " + cc.getBlue(),blueValue/cc.getCompression(), cc.getBlue());
 	}
 
 	public void testHashCode(){
-		int compression = CompressedColor.getDefaultCompression();
+		int compression = 8;
 
 		Map<Integer,Integer> hashKeyCounter = new TreeMap<Integer, Integer>();
 		for(int red = rgbMin; red <= rgbMax; red += compression){
 			for(int green = rgbMin; green <= rgbMax; green += compression){
 				for(int blue = rgbMin; blue <= rgbMax; blue += compression){
-					CompressedColor color = new CompressedColor(red, green, blue); 
+					CompressedColor color = new CompressedColor(red, green, blue, compression); 
 					int hashKey = color.hashCode();
 					int count = hashKeyCounter.containsKey(hashKey) ? hashKeyCounter.get(hashKey) : 0;
 					count += 1;
