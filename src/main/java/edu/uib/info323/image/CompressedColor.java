@@ -1,120 +1,46 @@
 package edu.uib.info323.image;
 
-import java.security.InvalidParameterException;
+import org.springframework.stereotype.Component;
 
-public class CompressedColor implements Comparable<CompressedColor>{
-	private final static int RGB_MAX = 255;
-	private final static int RGB_MIN = 0;
+public interface CompressedColor extends Comparable<CompressedColor>{
 
-	private int red;
-	private int green;
-	private int blue;
-
-	private static int COMPRESSION = 31;
-
-	private int compression = COMPRESSION;
-
-	@Override
-	public String toString() {
-		return "CompressedColor [red=" + getRange(red) + ", green=" + getRange(green) + ", blue="
-				+ getRange(blue) + "]";
-	}
-
-	private String getRange(int color){
-		return new String("(" + (color * compression) + "-" + (((color + 1) * compression) - 1 ) + ")");
-	}
-
-	public CompressedColor(int red, int green, int blue) {
-		String exeptionString = "";
-		if(red > RGB_MAX || red < RGB_MIN){
-			exeptionString = "Red ";
-		}
-		if(green > RGB_MAX || green < RGB_MIN){
-			exeptionString += "Green ";
-		}
-		if(blue > RGB_MAX || blue < RGB_MIN){
-			exeptionString += "Blue";
-		}
-		if(!exeptionString.equals("")){
-			castInputException(exeptionString);
-		}
-		
-		this.red = red / compression;
-		this.green = green / compression;
-		this.blue = blue / compression;
-	}
-
-	private void castInputException(String incorrectInputsString) {
-		throw new InvalidParameterException("Color parameter outside of expected range: " 
-				+ incorrectInputsString.replace(" ", ", "));
-	}
-
-	public int getRed() {
-		return red;
-	}
-
-	public int getGreen() {
-		return green;
-	}
-
-	public int getBlue() {
-		return blue;
-	}
-
-	public int getCompression() {
-		return compression;
-	}
-
-	public static int getDefaultCompression(){
-		return COMPRESSION;
-	}
+	public abstract String toString();
 
 	/**
-	 * Provides a hashCode that is unique for all possible RGB values
+	 * Returns the compressed red value.
+	 * Range 0 - (255 / compression)
+	 * @return compressed red value
 	 */
-	@Override
-	public int hashCode() {
-		int result = 0;
-		result += blue;
-		result += green * RGB_MAX;
-		result += red * (RGB_MAX * RGB_MAX); // RGB_MAX squared
-		return result;
-	}
+	public abstract int getRed();
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CompressedColor other = (CompressedColor) obj;
-		if (blue != other.blue)
-			return false;
-		if (green != other.green)
-			return false;
-		if (red != other.red)
-			return false;
-		return true;
-	}
+	/**
+	 * Returns the compressed green value.
+	 * Range 0 - (255 / compression)
+	 * @return compressed green value
+	 */
+	public abstract int getGreen();
 
+	/**
+	 * Returns the compressed blue value.
+	 * Range 0 - (255 / compression)
+	 * @return compressed blue value
+	 */
+	public abstract int getBlue();
 
+	/**
+	 * Returns the compression rate of the object
+	 * @return
+	 */
+	public abstract int getCompression();
 
-	public int compareTo(CompressedColor o) {
-		if(this.equals(o)){
-			return 0;
-		}
-		if(red != o.red){
-			return red - o.red;
-		}
-		else if(green != o.green){
-			return green - o.green;
-		}
-		else{
-			return blue - o.blue;
-		}
-	}
+	/**
+	 * Provides a hashCode that is unique for all possible RGB values if compression rate is 4 or more.
+	 * @return hashValue
+	 */
+	public abstract int hashCode();
 
+	public abstract boolean equals(Object obj);
+
+	public abstract int compareTo(CompressedColor o);
 
 }
