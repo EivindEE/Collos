@@ -161,15 +161,66 @@ ColorPalette.prototype.set_palette_color_for = function(x, y)
     var col = parseInt((x - 1)/this.WIDTH);
     var row = parseInt((y - 1)/this.HEIGHT);
     var index = row * this.COLS + col;
-    
     // set display color
-    this.current_display_color = this.COLORS[index];
+    alert(this.current_display_color = this.COLORS[index]);
     
     // add to colour selection
-    add_color(this.current_display_color);
+   // add_color(this.current_display_color);
 }
 
 ColorPalette.prototype.receive_palette_click = function(x, y)
 {
     this.set_palette_color_for(x, y);
+}
+
+function get_coords(e, position) {
+    var x, y;
+
+    var IE = document.all?true:false;
+
+    if(IE && position == 'absolute') {
+	x = event.clientX + document.body.scrollLeft;
+        y = event.clientY + document.body.scrollTop;
+        return Array(x, y);
+    }
+
+    if (document.layers) {
+        x = e.layerX;
+        y = e.layerY;
+    } else if (document.all) {
+        x = event.offsetX;
+        y = event.offsetY;// + document.body.scrollTop; // mac IE fix
+    } else if (document.getElementById) {
+        var x_off = 0; var y_off = 0;
+        if (position == 'relative') {
+            var pos = get_position(e.target);
+            x_off = pos[0]; y_off = pos[1];
+        }
+        x = (e.pageX - x_off);
+        y = (e.pageY - y_off);
+    }
+    return Array(x, y);
+}
+
+/* Returns the page position of the element 'obj'.
+ * See http://blog.firetree.net/2005/07/04/javascript-find-position/
+ * for details.
+ */
+function get_position(obj) {
+    var x = 0, y = 0;
+    if (obj.offsetParent) {
+        while (true) {
+            if (obj.offsetParent) {
+                x += obj.offsetLeft;
+                y += obj.offsetTop;
+                obj = obj.offsetParent;
+            }
+            else break;
+        }
+    }
+    else if (obj.x && obj.y) {
+        x = obj.x;
+        y = obj.y;
+    }
+    return Array(x, y);
 }
