@@ -15,17 +15,16 @@
 <script type="text/javascript" src="resources/javascript/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="resources/javascript/colorutils.js"></script>
  <script type="text/javascript">
- $(document).ready(function() {
-//		process_hash();
-		// Initialize color palette       
-		var colorPalette = new ColorPalette($("#palette0"));
-	});
+ 
 	jQuery(document).ready(function() {
+		var colorPalette = new ColorPalette($("#palette0"));
+		var color = new Array();
 		$("#palette0img").click(function(e) {
-			colorPalette.set_palette_color_for(100,100)
-		// $('#status2').html(e.pageX +', '+ e.pageY);
-
-	});
+ 	color.push(colorPalette.current_display_color);
+ 	alert(color);
+ 	
+		
+ 	});
 })
 </script>
 </head>
@@ -62,9 +61,7 @@
 		<div id="palatte">
 			<div id="palette0" style="float: right">
 				<img id="palette0img" src="../resources/images/palette.png"
-					width="160" height="160" alt="pallete" onclick="">
-
-				
+					width="160" height="160" alt="pallete">
 			</div>
 			<h2 id="status2">0, 0</h2>
 		</div>
