@@ -1,8 +1,7 @@
 package edu.uib.info323.model;
 
-import org.springframework.stereotype.Component;
 
-@Component
+
 public class ColorFreqImpl implements ColorFreq {
 	private Image image;
 	private int color;

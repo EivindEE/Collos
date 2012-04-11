@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.uib.info323.dao.ImageDao;
 import edu.uib.info323.dao.ImageDaoImpl;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
@@ -40,18 +41,16 @@ public class HomeController {
 	public ModelAndView home() {
 		
 //		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
-		ImageDaoImpl daoImpl = new ImageDaoImpl();
+		ImageDao daoImpl = new ImageDaoImpl();
 		daoImpl.setDataSource(dataSource);
 
 		File imageFolder = new File("src/main/webapp/resources/testimg");
 		for(File f :imageFolder.listFiles()){
-			Image img = new ImageImpl();
-			img.setImageUri("../resources/testimg/" + f.getName());
-			img.setPageUri("http://example.org/" + f.getName());
+			Image img = new ImageImpl("../resources/testimg/" + f.getName(),"http://example.org/" + f.getName());
 			daoImpl.insert(img);
 		}
 
-		List<ImageImpl> urls = daoImpl.getAllImages();
+		List<Image> urls = daoImpl.getAllImages();
 		LOGGER.error("Returning file list: " + urls);
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);

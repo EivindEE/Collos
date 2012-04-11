@@ -1,17 +1,19 @@
 package edu.uib.info323.model;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.uib.info323.image.test.AbstractCollosTest;
 
 public class ColorFreqTest extends AbstractCollosTest {
-	@Autowired
 	private Image image;
 	private int color = 200;
 	private int relativeFreq = 5;
 	
-	
+	@Before
+	public void setUp() {
+		image = new ImageImpl("imageUri", "pageUri");
+	}
 
 	@Test
 	public void testContructorAndGet() {
