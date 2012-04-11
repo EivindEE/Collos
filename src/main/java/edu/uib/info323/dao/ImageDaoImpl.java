@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageImpl;
 
 public class ImageDaoImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageDaoImpl.class);
@@ -56,7 +57,7 @@ public class ImageDaoImpl {
 			ps.setString(1, imageUri);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				image = new Image();
+				image = new ImageImpl();
 				image.setImageUri(rs.getString("image_uri"));
 				image.setPageUri(rs.getString("page_uri"));
 			}
@@ -74,8 +75,8 @@ public class ImageDaoImpl {
 		}
 	}
 	
-	public List<Image> getAllImages(){
-		List<Image> images = new ArrayList<Image>();
+	public List<ImageImpl> getAllImages(){
+		List<ImageImpl> images = new ArrayList<ImageImpl>();
 		String sql = "SELECT * FROM IMAGE";
 		Connection con = null;
 		try {
@@ -83,7 +84,7 @@ public class ImageDaoImpl {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
-				Image image = new Image();
+				ImageImpl image = new ImageImpl();
 				image.setImageUri(rs.getString("image_uri"));
 				image.setPageUri(rs.getString("page_uri"));
 				images.add(image);
