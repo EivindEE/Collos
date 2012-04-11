@@ -25,38 +25,27 @@
 
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="info" />
+	<level value="info" />
 	</logger>
 
 	<logger name="org.springframework.beans">
-		<level value="info" />
+	<level value="info" />
 	</logger>
 
 	<logger name="org.springframework.context">
-		<level value="info" />
+	<level value="info" />
 	</logger>
 
 	<logger name="org.springframework.web">
-		<level value="info" />
+	<level value="info" />
 	</logger>
 
-	<logger name="org.hibernate">
-		<level value="warn" />
-	</logger>
 
 	<logger name="edu.uib.info323" additivity="true">
 		<level value="debug" />
 		<appender-ref ref="dailylogfile" />
 	</logger>
 
-<!-- 	<logger name="edu.uib.info310.search"> -->
-<!-- 		<level value="debug" /> -->
-<!-- 	</logger> -->
-	
-<!-- 		<logger name="edu.uib.info310.search.SearcherImpl"> -->
-<!-- 		<level value="debug" /> -->
-<!-- 	</logger> -->
-	
 
 
 	<!-- Root Logger -->

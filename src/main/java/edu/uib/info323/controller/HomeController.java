@@ -22,8 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HomeController {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(HomeController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
 
 
 	/**
@@ -32,13 +31,13 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() {
 		
-		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
+//		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
 		List<String> urls = new LinkedList<String>();
 		File imageFolder = new File("src/main/webapp/resources/testimg");
 		for(File f :imageFolder.listFiles()){
 			urls.add(f.getName());
 		}
-		LOGGER.debug("Returning file list: " + urls);
+		LOGGER.error("Returning file list: " + urls);
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);
 		ModelAndView mav = new ModelAndView("home", model);
