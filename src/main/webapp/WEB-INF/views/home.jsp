@@ -17,26 +17,28 @@
  <script type="text/javascript">
  
 	jQuery(document).ready(function() {
-		var colorPalette = new ColorPalette($("#palette0"));
+		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
-		$("#palette0img").click(function(e) {
+		$("#palette").click(function(e) {
  	color.push(colorPalette.current_display_color);
- 	alert(color);
- 	
-		
+ 
+		  $('#col').append("<div style=\"width:160px;height:50px;background:#"+colorPalette.current_display_color+"\">TEST</div>");
  	});
 })
 </script>
 </head>
 
-<body class="home">
-	<h1>HELLO WORLD!!!</h1>
-	<div id="container" style="position: width:200px">
+<body>
+	<h1>COLLOS</h1>
+	
+	<div id="container" class="transitions-enabled clearfix masonry">
 		<c:forEach var="image" items="${images}">
 			<div class="box">
 				<img src="../resources/testimg/${image}">
 			</div>
 		</c:forEach>
+		
+		</div>
 		<script>
 			$(function() {
 
@@ -45,28 +47,28 @@
 				$container.imagesLoaded(function() {
 					$container.masonry({
 						itemSelector : '.box',
-						columnWidth : 500,
-						isAnimated : true,
-						animationOptions : {
-							duration : 100,
-							easing : 'linear',
-							queue : false
-						}
+						//isFitWidth: true,
+//						columnWidth : 100,
+ 						isAnimated : true,
+// 						animationOptions : {
+// 							duration : 100,
+// 							easing : 'linear',
+// 							queue : false
+// 						}
 
 					});
 				});
 
 			});
 		</script>
-		<div id="palatte">
-			<div id="palette0" style="float: right">
-				<img id="palette0img" src="../resources/images/palette.png"
-					width="160" height="160" alt="pallete">
+		<div class="right">
+			<div id="palette">
+				
+			&nbsp;
 			</div>
-			<h2 id="status2">0, 0</h2>
+		<div id="col">
+		
 		</div>
-		<!-- <div style="width: 100px; height: 100px; background:#ccc;" id="special"> -->
-		<!-- Click me anywhere! -->
-		<!-- </div> -->
+		</div>
 </body>
 </html>
