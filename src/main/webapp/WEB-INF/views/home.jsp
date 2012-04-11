@@ -29,11 +29,19 @@
 </head>
 
 <body>
-	<div id="">
+	<div id="top">
 	
 	<img src="resources/images/colloslogo.png" alt="Collos" id="collos"/>
+		<div id="palette">
+				
+			&nbsp;
+		
+		</div>
 	</div>
-	<div Id="leftrow">
+	
+		<div id="col">
+		</div>
+	<div Id="pictures">
 	<div id="container" class="transitions-enabled clearfix masonry">
 		<c:forEach var="image" items="${images}">
 			<div class="box">
@@ -65,14 +73,6 @@
 
 			});
 		</script>
-		<div class="right">
-			<div id="palette">
-				
-			&nbsp;
-			</div>
-		<div id="col">
 		
-		</div>
-		</div>
 </body>
 </html>
