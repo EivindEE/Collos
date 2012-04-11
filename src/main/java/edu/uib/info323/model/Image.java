@@ -18,7 +18,12 @@ public class Image {
 	}
 	public void setPageUri(String pageUri) {
 		this.pageUri = pageUri;
-		
 	}
+	
+	@Override
+	public String toString() {
+		return "Image [imageUri=" + imageUri + ", pageUri=" + pageUri + "]";
+	}
+	
 
 }
