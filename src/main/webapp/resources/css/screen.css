@@ -28,7 +28,7 @@ html {
 
 body { 
   font: 13px 'Helvetica Neue', Arial, sans-serif;
-  background: ;
+  background: url("../images/45degreee_fabric.png");
   color: #222;
   line-height: 1.6em;
 }
@@ -72,6 +72,10 @@ h3, p, ul, ol, pre, dl {
 
 strong { font-weight: bold; }
 
+#top{
+	padding:20px;
+	
+}
 /**** #site-nav ****/
 
 #site-nav {
@@ -227,10 +231,7 @@ button {
 }
 
 #collos{
-	width: auto;
-	height:100px;
 	float:left;
-	padding: 10px;
 	
 }
 
@@ -268,7 +269,8 @@ button {
 	float:left;
 	width:25%;
 }
-#leftrow{
+#pictures{
+	clear:both;
 	padding:20px;
 }
 
@@ -305,41 +307,51 @@ button {
 
 
 #palette{
-	float:left;
+	float:right;
 	background:url("../images/palette.png") red;
 	width:160px;
 	height:160px;
 	content: ' ';
 	clear:right;
 	margin-right:20px;
+	padding-right:20px;
+	cursor: pointer;
+	
 }
 	
 #col{
-	float:left;
-}	
+ clear:both;
+ padding-top:10px;
+ padding-left: 20px;
+}
 
+#col div {
+	float:left;
+	
+}
+}
 
 
 #container {
-  background: url("../images/micro_carbon.png");
-  padding: 5px;
+  background:red;
+  padding: 20px;
   margin-bottom: 20px;
   margin-right:20px;
-  margin-left:20px
+  margin-left:20px;
   border-radius: 5px;
   clear: both;
   float:left;
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
           border-radius: 5px;
-          width: 70%;
+  
 }
 
 .centered { margin: 0 auto; }
 
 .box {
-  margin: 1px;
-  padding: 1px;
+  margin: 2px;
+  padding: 2px;
   background: #D8D5D2;
   font-size: 11px;
   line-height: 1.4em;
