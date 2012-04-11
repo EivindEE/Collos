@@ -11,17 +11,26 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageImpl;
 
-public class ImageDaoImpl {
+@Component
+public class ImageDaoImpl implements ImageDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageDaoImpl.class);
 	private DataSource dataSource;
 	 
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.dao.ImageDao#setDataSource(javax.sql.DataSource)
+	 */
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 	
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.dao.ImageDao#insert(edu.uib.info323.model.Image)
+	 */
 	public void insert(Image image) {
 		String sql = "INSERT INTO IMAGE (image_uri,page_uri) VALUES (?,?)";
 		Connection con = null;
@@ -33,7 +42,7 @@ public class ImageDaoImpl {
 			ps.executeUpdate();
 			ps.close();
 		}catch(Exception e){
-			LOGGER.debug("");
+			LOGGER.debug("Recieved an exception of type " + e.getClass() +". Image <"+ image +"> was not added to database");
 		}finally {
 			if (con != null) {
 				try {
@@ -44,6 +53,9 @@ public class ImageDaoImpl {
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.dao.ImageDao#getImageByImageUri(java.lang.String)
+	 */
 	public Image getImageByImageUri(String imageUri) {
 		String sql = "SELECT * FROM IMAGE WHERE image_uri = ?";
 		 
@@ -56,9 +68,7 @@ public class ImageDaoImpl {
 			ps.setString(1, imageUri);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				image = new Image();
-				image.setImageUri(rs.getString("image_uri"));
-				image.setPageUri(rs.getString("page_uri"));
+				image = new ImageImpl(rs.getString("image_uri"),rs.getString("page_uri"));
 			}
 			rs.close();
 			ps.close();
@@ -74,6 +84,9 @@ public class ImageDaoImpl {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.dao.ImageDao#getAllImages()
+	 */
 	public List<Image> getAllImages(){
 		List<Image> images = new ArrayList<Image>();
 		String sql = "SELECT * FROM IMAGE";
@@ -83,9 +96,7 @@ public class ImageDaoImpl {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
-				Image image = new Image();
-				image.setImageUri(rs.getString("image_uri"));
-				image.setPageUri(rs.getString("page_uri"));
+				Image image = new ImageImpl(rs.getString("image_uri"),rs.getString("page_uri"));
 				images.add(image);
 			}
 			
