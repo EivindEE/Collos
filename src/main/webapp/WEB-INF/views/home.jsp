@@ -21,10 +21,18 @@
 		var color = new Array();
 		$("#palette").click(function(e) {
  	color.push(colorPalette.current_display_color);
- 
-		  $('#col').append("<div style=\"width:160px;height:50px;background:#"+colorPalette.current_display_color+"\">TEST</div>");
- 	});
-})
+ 	console.log(colorPalette.current_display_color);
+ 	
+ 	$('#col').html('');
+ 	for(var i = 0; i < color.length; i++) {
+       var item = "<div id=\"color_"+i+"\"style=\"width:160px;height:50px;background:#"+color[i]+"\"><img id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"></div>";
+       console.log(item);
+       $('#col').append(item);		
+		}
+		});
+		 
+		
+});
 </script>
 </head>
 

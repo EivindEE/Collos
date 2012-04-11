@@ -329,11 +329,15 @@ button {
 	float:left;
 	
 }
+
+#col img {
+	float:right;
+	
 }
 
 
 #container {
-  background:red;
+  background:;
   padding: 20px;
   margin-bottom: 20px;
   margin-right:20px;
