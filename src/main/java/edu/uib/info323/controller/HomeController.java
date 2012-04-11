@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import edu.uib.info323.dao.ImageDaoImpl;
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageImpl;
 
 /**
  * Sample controller for going to the home page with a message
@@ -44,13 +45,13 @@ public class HomeController {
 
 		File imageFolder = new File("src/main/webapp/resources/testimg");
 		for(File f :imageFolder.listFiles()){
-			Image img = new Image();
+			Image img = new ImageImpl();
 			img.setImageUri("../resources/testimg/" + f.getName());
 			img.setPageUri("http://example.org/" + f.getName());
 			daoImpl.insert(img);
 		}
 
-		List<Image> urls = daoImpl.getAllImages();
+		List<ImageImpl> urls = daoImpl.getAllImages();
 		LOGGER.error("Returning file list: " + urls);
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);
