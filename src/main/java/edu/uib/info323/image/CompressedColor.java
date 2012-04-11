@@ -2,6 +2,7 @@ package edu.uib.info323.image;
 
 import org.springframework.stereotype.Component;
 
+@Component
 public interface CompressedColor extends Comparable<CompressedColor>{
 
 	public abstract String toString();
