@@ -28,7 +28,7 @@ html {
 
 body { 
   font: 13px 'Helvetica Neue', Arial, sans-serif;
-  background: url{resources/images/micro_carbon.png};
+  background: ;
   color: #222;
   line-height: 1.6em;
 }
@@ -321,7 +321,7 @@ button {
 
 
 #container {
-  background: #666;
+  background: url("../images/micro_carbon.png");
   padding: 5px;
   margin-bottom: 20px;
   margin-right:20px;
