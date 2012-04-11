@@ -14,26 +14,18 @@ import edu.uib.info323.image.test.AbstractCollosTest;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
-public class ImageDaoTest extends AbstractCollosTest {
+public class ImageDaoTest extends AbstractDaoCollosTest{
 	
 
 	@Autowired
 	private ImageDao dao;
-	private EmbeddedDatabase database;
-	
 	private Image image;
-	private Image image2;
 	
 	@Before
 	public void setUp() {
-		database = new EmbeddedDatabaseBuilder().addScript("schema.sql").setType(EmbeddedDatabaseType.DERBY).build();
+		super.setUp();
 		dao.setDataSource(database);
 		image = new ImageImpl("image", "page");
-	}
-	
-	@After
-	public void tearDown() {
-		database.shutdown();
 	}
 	
 	@Test
