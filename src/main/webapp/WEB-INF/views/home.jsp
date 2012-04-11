@@ -29,15 +29,19 @@
 </head>
 
 <body>
-	<h1>COLLOS</h1>
+	<div id="">
 	
+	<img src="resources/images/colloslogo.png" alt="Collos" id="collos"/>
+	</div>
+	<div Id="leftrow">
 	<div id="container" class="transitions-enabled clearfix masonry">
 		<c:forEach var="image" items="${images}">
 			<div class="box">
-				<img src="../resources/testimg/${image}">
+			<a href="${image.pageUri}"><img src="${image.imageUri}"></a>
 			</div>
 		</c:forEach>
 		
+		</div>
 		</div>
 		<script>
 			$(function() {

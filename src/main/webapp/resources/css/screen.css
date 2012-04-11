@@ -28,7 +28,7 @@ html {
 
 body { 
   font: 13px 'Helvetica Neue', Arial, sans-serif;
-  background: #D8D5D2;
+  background: url{resources/images/micro_carbon.png};
   color: #222;
   line-height: 1.6em;
 }
@@ -226,6 +226,14 @@ button {
   -webkit-appearance: push-button;
 }
 
+#collos{
+	width: auto;
+	height:100px;
+	float:left;
+	padding: 10px;
+	
+}
+
 #site-footer {
   clear: both;
   margin: 20px 0px;
@@ -259,6 +267,9 @@ button {
 .right{
 	float:left;
 	width:25%;
+}
+#leftrow{
+	padding:20px;
 }
 
 /**** Docs ****/
@@ -310,7 +321,7 @@ button {
 
 
 #container {
-  background: #FFF;
+  background: #666;
   padding: 5px;
   margin-bottom: 20px;
   margin-right:20px;
@@ -327,8 +338,8 @@ button {
 .centered { margin: 0 auto; }
 
 .box {
-  margin: 5px;
-  padding: 5px;
+  margin: 1px;
+  padding: 1px;
   background: #D8D5D2;
   font-size: 11px;
   line-height: 1.4em;
@@ -346,7 +357,8 @@ button {
 .box img,
 #tumblelog img {
   display: block;
-  width: 100%;
+  width: 100px;
+  height: auto;
 }
 
 .rtl .box {
