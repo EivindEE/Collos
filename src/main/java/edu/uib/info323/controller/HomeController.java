@@ -45,7 +45,7 @@ public class HomeController {
 		File imageFolder = new File("src/main/webapp/resources/testimg");
 		for(File f :imageFolder.listFiles()){
 			Image img = new Image();
-			img.setImageUri(f.getName());
+			img.setImageUri("../resources/testimg/" + f.getName());
 			img.setPageUri("http://example.org/" + f.getName());
 			daoImpl.insert(img);
 		}
