@@ -23,7 +23,7 @@ public class ImageDaoImpl {
 	}
 	
 	public void insert(Image image) {
-		String sql = "INSERT INTO IMAGE (image_uri,page_uri) VALUES (?,?);";
+		String sql = "INSERT INTO IMAGE (image_uri,page_uri) VALUES (?,?)";
 		Connection con = null;
 		try {
 			con = dataSource.getConnection();
@@ -32,7 +32,8 @@ public class ImageDaoImpl {
 			ps.setString(2, image.getPageUri());
 			ps.executeUpdate();
 			ps.close();
-		}catch(Exception e){	
+		}catch(Exception e){
+			LOGGER.debug("");
 		}finally {
 			if (con != null) {
 				try {
