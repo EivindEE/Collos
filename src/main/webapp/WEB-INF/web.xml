@@ -22,7 +22,7 @@
 
 	<!-- Processes application requests -->
 	<servlet>
-		<servlet-name>appServlet</servlet-name>
+		<servlet-name>collosServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
@@ -30,10 +30,14 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
+	<welcome-file-list>
+		<welcome-file></welcome-file>
+	</welcome-file-list>
 
 	<servlet-mapping>
-		<servlet-name>appServlet</servlet-name>
-		<url-pattern>/spring/*</url-pattern>
+		<servlet-name>collosServlet</servlet-name>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
 

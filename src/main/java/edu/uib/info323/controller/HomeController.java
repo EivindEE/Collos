@@ -37,16 +37,16 @@ public class HomeController {
 	/**
 	 * Selects the home page and populates the model with a message
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ModelAndView home() {
-		
-//		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
+
+		//		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
 		ImageDao daoImpl = new ImageDaoImpl();
 		daoImpl.setDataSource(dataSource);
 
 		File imageFolder = new File("src/main/webapp/resources/testimg");
 		for(File f :imageFolder.listFiles()){
-			Image img = new ImageImpl("../resources/testimg/" + f.getName(),"http://example.org/" + f.getName());
+			Image img = new ImageImpl("resources/testimg/" + f.getName(),"http://example.org/" + f.getName());
 			daoImpl.insert(img);
 		}
 
@@ -57,7 +57,11 @@ public class HomeController {
 		ModelAndView mav = new ModelAndView("home", model);
 		return mav;
 	}
-	
+
+	@RequestMapping("/spring")
+	public String redirectSpring() {
+		return "redirect:/search";
+	}
 	public static void main(String[] args) {
 		HomeController controller = new HomeController();
 		controller.home();
