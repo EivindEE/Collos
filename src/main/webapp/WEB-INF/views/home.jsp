@@ -57,13 +57,18 @@
 	<div id="top">
 	
 	<img src="resources/images/colloslogo.png" alt="Collos" id="collos"/>
+	
 	<div id="palette_container">
+	
 		<div id="palette">
 				
 			&nbsp;
 		
 		</div>
-		<div>
+		<span id="palette_text">
+	Click on the color palette to search for a color
+	</span>
+		</div>
 	</div>
 	
 		<div id="col">
