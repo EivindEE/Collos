@@ -37,4 +37,37 @@ public class ColorFreqImpl implements ColorFreq {
 		return relativeFreq;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + color;
+		result = prime * result + ((image == null) ? 0 : image.hashCode());
+		result = prime * result + relativeFreq;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof ColorFreqImpl))
+			return false;
+		ColorFreqImpl other = (ColorFreqImpl) obj;
+		if (color != other.color)
+			return false;
+		if (image == null) {
+			if (other.image != null)
+				return false;
+		} else if (!image.equals(other.image))
+			return false;
+		if (relativeFreq != other.relativeFreq)
+			return false;
+		return true;
+	}
+	
+	
+
 }

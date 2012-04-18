@@ -5,6 +5,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import edu.uib.info323.model.ColorFreq;
+import edu.uib.info323.model.Image;
 
 public interface ColorFreqDao {
 
@@ -13,5 +14,7 @@ public interface ColorFreqDao {
 	public List<ColorFreq> getAllColors();
 
 	public void insert(ColorFreq colorFreq);
+
+	public List<ColorFreq> getImageColorFreqs(Image image);
 
 }
