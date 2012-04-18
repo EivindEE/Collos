@@ -265,10 +265,7 @@ button {
   padding: 10px 5px 5px;
 }
 
-.right{
-	float:left;
-	width:25%;
-}
+
 #pictures{
 	clear:both;
 	padding:20px;
@@ -305,17 +302,20 @@ button {
   margin-left: 1px;
 }
 
+#palette_container{
+	margin-right:20px;
+}
 
 #palette{
 	float:right;
-	background:url("../images/palette.png") red;
+	background:url("../images/palette.png");
+	background-repeat:no-repeat;
 	width:160px;
 	height:160px;
 	content: ' ';
 	clear:right;
-	margin-right:20px;
-	padding-right:20px;
 	cursor: pointer;
+	
 	
 }
 	
@@ -330,10 +330,6 @@ button {
 	
 }
 
-#col img {
-	float:right;
-	
-}
 
 
 #container {

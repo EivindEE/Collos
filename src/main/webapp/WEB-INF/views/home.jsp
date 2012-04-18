@@ -23,16 +23,33 @@
  	color.push(colorPalette.current_display_color);
  	console.log(colorPalette.current_display_color);
  	
- 	$('#col').html('');
- 	for(var i = 0; i < color.length; i++) {
-       var item = "<div id=\"color_"+i+"\"style=\"width:160px;height:50px;background:#"+color[i]+"\"><img id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"></div>";
-       console.log(item);
-       $('#col').append(item);		
-		}
+	writeHtml(color);
+ 	
+		
+		
 		});
-		 
+		
+	$('.delete_color').live('click',function() { 
+	var id = $(this).parent().index();
+	console.log("index" +id);
+	$(this).parent().remove();
+	color.splice(id,1);
+	
+	console.log(color.length);
+	});
 		
 });
+	function writeHtml(color){
+	$('#col').html('');
+ 	for(var i = 0; i < color.length; i++) {
+       var item = "<div class=\"color\" style=\"width:160px;height:50px;background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"></div>";
+       console.log(color);
+	  $('#col').append(item);	
+		}
+	console.log(color.length);
+	
+	};
+
 </script>
 </head>
 
@@ -40,11 +57,13 @@
 	<div id="top">
 	
 	<img src="resources/images/colloslogo.png" alt="Collos" id="collos"/>
+	<div id="palette_container">
 		<div id="palette">
 				
 			&nbsp;
 		
 		</div>
+		<div>
 	</div>
 	
 		<div id="col">
