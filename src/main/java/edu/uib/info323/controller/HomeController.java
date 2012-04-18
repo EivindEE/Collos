@@ -12,11 +12,14 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.uib.info323.dao.ImageDao;
@@ -34,17 +37,28 @@ public class HomeController {
 
 	@Autowired
 	private DataSource dataSource;
+	
+	
 	/**
 	 * Selects the home page and populates the model with a message
 	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView home() {
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home() {
+		return "home";
+	}
+	/**
+	 * Selects the home page and populates the model with a message
+	 */
+	@RequestMapping(value = "/search")
+	@ResponseStatus(value = HttpStatus.OK)
+	public ModelAndView serch(@RequestParam String color) {
+		LOGGER.error("Returning color: " + color);
 
 		//		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
 		ImageDao daoImpl = new ImageDaoImpl();
 		daoImpl.setDataSource(dataSource);
 		List<Image> urls = daoImpl.getAllImages();
-		LOGGER.error("Returning file list: " + urls);
+		//LOGGER.error("Returning file list: " + urls);
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);
 		ModelAndView mav = new ModelAndView("home", model);
@@ -63,9 +77,9 @@ public class HomeController {
 		}
 		return "redirect:/search";
 	}
-	public static void main(String[] args) {
-		HomeController controller = new HomeController();
-		controller.home();
-	}
+//	public static void main(String[] args) {
+//		HomeController controller = new HomeController();
+//		controller.home();
+//	}
 
 }
