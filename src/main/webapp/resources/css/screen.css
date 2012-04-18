@@ -74,6 +74,7 @@ strong { font-weight: bold; }
 
 #top{
 	padding:20px;
+	height:160px;
 	
 }
 /**** #site-nav ****/
@@ -302,8 +303,20 @@ button {
   margin-left: 1px;
 }
 
+
+
 #palette_container{
 	margin-right:20px;
+}
+
+#palette_text{
+	width:150px;	
+	float:right;
+	text-align: left;
+	margin-right: 10px;
+	margin-top:120px;
+	
+	
 }
 
 #palette{
@@ -315,6 +328,7 @@ button {
 	content: ' ';
 	clear:right;
 	cursor: pointer;
+	
 	
 	
 }
@@ -340,7 +354,6 @@ button {
   margin-left:20px;
   border-radius: 5px;
   clear: both;
-  float:left;
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
           border-radius: 5px;
@@ -355,7 +368,7 @@ button {
   background: #D8D5D2;
   font-size: 11px;
   line-height: 1.4em;
-  float: left;
+  
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
           border-radius: 5px;
