@@ -43,13 +43,6 @@ public class HomeController {
 		//		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
 		ImageDao daoImpl = new ImageDaoImpl();
 		daoImpl.setDataSource(dataSource);
-
-		File imageFolder = new File("src/main/webapp/resources/testimg");
-		for(File f :imageFolder.listFiles()){
-			Image img = new ImageImpl("resources/testimg/" + f.getName(),"http://example.org/" + f.getName());
-			daoImpl.insert(img);
-		}
-
 		List<Image> urls = daoImpl.getAllImages();
 		LOGGER.error("Returning file list: " + urls);
 		Map<String, Object> model = new TreeMap<String, Object>();
@@ -60,6 +53,14 @@ public class HomeController {
 
 	@RequestMapping("/spring")
 	public String redirectSpring() {
+		ImageDao daoImpl = new ImageDaoImpl();
+		daoImpl.setDataSource(dataSource);
+		
+		File imageFolder = new File("src/main/webapp/resources/testimg");
+		for(File f :imageFolder.listFiles()){
+			Image img = new ImageImpl("resources/testimg/" + f.getName(),"http://example.org/" + f.getName());
+			daoImpl.insert(img);
+		}
 		return "redirect:/search";
 	}
 	public static void main(String[] args) {
