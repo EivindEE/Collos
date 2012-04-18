@@ -19,13 +19,24 @@
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
+		
+		
+		$("#collos").click(function(){
+			
+		});
+		
 		$("#palette").click(function(e) {
  	color.push(colorPalette.current_display_color);
  	console.log(colorPalette.current_display_color);
- 	
-	writeHtml(color);
- 	
-		
+ 	writeHtml(color);
+ 	$.ajax({
+		  type: "GET",
+		  url: "search/",
+		  data: { color:color }
+ 		  
+		}).sucess(function() {
+		  alert( "Data Saved: ");
+		});
 		
 		});
 		
@@ -37,7 +48,8 @@
 	
 	console.log(color.length);
 	});
-		
+	
+	jQuery.ajaxSettings.traditional = true;	
 });
 	function writeHtml(color){
 	$('#col').html('');
@@ -65,9 +77,7 @@
 			&nbsp;
 		
 		</div>
-		<span id="palette_text">
-	Click on the color palette to search for a color
-	</span>
+		
 		</div>
 	</div>
 	
