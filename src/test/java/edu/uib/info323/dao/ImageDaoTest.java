@@ -1,16 +1,9 @@
 package edu.uib.info323.dao;
 
-import javax.sql.DataSource;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import edu.uib.info323.image.test.AbstractCollosTest;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
