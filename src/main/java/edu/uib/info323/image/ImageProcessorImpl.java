@@ -2,10 +2,6 @@ package edu.uib.info323.image;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -16,7 +12,6 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import org.apache.derby.impl.sql.catalog.SYSPERMSRowFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +113,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 			Integer freq = colorMap.get(color);
 			int relativeFreq = (int) ((freq.doubleValue() / numberOfPixels.doubleValue()) * 100);
 			if(relativeFreq > threshold) {
-				colorFreqs.add(new ColorFreqImpl(image, color.hashCode(), relativeFreq));
+				colorFreqs.add(new ColorFreqImpl(image, color.getColor(), relativeFreq));
 			}
 
 		}
