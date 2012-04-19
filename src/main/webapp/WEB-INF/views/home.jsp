@@ -29,15 +29,18 @@
  	color.push(colorPalette.current_display_color);
  	console.log(colorPalette.current_display_color);
  	writeHtml(color);
- 	$.ajax({
+ 	/*  $.ajax({
 		  type: "GET",
 		  url: "search/",
-		  data: { color:color }
+		  data: { color:colorPalette.current_display_color }
  		  
-		}).sucess(function() {
-		  alert( "Data Saved: ");
-		});
+		}).sucess(function(mydata){
+		  alert( "Data Saved: "+ mydata);
+		}); */
 		
+		$.get("color/",{color:colorPalette.current_display_color},function(data){
+			alert(data);
+		});
 		});
 		
 	$('.delete_color').live('click',function() { 
@@ -49,7 +52,7 @@
 	console.log(color.length);
 	});
 	
-	jQuery.ajaxSettings.traditional = true;	
+	
 });
 	function writeHtml(color){
 	$('#col').html('');

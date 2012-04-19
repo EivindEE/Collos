@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -47,7 +48,7 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/search")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ModelAndView serch(@RequestParam(required=false) String color) {
+	public ModelAndView search(@RequestParam(required=false) String color) {
 		LOGGER.error("Returning color: " + color);
 
 		ImageDao daoImpl = new ImageDaoImpl();
@@ -58,7 +59,16 @@ public class HomeController {
 		ModelAndView mav = new ModelAndView("home", model);
 		return mav;
 	}
+	
+	@RequestMapping(value = "/color")
+	@ResponseStatus(value = HttpStatus.OK)
+	@ResponseBody
+	public String color(@RequestParam(required=false) String color){
+		LOGGER.error("Returning color: " + color);
 
+	return(color);
+	}
+	
 	@RequestMapping("/spring")
 	public String redirectSpring() {
 		return "redirect:/search";
