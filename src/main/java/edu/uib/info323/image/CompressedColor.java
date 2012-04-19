@@ -40,9 +40,21 @@ public interface CompressedColor extends Comparable<CompressedColor>{
 	 */
 	public abstract int hashCode();
 
+	/**
+	 * Returns true if both object are CompressedColors, and have the same internal state 
+	 * @param obj
+	 * @return
+	 */
 	public abstract boolean equals(Object obj);
 
+	/**
+	 * Returns a number > 0 if o blue value is higher than this blue value < 0 if smaller,
+	 * > 0 if o green value is higher than this green value < 0 if smaller,
+	 * > 0 if o red value is higher than this red value < 0 if smaller,
+	 * 0 if colors are equal.
+	 */
 	public abstract int compareTo(CompressedColor o);
+	
 	
 	public abstract int getColor();
 
