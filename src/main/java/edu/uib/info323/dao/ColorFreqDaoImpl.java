@@ -1,5 +1,6 @@
 package edu.uib.info323.dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -59,6 +61,34 @@ public class ColorFreqDaoImpl implements ColorFreqDao {
 		List<ColorFreq> colorFreqs = jdbcTemplate.query(sql,new Object[] {image.getImageUri()}, rowMapper);
 		LOGGER.debug(colorFreqs.toString());
 		return colorFreqs;
+	}
+
+	/**
+	 * Ignores duplicates
+	 */
+	public void batchInsert(final List<ColorFreq> colorList) {
+		String sql = "INSERT INTO COLOR_FREQ (" +
+				"SELECT ? AS image_uri, ? AS color, ? AS relative_freq " +
+				"FROM COLOR_FREQ " +
+				"WHERE image_uri = ? AND color = ? AND relative_freq = ? " +
+				"HAVING COUNT(*) = 0" +
+				")";
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ColorFreq colorFreq = colorList.get(i);
+				ps.setString(1, colorFreq.getImage().getImageUri());
+				ps.setInt(2, colorFreq.getColor());
+				ps.setInt(3, colorFreq.getRelativeFreq());
+				ps.setString(4, colorFreq.getImage().getImageUri());
+				ps.setInt(5, colorFreq.getColor());
+				ps.setInt(6, colorFreq.getRelativeFreq());
+			}
+			
+			public int getBatchSize() {
+				return colorList.size();
+			}
+		});
 	}
 	
 	

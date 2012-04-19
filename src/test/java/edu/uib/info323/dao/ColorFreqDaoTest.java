@@ -27,18 +27,11 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 	private ColorFreq colorFreq1;
 	private ColorFreq colorFreq2;
 
+
 	private String imageUri = "http://www.example.org/image.jpg";
 	private String pageUri = "http://www.example.org/";
-	
-	private String imageUri2 = "http://www.example.org/image2.jpg";
-	private String pageUri2 = "http://www.example.com/";
-	
-	private String imageUri3 = "http://www.example.org/image3.jpg";
-	private String pageUri3 = "http://www.example.net/";
 
 	private Image image1 = new ImageImpl(imageUri, pageUri);
-	private Image image2 = new ImageImpl(imageUri2, pageUri2);
-	private Image image3 = new ImageImpl(imageUri3, pageUri3);
 
 	private int color1 = 0;
 	private int relativeFreq1 = 30;
@@ -60,6 +53,23 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 		dao.insert(colorFreq1);
 		assertEquals(1, dao.getAllColors().size());
 	}
+	
+	@Test
+	public void testBatchInsert() {
+		assertEquals(Collections.emptyList(), dao.getAllColors());
+		List<ColorFreq> expectedColorList = new LinkedList<ColorFreq>();
+		dao.batchInsert(expectedColorList);
+		assertEquals(Collections.emptyList(), dao.getAllColors());
+		expectedColorList.add(colorFreq1);
+		expectedColorList.add(colorFreq2);
+		dao.batchInsert(expectedColorList);
+		List<ColorFreq> actualColorList = dao.getAllColors();
+		assertTrue(actualColorList + " should contain all the elements in " + expectedColorList, actualColorList.containsAll(expectedColorList));
+		dao.batchInsert(expectedColorList);
+		actualColorList = dao.getAllColors();
+		assertTrue(actualColorList + " should contain all the elements in " + expectedColorList, actualColorList.containsAll(expectedColorList));
+		
+	}
 
 	@Test
 	public void testGetColorFreqsForImage() {
@@ -71,13 +81,7 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 		expectedColorFreqs.add(colorFreq2);
 		
 		actualColorFreqs = dao.getImageColorFreqs(image1);
-		LOGGER.debug(actualColorFreqs.toString());
 		assertTrue(actualColorFreqs.containsAll(expectedColorFreqs));
 		assertTrue(expectedColorFreqs.containsAll(actualColorFreqs));
-	}
-	
-	@Test
-	public void getImagesWithColor() {
-		
 	}
 }
