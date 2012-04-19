@@ -46,12 +46,13 @@ public class HomeController {
 	public String home() {
 		return "home";
 	}
+	
 	/**
 	 * Selects the home page and populates the model with a message
 	 */
 	@RequestMapping(value = "/search")
 	@ResponseStatus(value = HttpStatus.OK)
-	public ModelAndView serch(@RequestParam String color) {
+	public ModelAndView serch(@RequestParam(required=false) String color) {
 		LOGGER.error("Returning color: " + color);
 
 		//		EmbeddedDatabase database = new EmbeddedDatabaseBuilder().addScript("schema.sql").addScript("test-data.sql").build();
