@@ -1,6 +1,5 @@
 package edu.uib.info323.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +11,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -72,5 +72,27 @@ public class ImageDaoImpl implements ImageDao {
 
 		});
 		return images;
+	}
+
+	public void batchInsert(final List<Image> imageList) {
+		String sql = "INSERT INTO IMAGE(image_uri, page_uri)(" +
+				"SELECT ? AS image_uri, ? AS page_uri " +
+				"FROM IMAGE " +
+				"WHERE image_uri = ? AND page_uri = ? " +
+				"HAVING COUNT(*)=0 " +
+				")";
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				Image image = imageList.get(i);
+				ps.setString(1, image.getImageUri());
+				ps.setString(2, image.getPageUri());
+				ps.setString(3, image.getImageUri());
+				ps.setString(4, image.getPageUri());
+			}
+			public int getBatchSize() {
+				return imageList.size();
+			}
+		});
+		
 	}
 }

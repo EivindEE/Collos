@@ -17,4 +17,6 @@ public interface ImageDao {
 
 	public abstract List<Image> getAllImages();
 
+	public abstract void batchInsert(List<Image> imageList);
+
 }
