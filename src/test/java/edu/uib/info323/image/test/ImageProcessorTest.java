@@ -22,29 +22,29 @@ public class ImageProcessorTest extends AbstractCollosTest {
 	@Autowired
 	private ImageProcessor imageProcessor;
 	
-	@Test
-	public void testSetImage() throws FileNotFoundException {
-		File file = new File("");
-		Exception exception = null;
-		try {
-			imageProcessor.setImage(file);
-		}
-		catch (Exception e) {
-			exception = e;
-		}
-		assertTrue(exception instanceof IOException);
-		exception = null;
-		
-		InputStream inputStream = null;
-		try {
-			imageProcessor.setImage(inputStream);
-		}
-		catch (Exception e) {
-			exception = e;
-		}
-		assertTrue("Exception should be of type IOException but was of type "  + exception, exception instanceof IOException);
-		exception = null;
-	}
+//	@Test
+//	public void testSetImage() throws FileNotFoundException {
+//		File file = new File("");
+//		Exception exception = null;
+//		try {
+//			imageProcessor.setImage(file);
+//		}
+//		catch (Exception e) {
+//			exception = e;
+//		}
+//		assertTrue(exception instanceof IOException);
+//		exception = null;
+//		
+//		InputStream inputStream = null;
+//		try {
+//			imageProcessor.setImage(inputStream);
+//		}
+//		catch (Exception e) {
+//			exception = e;
+//		}
+//		assertTrue("Exception should be of type IOException but was of type "  + exception, exception instanceof IOException);
+//		exception = null;
+//	}
 	
 	
 }
