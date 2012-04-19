@@ -4,6 +4,6 @@ insert into image (image_uri, page_uri) values ('http://profile.ak.fbcdn.net/hpr
 insert into image (image_uri, page_uri) values ('http://ap.mnocdn.no/incoming/article6756604.ece/ALTERNATES/w780c169/FS00014426.jpg?updated=010420121713','http://www.aftenposten.no/nyheter/uriks/Vant-plass-i-parlamentet-6797707.html');
 
 insert into color_freq (image_uri, color, relative_freq) values ('http://ap.mnocdn.no/incoming/article6756604.ece/ALTERNATES/w780c169/FS00014426.jpg?updated=010420121713', 0, 5);
-insert into color_freq (image_uri, color, relative_freq) values ('http://www.vogella.de/img/lars/125x115xLarsVogelArticle8.png.pagespeed.ic.aiTzRR81a3.png', 8, 15);
+insert into color_freq (image_uri, color, relative_freq) values ('http://www.vogella.com/img/lars/125x115xLarsVogelArticle8.png.pagespeed.ic.aiTzRR81a3.png', 8, 15);
 insert into color_freq (image_uri, color, relative_freq) values ('http://profile.ak.fbcdn.net/hprofile-ak-snc4/41503_731235005_871_q.jpg', 16, 35);
 insert into color_freq (image_uri, color, relative_freq) values ('http://ap.mnocdn.no/incoming/article6756604.ece/ALTERNATES/w780c169/FS00014426.jpg?updated=010420121713',32,17);
