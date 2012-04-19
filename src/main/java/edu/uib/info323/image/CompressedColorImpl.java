@@ -1,8 +1,6 @@
 package edu.uib.info323.image;
 
 import java.security.InvalidParameterException;
-
-import org.springframework.stereotype.Component;
 /**
  * CompressedColor contains information about a color in a reduced RGB color space given a certain compression.
  * Accepts RGB color ranges (0-255), and comression rates ³4. 
@@ -153,5 +151,9 @@ public class CompressedColorImpl implements CompressedColor {
 		else{
 			return blue - o.getBlue();
 		}
+	}
+
+	public int getColor() {
+		return this.hashCode();
 	}
 }

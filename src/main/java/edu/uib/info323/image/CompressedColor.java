@@ -43,5 +43,7 @@ public interface CompressedColor extends Comparable<CompressedColor>{
 	public abstract boolean equals(Object obj);
 
 	public abstract int compareTo(CompressedColor o);
+	
+	public abstract int getColor();
 
 }
