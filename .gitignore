@@ -4,4 +4,4 @@
 .springBeans 
 .settings/
 logs/
-target/*
+target/
