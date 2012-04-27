@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.sql.DataSource;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.uib.info323.dao.ImageDao;
-import edu.uib.info323.dao.ImageDaoImpl;
 import edu.uib.info323.model.Image;
 
 /**
@@ -32,9 +32,9 @@ public class HomeController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HomeController.class);
 
 	@Autowired
-	private DataSource dataSource;
-	
-	
+	private ImageDao imageDao;
+
+
 	/**
 	 * Selects the home page and populates the model with a message
 	 */
@@ -42,7 +42,7 @@ public class HomeController {
 	public String home() {
 		return "home";
 	}
-	
+
 	/**
 	 * Selects the home page and populates the model with a message
 	 */
@@ -51,25 +51,23 @@ public class HomeController {
 	public ModelAndView search(@RequestParam(required=false) String color) {
 		LOGGER.error("Returning color: " + color);
 
-		ImageDao daoImpl = new ImageDaoImpl();
-		daoImpl.setDataSource(dataSource);
-		List<Image> urls = daoImpl.getAllImages();
+		List<Image> urls = imageDao.getAllImages();
+
 		LOGGER.debug("Number of images returned:" + urls.size());
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);
 		ModelAndView mav = new ModelAndView("home", model);
 		return mav;
 	}
-	
-	@RequestMapping(value = "/color")
-	@ResponseStatus(value = HttpStatus.OK)
-	@ResponseBody
-	public String color(@RequestParam(required=false) String color){
-		LOGGER.error("Returning color: " + color);
 
-	return(color);
+	@RequestMapping(value = "/color", method = RequestMethod.GET)
+	@ResponseStatus(value = HttpStatus.OK)
+	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors) throws JSONException{
+		LOGGER.error("Returning images for color: " + colors);
+		
+		return imageDao.getImagesWithColor("0x"+colors);
 	}
-	
+
 	@RequestMapping("/spring")
 	public String redirectSpring() {
 		return "redirect:/search";

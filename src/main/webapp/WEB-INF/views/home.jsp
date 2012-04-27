@@ -12,9 +12,10 @@
 <link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-<script type="text/javascript" src="resources/javascript/jquery.masonry.min.js"></script>
+<script type="text/javascript"
+	src="resources/javascript/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="resources/javascript/colorutils.js"></script>
- <script type="text/javascript">
+<script type="text/javascript">
  
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
@@ -38,9 +39,13 @@
 		  alert( "Data Saved: "+ mydata);
 		}); */
 		
-		$.get("color/",{color:colorPalette.current_display_color},function(data){
-			alert(data);
-		});
+		
+		$.getJSON("/Collos/color?colors=" + colorPalette.current_display_color,
+				function(data){
+			writeImages(data);
+		}
+	
+			);
 		});
 		
 	$('.delete_color').live('click',function() { 
@@ -64,39 +69,44 @@
 	console.log(color.length);
 	
 	};
+	
+	function writeImages(images){
+		$('#container').html('');
+		
+		for(var i = 0; i < images.length; i++){
+			var imagebox = jQuery("<div class='box'> <a href='" + images[i].pageUri + "'><img src='" +  images[i].imageUri + "'></a>");
+			jQuery('#container').append(imagebox).masonry( 'appended', imagebox, true );
+		}
+		jQuery('#container').masonry('reload');	
+	};
 
 </script>
 </head>
 
 <body>
 	<div id="top">
-	
-	<img src="resources/images/colloslogo.png" alt="Collos" id="collos"/>
-	
-	<div id="palette_container">
-	
-		<div id="palette">
-				
-			&nbsp;
-		
-		</div>
-		
+
+		<img src="resources/images/colloslogo.png" alt="Collos" id="collos" />
+
+		<div id="palette_container">
+
+			<div id="palette">&nbsp;</div>
+
 		</div>
 	</div>
-	
-		<div id="col">
-		</div>
+
+	<div id="col"></div>
 	<div Id="pictures">
-	<div id="container" class="transitions-enabled clearfix masonry">
-		<c:forEach var="image" items="${images}">
-			<div class="box">
-			<a href="${image.pageUri}"><img src="${image.imageUri}"></a>
-			</div>
-		</c:forEach>
-		
+		<div id="container" class="transitions-enabled clearfix masonry">
+			<c:forEach var="image" items="${images}">
+				<div class="box">
+					<a href="${image.pageUri}"><img src="${image.imageUri}"></a>
+				</div>
+			</c:forEach>
+
 		</div>
-		</div>
-		<script>
+	</div>
+	<script>
 			$(function() {
 
 				var $container = $('#container');
@@ -118,6 +128,6 @@
 
 			});
 		</script>
-		
+
 </body>
 </html>

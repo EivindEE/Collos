@@ -24,9 +24,9 @@
 					<stopKey>foo</stopKey>
 					<!-- -->
 					<scanIntervalSeconds>3</scanIntervalSeconds>
-					<scanTargets>
-						<scanTarget>src/main/java</scanTarget>
-					</scanTargets>
+<!-- 					<scanTargets> -->
+<!-- 						<scanTarget>src/main/java</scanTarget> -->
+<!-- 					</scanTargets> -->
 				</configuration>
 			</plugin>
 		</plugins>
@@ -106,6 +106,20 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.6</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
