@@ -31,6 +31,7 @@ public class ColorFreqDaoImpl implements ColorFreqDao {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoImpl.class);
 	
+	@Autowired
 	public void setDataSource(DataSource datasource) {
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 		this.imageDao.setDataSource(datasource);
