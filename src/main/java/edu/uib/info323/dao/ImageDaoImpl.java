@@ -38,7 +38,10 @@ public class ImageDaoImpl implements ImageDao {
 	 * @see edu.uib.info323.dao.ImageDao#insert(edu.uib.info323.model.Image)
 	 */
 	public void insert(Image image) {
-		String sql = "INSERT INTO IMAGE (image_uri,page_uri) VALUES (?,?)";
+		String sql = "INSERT INTO IMAGE (image_uri) VALUES (?)";
+		jdbcTemplate.update(sql, new Object[] {image.getImageUri()});
+		
+		sql = "INSERT INTO IMAGE_PAGE (image_uri,page_uri) VALUES (?,?)";
 		jdbcTemplate.update(sql, new Object[] {image.getImageUri(), image.getPageUri()});
 	}
 
@@ -46,7 +49,7 @@ public class ImageDaoImpl implements ImageDao {
 	 * @see edu.uib.info323.dao.ImageDao#getImageByImageUri(java.lang.String)
 	 */
 	public Image getImageByImageUri(String imageUri) {
-		String sql = "SELECT image_uri, page_uri FROM IMAGE WHERE image_uri = ?";
+		String sql = "SELECT image_uri, page_uri FROM IMAGE_PAGE WHERE image_uri = ?";
 		
 		return this.jdbcTemplate.query(sql, new Object[] {imageUri}, new ResultSetExtractor<Image>() {
 
@@ -63,7 +66,7 @@ public class ImageDaoImpl implements ImageDao {
 	 */
 	public List<Image> getAllImages(){
 		List<Image> images = new ArrayList<Image>();
-		String sql = "SELECT image_uri, page_uri FROM IMAGE";
+		String sql = "SELECT image_uri, page_uri FROM IMAGE_PAGE";
 		images = this.jdbcTemplate.query(sql, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -75,7 +78,26 @@ public class ImageDaoImpl implements ImageDao {
 	}
 
 	public void batchInsert(final List<Image> imageList) {
-		String sql = "INSERT INTO IMAGE(image_uri, page_uri)(" +
+		String sql = "INSERT INTO IMAGE(image_uri)(" +
+				"SELECT ? AS image_uri" +
+				"FROM IMAGE " +
+				"WHERE image_uri = ?" +
+				"HAVING COUNT(*)=0 " +
+				")";
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				Image image = imageList.get(i);
+				ps.setString(1, image.getImageUri());
+				ps.setString(2, image.getPageUri());
+				ps.setString(3, image.getImageUri());
+				ps.setString(4, image.getPageUri());
+			}
+			public int getBatchSize() {
+				return imageList.size();
+			}
+		});
+		
+		sql = "INSERT INTO IMAGE_PAGE(image_uri, page_uri)(" +
 				"SELECT ? AS image_uri, ? AS page_uri " +
 				"FROM IMAGE " +
 				"WHERE image_uri = ? AND page_uri = ? " +
