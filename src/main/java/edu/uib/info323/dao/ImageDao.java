@@ -19,4 +19,10 @@ public interface ImageDao {
 
 	public abstract void batchInsert(List<Image> imageList);
 
+	public abstract List<Image> getUnprocessedImages();
+
+	public abstract void delete(Image image);
+
+	public abstract List<Image> getImagesWithColor(String color);
+
 }
