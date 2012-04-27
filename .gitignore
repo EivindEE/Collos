@@ -3,5 +3,5 @@
 .DS_Store
 .springBeans 
 .settings/
-logs/*
+logs/
 target/*
