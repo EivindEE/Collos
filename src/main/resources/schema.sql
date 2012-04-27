@@ -11,3 +11,10 @@ CREATE TABLE IMAGE_PAGE(
 		page_uri VARCHAR(2000) NOT NULL,
 		PRIMARY KEY (image_uri, page_uri)
 	);
+	
+CREATE TABLE COLOR_FREQ(
+	image_uri VARCHAR(2000) NOT NULL CONSTRAINT COLOR_FK  REFERENCES image ON DELETE CASCADE,
+	color INT NOT NULL,
+	relative_freq INT NOT NULL,
+	PRIMARY KEY (image_uri, color)
+	);
