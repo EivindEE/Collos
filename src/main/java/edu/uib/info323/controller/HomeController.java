@@ -54,6 +54,7 @@ public class HomeController {
 		ImageDao daoImpl = new ImageDaoImpl();
 		daoImpl.setDataSource(dataSource);
 		List<Image> urls = daoImpl.getAllImages();
+		LOGGER.debug("Number of images returned:" + urls.size());
 		Map<String, Object> model = new TreeMap<String, Object>();
 		model.put("images", urls);
 		ModelAndView mav = new ModelAndView("home", model);
