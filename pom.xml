@@ -22,11 +22,7 @@
 				<configuration>
 					<stopPort>8888</stopPort>
 					<stopKey>foo</stopKey>
-					<!-- -->
 					<scanIntervalSeconds>3</scanIntervalSeconds>
-<!-- 					<scanTargets> -->
-<!-- 						<scanTarget>src/main/java</scanTarget> -->
-<!-- 					</scanTargets> -->
 				</configuration>
 			</plugin>
 		</plugins>
