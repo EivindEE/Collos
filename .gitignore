@@ -1,7 +1,7 @@
 .classpath
 .project
 .DS_Store
-.springBeans 
+.springBeans
 .settings/
 logs/
 target/
