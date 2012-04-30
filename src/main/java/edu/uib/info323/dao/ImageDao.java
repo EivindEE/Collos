@@ -5,7 +5,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import edu.uib.info323.model.Image;
-import edu.uib.info323.model.ImageImpl;
 
 public interface ImageDao {
 

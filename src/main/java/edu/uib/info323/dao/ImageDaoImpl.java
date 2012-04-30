@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.tika.parser.hdf.HDFParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +46,8 @@ public class ImageDaoImpl implements ImageDao {
 
 		sql = "INSERT INTO IMAGE_PAGE (image_uri,page_uri) VALUES (?,?)";
 		jdbcTemplate.update(sql, new Object[] {image.getImageUri(), image.getPageUri()});
+		
+		LOGGER.debug("Inserted " + image + " into database");
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +61,7 @@ public class ImageDaoImpl implements ImageDao {
 			public Image extractData(ResultSet rs) throws SQLException,
 			DataAccessException {
 				rs.next();
-
+				
 				return new ImageImpl(rs.getString("image_uri"), rs.getString("page_uri"));
 			}});
 	}
