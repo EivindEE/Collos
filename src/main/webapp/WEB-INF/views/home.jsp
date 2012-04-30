@@ -12,6 +12,7 @@
 <link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	<script src="resources/javascript/modernizr-transitions.js"></script>
 <script type="text/javascript"
 	src="resources/javascript/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="resources/javascript/colorutils.js"></script>
@@ -43,6 +44,7 @@
 		$.getJSON("/Collos/color?colors=" + colorPalette.current_display_color,
 				function(data){
 			writeImages(data);
+			
 		}
 	
 			);
@@ -74,10 +76,13 @@
 		$('#container').html('');
 		
 		for(var i = 0; i < images.length; i++){
-			var imagebox = jQuery("<div class='box'> <a href='" + images[i].pageUri + "'><img src='" +  images[i].imageUri + "'></a>");
-			jQuery('#container').append(imagebox).masonry( 'appended', imagebox, true );
+			var $imagebox = $("<div class='box'> <a href='" + images[i].pageUri + "'><img src='" +  images[i].imageUri + "'></a>");
+			$('#container').append($imagebox)
+			
+			
 		}
-		jQuery('#container').masonry('reload');	
+		$('#container').masonry('reload');	
+		
 	};
 
 </script>
@@ -114,14 +119,14 @@
 				$container.imagesLoaded(function() {
 					$container.masonry({
 						itemSelector : '.box',
-						//isFitWidth: true,
-//						columnWidth : 100,
- 						isAnimated : true,
-// 						animationOptions : {
-// 							duration : 100,
-// 							easing : 'linear',
-// 							queue : false
-// 						}
+						isFitWidth: true,
+						//columnWidth : 100,
+ 						isAnimated : !Modernizr.csstransitions,
+ 					 	animationOptions : {
+					    duration : 100,
+ 						//easing : 'linear',
+						//queue : false
+						} 
 
 					});
 				});
