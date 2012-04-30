@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +59,8 @@ public class HomeController {
 
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors) throws JSONException{
-		LOGGER.error("Returning images for color: " + colors);
+	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors){
+		LOGGER.debug("Returning images for color: " + colors);
 		
 		return imageDao.getImagesWithColor("0x"+colors);
 	}
