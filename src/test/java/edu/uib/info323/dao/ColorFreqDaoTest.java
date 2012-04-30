@@ -19,8 +19,10 @@ import edu.uib.info323.model.ImageImpl;
 
 public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoTest.class);
+
 	@Autowired
 	private ColorFreqDao dao;
+
 	@Autowired
 	private ImageDao imageDao;
 
