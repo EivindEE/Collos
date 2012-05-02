@@ -61,7 +61,6 @@ public class HomeController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors){
 		LOGGER.debug("Returning images for color: " + colors);
-		
 		return imageDao.getImagesWithColor("0x"+colors);
 	}
 
