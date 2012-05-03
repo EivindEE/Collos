@@ -23,9 +23,8 @@ import edu.uib.info323.image.CompressedColorFactory;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
-@Component
-public class ImageDaoImpl implements ImageDao {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ImageDaoImpl.class);
+public class ImageDaoDerbyImpl implements ImageDao {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageDaoDerbyImpl.class);
 	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
@@ -41,10 +40,10 @@ public class ImageDaoImpl implements ImageDao {
 	 * @see edu.uib.info323.dao.ImageDao#insert(edu.uib.info323.model.Image)
 	 */
 	public void insert(Image image) {
-		String sql = "INSERT INTO IMAGE (image_uri) VALUES (?)";
+		String sql = "INSERT INTO image (image_uri) VALUES (?)";
 		jdbcTemplate.update(sql, new Object[] {image.getImageUri()});
 
-		sql = "INSERT INTO IMAGE_PAGE (image_uri,page_uri) VALUES (?,?)";
+		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (?,?)";
 		jdbcTemplate.update(sql, new Object[] {image.getImageUri(), image.getPageUri()});
 		
 		LOGGER.debug("Inserted " + image + " into database");

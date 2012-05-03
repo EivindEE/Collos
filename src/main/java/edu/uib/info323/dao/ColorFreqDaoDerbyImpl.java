@@ -20,15 +20,15 @@ import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 
-@Component
-public class ColorFreqDaoImpl implements ColorFreqDao {
+
+public class ColorFreqDaoDerbyImpl implements ColorFreqDao {
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	private ColorFreqRowMapper rowMapper;
 	@Autowired
 	private ImageDao imageDao;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoDerbyImpl.class);
 	
 	@Autowired
 	public void setDataSource(DataSource datasource) {
