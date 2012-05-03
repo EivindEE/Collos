@@ -33,7 +33,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 	
 	private Integer numberOfPixels;
 	private Image image;
-	private int threshold = 10;
+	private int threshold = 5;
 
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.image.ImageProcessor#readColors()
