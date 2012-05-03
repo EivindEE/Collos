@@ -23,7 +23,7 @@ public class CrawlerController {
 		 * true to make sure they are included in the crawl.
 		 */
 
-		String[] crawlDomains = new String[] { "http://www.flickr.com" };
+		String[] crawlDomains = new String[] { "http://www.flickr.com", "http://www.aftenposten.no/", "http://www.smbc-comics.com/", "http://imgur.com/", "http://www.bt.no", "http://wikipedia.org" };
 
 
 		for (String domain : crawlDomains) {
@@ -31,7 +31,7 @@ public class CrawlerController {
 		}
 
 		//         CollosCrawler.configure(crawlDomains, storageFolder);
-		controller.start(CollosCrawler.class, 1);
+		controller.start(CollosCrawler.class, 8);
 	}
 }
 
