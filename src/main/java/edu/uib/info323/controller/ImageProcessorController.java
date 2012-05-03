@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -61,14 +62,12 @@ public class ImageProcessorController {
 					try{
 						imageDao.delete(image);
 						LOGGER.debug("Image deleted"); 
-						unprocessed.remove(image);
 					}
 					catch (Exception ee) {
 						LOGGER.error("Image not deleted, got exception " + e.getClass() );
 					}
 				}
 			}
-			LOGGER.debug("Number of images analyzed successfully: " + unprocessed.size());
 		}
 
 	}
