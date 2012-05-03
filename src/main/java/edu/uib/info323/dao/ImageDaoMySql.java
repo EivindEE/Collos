@@ -141,8 +141,8 @@ public class ImageDaoMySql implements ImageDao {
 		Color decodedColor = Color.decode(color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
 		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
-				"FROM image_page, color_freq " +
-				"WHERE image_page.image_uri = color_freq.image_uri " +
+				"FROM image_page, color " +
+				"WHERE image_page.image_uri = color.image_uri " +
 				"AND color = ?";
 		
 		
