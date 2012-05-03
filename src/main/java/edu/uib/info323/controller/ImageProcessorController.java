@@ -68,7 +68,7 @@ public class ImageProcessorController {
 					}
 				}
 			}
-			LOGGER.debug("Number of images analyzed successfully: " + unprocessed);
+			LOGGER.debug("Number of images analyzed successfully: " + unprocessed.size());
 		}
 
 	}
