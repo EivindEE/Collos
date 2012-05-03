@@ -44,7 +44,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 		numberOfPixels = raster.getHeight() * raster.getWidth();
 		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
 			for(int y = raster.getMinY(); y < raster.getHeight(); y++){
-				int[] pixel = raster.getPixel(x, y, new int[3]);
+				int[] pixel = raster.getPixel(x, y, new int[4]);
 				CompressedColor color = colorFactory.createCompressedColor(pixel[0], pixel[1], pixel[2]);
 				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
 				colorFreq.put(color,++count);
@@ -122,7 +122,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 	public static void main(String[] args) {
 		ImageProcessor imageProcessor = new ImageProcessorImpl();
-		Image image = new ImageImpl("http://pritisprettyblog.files.wordpress.com/2012/01/ying-yang.jpg", "http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/");
+		Image image = new ImageImpl("http://politiken.dk/graphics/logos/nyheader_logo.png", "http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/");
 		imageProcessor.setImage(image);
 		imageProcessor.setColorFactory(new CompressedColorFactoryImpl());
 		List<ColorFreq> colors = imageProcessor.getColorFreqs();
