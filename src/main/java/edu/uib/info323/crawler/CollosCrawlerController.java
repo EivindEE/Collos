@@ -7,6 +7,8 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class CollosCrawlerController {
+	
+	
 	public static void main(String[] args) throws Exception {
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder("Collos/crawl");
