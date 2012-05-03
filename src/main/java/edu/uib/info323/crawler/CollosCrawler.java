@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -18,6 +19,7 @@ import edu.uib.info323.dao.ImageDao;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
+@Scope("prototype")
 @Component
 public class CollosCrawler extends WebCrawler{
 
