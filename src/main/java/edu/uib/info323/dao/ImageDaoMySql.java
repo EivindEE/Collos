@@ -1,6 +1,7 @@
 package edu.uib.info323.dao;
 
 import java.awt.Color;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -104,7 +105,7 @@ public class ImageDaoMySql implements ImageDao {
 	}
 
 	public List<Image> getUnprocessedImages() {
-		String sql = "SELECT * FROM image WHERE date_analyzed IS NULL";
+		String sql = "SELECT * FROM image WHERE date_analyzed IS NULL LIMIT 0, 100";
 
 		return 	jdbcTemplate.query(sql, new RowMapper<Image>() {
 
@@ -113,9 +114,26 @@ public class ImageDaoMySql implements ImageDao {
 			}
 		});
 	}
+	
+	public void updateAnalysedDate(final List<Image> images) {
+		String sql = "UPDATE image SET date_analyzed = ? WHERE image_uri = ?";
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				Image image = images.get(i);
+				ps.setDate(1, new Date(System.currentTimeMillis()));
+				ps.setString(2, image.getImageUri());
+			}
+			
+			public int getBatchSize() {
+				return images.size();
+			}
+		});
+	}
 
 	public void delete(Image image) {
-		// TODO Auto-generated method stub
+		String sql = "DELETE FROM image WHERE image_uri = ?";
+		jdbcTemplate.update(sql, new Object[] {image.getImageUri()});
 
 	}
 

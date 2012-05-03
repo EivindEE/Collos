@@ -66,7 +66,7 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 	}
 
 	public void batchInsert(final List<ColorFreq> colorList) {
-		String sql = "INSERT INTO color(image_uri, color, relative_freq) VALUES ( ?, ? ,?) ";
+		String sql = "INSERT INTO color(image_uri, color, relative_freq) VALUES ( ?, ? ,?) ON DUPLICATE KEY UPDATE relative_freq = ? ";
 		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 			
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -74,7 +74,7 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 				ps.setString(1, colorFreq.getImage().getImageUri());
 				ps.setInt(2, colorFreq.getColor());
 				ps.setInt(3, colorFreq.getRelativeFreq());
-//				ps.setInt(4, colorFreq.getRelativeFreq());
+				ps.setInt(4, colorFreq.getRelativeFreq());
 			}
 			
 			public int getBatchSize() {

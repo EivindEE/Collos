@@ -23,7 +23,7 @@ import edu.uib.info323.image.CompressedColorFactory;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
-public class ImageDaoDerbyImpl implements ImageDao {
+public abstract class ImageDaoDerbyImpl implements ImageDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageDaoDerbyImpl.class);
 	private JdbcTemplate jdbcTemplate;
 	

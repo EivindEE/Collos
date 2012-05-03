@@ -23,5 +23,6 @@ public interface ImageDao {
 	public abstract void delete(Image image);
 
 	public abstract List<Image> getImagesWithColor(String color);
-
+	
+	public abstract void updateAnalysedDate(List<Image> images);
 }
