@@ -48,7 +48,8 @@ public class ImageProcessorController {
 		LOGGER.debug("Starting to process images.");
 		while(true) {
 			List<Image> unprocessed = imageDao.getUnprocessedImages();
-			LOGGER.debug("Images to process: "  + unprocessed.size());
+			LOGGER.debug("Setting images as analyzed");
+			imageDao.updateAnalysedDate(unprocessed);
 			for(Image image : unprocessed) {
 				try {
 					imageProcessor.setImage(image);
@@ -59,16 +60,15 @@ public class ImageProcessorController {
 					LOGGER.error("Got " + e.getClass() + "exception for image " + image.getImageUri() + ". Deleting image from DB");
 					try{
 						imageDao.delete(image);
-						LOGGER.debug("Image deleted");
+						LOGGER.debug("Image deleted"); 
+						unprocessed.remove(image);
 					}
 					catch (Exception ee) {
 						LOGGER.error("Image not deleted, got exception " + e.getClass() );
 					}
 				}
 			}
-			LOGGER.debug("Images Analyzed");
-			imageDao.updateAnalysedDate(unprocessed);
-			LOGGER.debug("Analyzed set");
+			LOGGER.debug("Number of images analyzed successfully: " + unprocessed);
 		}
 
 	}
