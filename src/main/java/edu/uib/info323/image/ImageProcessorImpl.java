@@ -40,7 +40,12 @@ public class ImageProcessorImpl implements ImageProcessor {
 	 */
 	private HashMap<CompressedColor, Integer> getColorFrequencies() {
 		HashMap<CompressedColor, Integer> colorFreq = new HashMap<CompressedColor, Integer>();
-		WritableRaster raster = bufferedImage.getRaster();
+		WritableRaster raster = null;
+		try{
+			raster = bufferedImage.getRaster();
+		}catch (NullPointerException e) {
+			LOGGER.debug(""+bufferedImage);
+		}
 		numberOfPixels = raster.getHeight() * raster.getWidth();
 		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
 			for(int y = raster.getMinY(); y < raster.getHeight(); y++){
@@ -98,10 +103,9 @@ public class ImageProcessorImpl implements ImageProcessor {
 			InputStream inputStream = new URL(image.getImageUri()).openStream();
 			bufferedImage = ImageIO.read(inputStream);
 		}catch (Exception e) {
-			LOGGER.error("Could not open stream for image " + image + ". Got exception of type: " + e.getClass());
 			throw new InvalidParameterException("Could not open stream for image " + image);
 		}
-
+	
 	}
 
 
@@ -122,7 +126,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 	public static void main(String[] args) {
 		ImageProcessor imageProcessor = new ImageProcessorImpl();
-		Image image = new ImageImpl("http://politiken.dk/graphics/logos/nyheader_logo.png", "http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/");
+		Image image = new ImageImpl("http://jv.wikipedia.org/wiki/Gambar:Sugeng-rawuh2.png", "http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/");
 		imageProcessor.setImage(image);
 		imageProcessor.setColorFactory(new CompressedColorFactoryImpl());
 		List<ColorFreq> colors = imageProcessor.getColorFreqs();
