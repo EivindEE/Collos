@@ -64,7 +64,7 @@ public class ImageDaoMySql implements ImageDao {
 			DataAccessException {
 				rs.next();
 				
-				return new ImageImpl(rs.getString("image_uri"), Arrays.asList(rs.getString("page_uri")));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
 			}});
 	}
 
@@ -74,7 +74,7 @@ public class ImageDaoMySql implements ImageDao {
 		images = this.jdbcTemplate.query(sql, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new ImageImpl(rs.getString("image_uri"), Arrays.asList(rs.getString("page_uri")));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
 			}
 
 		});
@@ -115,7 +115,7 @@ public class ImageDaoMySql implements ImageDao {
 		return 	jdbcTemplate.query(sql, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException { 
-				return new ImageImpl(rs.getString("image_uri"),null);
+				return imageFactory.createImage(rs.getString("image_uri"));
 			}
 		});
 	}
@@ -145,20 +145,24 @@ public class ImageDaoMySql implements ImageDao {
 	public List<Image> getImagesWithColor(String color) {
 		Color decodedColor = Color.decode(color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
-		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
-				"FROM image_page, color " +
-				"WHERE image_page.image_uri = color.image_uri " +
+		String sql = "SELECT image_page.image_uri" +
+				"FROM image, color " +
+				"WHERE image.image_uri = color.image_uri " +
 				"AND color = ? " +
 				"ORDER BY color.relative_freq DESC " +
 				"LIMIT 0, 100";
-		
-		
-		return jdbcTemplate.query(sql,new Object[] {colorValue}, new RowMapper<Image>() {
+		List<Image> imagesWithoutPages = jdbcTemplate.query(sql,new Object[] {colorValue}, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new ImageImpl(rs.getString("image_uri"), Arrays.asList(rs.getString("page_uri")));
+				return imageFactory.createImage(rs.getString("image_uri"));
 			}
 			
 		});
+		return this.getPagesForImages(imagesWithoutPages);
+	}
+	
+	private List<Image> getPagesForImages(List<Image> image) {
+		String sql = "SELECT page_uri FROM image, image_page WHERE";
+		return image;
 	}
 }
