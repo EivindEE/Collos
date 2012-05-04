@@ -1,11 +1,13 @@
 package edu.uib.info323.model;
 
+import java.util.List;
+
 
 public class ImageImpl implements Image {
 	private String imageUri;
-	private String pageUri;
+	private List<String> pageUri;
 	
-	public ImageImpl(String imageUri, String pageUri){
+	public ImageImpl(String imageUri, List<String> pageUri){
 		this.imageUri = imageUri;
 		this.pageUri = pageUri;
 	}
@@ -25,13 +27,13 @@ public class ImageImpl implements Image {
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.model.Image#getPageUri()
 	 */
-	public String getPageUri() {
+	public List<String> getPageUri() {
 		return pageUri;
 	}
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.model.Image#setPageUri(java.lang.String)
 	 */
-	public void setPageUri(String pageUri) {
+	public void setPageUri(List<String> pageUri) {
 		this.pageUri = pageUri;
 	}
 	
