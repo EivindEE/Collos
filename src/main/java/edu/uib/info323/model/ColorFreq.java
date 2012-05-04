@@ -8,4 +8,6 @@ public interface ColorFreq {
 
 	public abstract int getRelativeFreq();
 
+	public abstract int getCompression();
+
 }

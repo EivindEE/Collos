@@ -10,14 +10,16 @@ public class ColorFreqImpl implements ColorFreq {
 	private Image image;
 	private int color;
 	private int relativeFreq;
+	private int compression;
 
 	public ColorFreqImpl() {
 	}
 
-	public ColorFreqImpl(Image image, int color, int relativeFreq) {
+	public ColorFreqImpl(Image image, int color, int relativeFreq, int compression) {
 		this.image = image;
 		this.color = color;
 		this.relativeFreq = relativeFreq;
+		this.compression= compression;
 	}
 
 	/* (non-Javadoc)
@@ -93,6 +95,11 @@ public class ColorFreqImpl implements ColorFreq {
 		return "ColorFreqImpl [image=" + image + ", color=" + color
 				+ ", relativeFreq=" + relativeFreq + "]";
 	}
+
+	public int getCompression() {
+		return compression;
+	}
+
 
 
 
