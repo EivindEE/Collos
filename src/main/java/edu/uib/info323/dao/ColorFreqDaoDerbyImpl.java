@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import edu.uib.info323.dao.rowmapper.ColorFreqRowMapper;
 import edu.uib.info323.model.ColorFreq;
+import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 
@@ -27,6 +28,8 @@ public abstract class ColorFreqDaoDerbyImpl implements ColorFreqDao {
 	private ColorFreqRowMapper rowMapper;
 	@Autowired
 	private ImageDao imageDao;
+	@Autowired
+	private ColorFreqFactory freqFactory;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoDerbyImpl.class);
 	
@@ -43,7 +46,7 @@ public abstract class ColorFreqDaoDerbyImpl implements ColorFreqDao {
 			public ColorFreq mapRow(ResultSet rs, int rowNum)
 					throws SQLException {
 				Image image = imageDao.getImageByImageUri(rs.getString("image_uri"));
-				return new ColorFreqImpl(image, rs.getInt("color"), rs.getInt("relative_freq"));
+				return freqFactory.createColorFreq(image, rs.getInt("color"), rs.getInt("relative_freq"));
 			}
 			
 		});
