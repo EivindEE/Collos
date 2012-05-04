@@ -143,7 +143,9 @@ public class ImageDaoMySql implements ImageDao {
 		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
 				"FROM image_page, color " +
 				"WHERE image_page.image_uri = color.image_uri " +
-				"AND color = ?";
+				"AND color = ? " +
+				"ORDER BY color.relative_freq DESC " +
+				"LIMIT 0, 100";
 		
 		
 		return jdbcTemplate.query(sql,new Object[] {colorValue}, new RowMapper<Image>() {
@@ -154,5 +156,4 @@ public class ImageDaoMySql implements ImageDao {
 			
 		});
 	}
-
 }
