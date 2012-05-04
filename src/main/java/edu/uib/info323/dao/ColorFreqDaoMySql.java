@@ -65,11 +65,9 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 
 	public List<ColorFreq> getImageColorFreqs(Image image) {
 		String sql = "SELECT * FROM color WHERE image_uri = :image_uri";
-		HashMap<String, Object> namedParameters = new HashMap<String, Object>();
-		namedParameters.put("image_uri",image.getImageUri());
+
 		rowMapper.setImage(image);
-		List<ColorFreq> colorFreqs = jdbcTemplate.query(sql,namedParameters, rowMapper);
-		LOGGER.debug(colorFreqs.toString());
+		List<ColorFreq> colorFreqs = jdbcTemplate.query(sql,this.getMapSqlParameterSource(image), rowMapper);
 		return colorFreqs;
 	}
 
@@ -111,4 +109,7 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 		return namedParameters;
 	}
 
+	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
+		return new MapSqlParameterSource("image_uri",image.getImageUri());
+	}
 }
