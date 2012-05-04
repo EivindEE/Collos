@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageFactory;
 import edu.uib.info323.model.ImageImpl;
 
 @Component
@@ -32,6 +34,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 	private CompressedColorFactory colorFactory;
 	@Autowired
 	private ColorFreqFactory freqFactory;
+
 	
 	
 	
@@ -130,7 +133,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 	public static void main(String[] args) {
 		ImageProcessor imageProcessor = new ImageProcessorImpl();
-		Image image = new ImageImpl("http://jv.wikipedia.org/wiki/Gambar:Sugeng-rawuh2.png", "http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/");
+		Image image = new ImageImpl("http://jv.wikipedia.org/wiki/Gambar:Sugeng-rawuh2.png", Arrays.asList(new String[] {"http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/"}));
 		imageProcessor.setImage(image);
 		imageProcessor.setColorFactory(new CompressedColorFactoryImpl());
 		List<ColorFreq> colors = imageProcessor.getColorFreqs();
