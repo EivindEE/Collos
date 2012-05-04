@@ -21,7 +21,7 @@ import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 
 
-public class ColorFreqDaoDerbyImpl implements ColorFreqDao {
+public abstract class ColorFreqDaoDerbyImpl implements ColorFreqDao {
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	private ColorFreqRowMapper rowMapper;
