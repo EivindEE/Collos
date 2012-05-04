@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.uib.info323.model.ColorFreq;
+import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
@@ -25,6 +26,9 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 
 	@Autowired
 	private ImageDao imageDao;
+	
+	@Autowired
+	ColorFreqFactory freqFactory;
 
 	private ColorFreq colorFreq1;
 	private ColorFreq colorFreq2;
@@ -45,8 +49,8 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 		super.setUp();
 		dao.setDataSource((DataSource)database);
 		imageDao.insert(image1);
-		colorFreq1 = new ColorFreqImpl(image1, color1, relativeFreq1);
-		colorFreq2 = new ColorFreqImpl(image1, color2, relativeFreq2);
+		colorFreq1 = freqFactory.createColorFreq(image1, color1, relativeFreq1);
+		colorFreq2 = freqFactory.createColorFreq(image1, color2, relativeFreq2);
 	}
 
 	@Test
