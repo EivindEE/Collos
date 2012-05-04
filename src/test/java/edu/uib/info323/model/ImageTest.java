@@ -1,5 +1,7 @@
 package edu.uib.info323.model;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,15 +15,15 @@ public class ImageTest extends AbstractCollosTest{
 	
 	@Test
 	public void testConstructorAndGet() {
-		image = new ImageImpl(imageUri, pageUri);
+		image = new ImageImpl(imageUri, Arrays.asList(pageUri));
 		assertEquals("Image URI should be " + imageUri + " but was " + image.getImageUri(),imageUri, image.getImageUri());
 		assertEquals("Page URI should be " + pageUri + " but was " + image.getPageUri(),pageUri, image.getPageUri());
 	}
 	
 	@Test
 	public void testEquals() {
-		image = new ImageImpl(imageUri, pageUri);
-		otherImage = new ImageImpl(imageUri, pageUri);
+		image = new ImageImpl(imageUri, Arrays.asList(pageUri));
+		otherImage = new ImageImpl(imageUri, Arrays.asList(pageUri));
 		assertEquals(image, otherImage);
 	}
 }

@@ -1,5 +1,6 @@
 package edu.uib.info323.dao;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ImageDaoTest extends AbstractDaoCollosTest{
 	public void setUp() {
 		super.setUp();
 		dao.setDataSource(database);
-		image = new ImageImpl("image", "page");
+		image = new ImageImpl("image", Arrays.asList("page"));
 	}
 	
 	@Test
@@ -35,9 +36,9 @@ public class ImageDaoTest extends AbstractDaoCollosTest{
 	public void testBatchInsert() {
 		List<Image> expectedImageList = new LinkedList<Image>();
 		expectedImageList.add(image);
-		expectedImageList.add(new ImageImpl("image2", "page2"));
-		expectedImageList.add(new ImageImpl("image3", "page3"));
-		expectedImageList.add(new ImageImpl("image4", "page4"));
+		expectedImageList.add(new ImageImpl("image2", Arrays.asList("page2")));
+		expectedImageList.add(new ImageImpl("image3", Arrays.asList("page3")));
+		expectedImageList.add(new ImageImpl("image4", Arrays.asList("page4")));
 		dao.batchInsert(expectedImageList);
 		assertTrue(dao.getAllImages().containsAll(expectedImageList));
 

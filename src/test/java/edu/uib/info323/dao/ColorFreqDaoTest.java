@@ -1,5 +1,6 @@
 package edu.uib.info323.dao;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 	private String imageUri = "http://www.example.org/image.jpg";
 	private String pageUri = "http://www.example.org/";
 
-	private Image image1 = new ImageImpl(imageUri, pageUri);
+	private Image image1 = new ImageImpl(imageUri, Arrays.asList(pageUri));
 
 	private int color1 = 0;
 	private int relativeFreq1 = 30;
