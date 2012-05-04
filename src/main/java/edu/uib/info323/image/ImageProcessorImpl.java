@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import edu.uib.info323.model.ColorFreq;
-import edu.uib.info323.model.ColorFreqImpl;
+import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
@@ -30,6 +30,10 @@ public class ImageProcessorImpl implements ImageProcessor {
 	
 	@Autowired
 	private CompressedColorFactory colorFactory;
+	@Autowired
+	private ColorFreqFactory freqFactory;
+	
+	
 	
 	private Integer numberOfPixels;
 	private Image image;
@@ -44,7 +48,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 		try{
 			raster = bufferedImage.getRaster();
 		}catch (NullPointerException e) {
-			LOGGER.debug(""+bufferedImage);
+			LOGGER.error("Got exception of type " + e.getClass() +"  for image " + bufferedImage);
 		}
 		numberOfPixels = raster.getHeight() * raster.getWidth();
 		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
@@ -117,7 +121,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 			Integer freq = colorMap.get(color);
 			int relativeFreq = (int) ((freq.doubleValue() / numberOfPixels.doubleValue()) * 100);
 			if(relativeFreq > threshold) {
-				colorFreqs.add(new ColorFreqImpl(image, color.getColor(), relativeFreq));
+				colorFreqs.add(freqFactory.createColorFreq(image, color.getColor(), relativeFreq));
 			}
 
 		}
