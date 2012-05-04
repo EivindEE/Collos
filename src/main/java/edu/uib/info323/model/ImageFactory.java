@@ -5,5 +5,7 @@ import java.util.List;
 public interface ImageFactory {
 	public Image createImage(String imageUri);
 	
+	public Image createImage(String imageUri, String pageUri);
+	
 	public Image createImage(String imageUri, List<String> pageUri);
 }

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import edu.uib.info323.image.CompressedColorFactory;
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageFactory;
 import edu.uib.info323.model.ImageImpl;
 
 @Component
@@ -31,6 +33,9 @@ public class ImageDaoMySql implements ImageDao {
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	private CompressedColorFactory colorFactory;
+	
+	@Autowired
+	private ImageFactory imageFactory;
 
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -59,7 +64,7 @@ public class ImageDaoMySql implements ImageDao {
 			DataAccessException {
 				rs.next();
 				
-				return new ImageImpl(rs.getString("image_uri"), rs.getString("page_uri"));
+				return new ImageImpl(rs.getString("image_uri"), Arrays.asList(rs.getString("page_uri")));
 			}});
 	}
 
@@ -69,7 +74,7 @@ public class ImageDaoMySql implements ImageDao {
 		images = this.jdbcTemplate.query(sql, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new ImageImpl(rs.getString("image_uri"), rs.getString("page_uri"));
+				return new ImageImpl(rs.getString("image_uri"), Arrays.asList(rs.getString("page_uri")));
 			}
 
 		});
@@ -95,7 +100,7 @@ public class ImageDaoMySql implements ImageDao {
 			public void setValues(PreparedStatement ps, int i) throws SQLException {
 				Image image = imageList.get(i);
 				ps.setString(1, image.getImageUri());
-				ps.setString(2, image.getPageUri());
+//				ps.setString(2, image.getPageUri());
 			}
 			public int getBatchSize() {
 				return imageList.size();
@@ -151,7 +156,7 @@ public class ImageDaoMySql implements ImageDao {
 		return jdbcTemplate.query(sql,new Object[] {colorValue}, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return new ImageImpl(rs.getString("image_uri"), rs.getString("page_uri"));
+				return new ImageImpl(rs.getString("image_uri"), Arrays.asList(rs.getString("page_uri")));
 			}
 			
 		});
