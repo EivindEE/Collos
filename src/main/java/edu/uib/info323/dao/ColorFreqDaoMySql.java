@@ -84,4 +84,24 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 
 	}
 
+	public void remove(ColorFreq colorFreq) {
+		String sql = "DELETE FROM color WHERE image_uri = ?";
+		jdbcTemplate.update(sql, new Object[] {colorFreq.getImage().getImageUri()});
+	}
+
+	public void remove(final List<ColorFreq> colorFreqs) {
+		String sql = "DELETE FROM color WHERE image_uri = ?";
+		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+			
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+				ps.setString(1, colorFreqs.get(i).getImage().getImageUri());
+			}
+			
+			public int getBatchSize() {
+				return colorFreqs.size();
+			}
+		});
+		
+	}
+
 }

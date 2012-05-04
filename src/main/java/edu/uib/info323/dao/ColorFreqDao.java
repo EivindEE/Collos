@@ -18,5 +18,9 @@ public interface ColorFreqDao {
 	public List<ColorFreq> getImageColorFreqs(Image image);
 
 	public void batchInsert(List<ColorFreq> colorList);
+	
+	public abstract void remove(ColorFreq colorFreq);
+	
+	public abstract void remove(List<ColorFreq> colorFreqs);
 
 }
