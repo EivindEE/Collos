@@ -1,8 +1,9 @@
 package edu.uib.info323.dao;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -10,98 +11,104 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import edu.uib.info323.dao.rowmapper.ColorFreqRowMapper;
 import edu.uib.info323.model.ColorFreq;
-import edu.uib.info323.model.ColorFreqImpl;
+import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.Image;
 
 @Component
 public class ColorFreqDaoMySql implements ColorFreqDao {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoMySql.class);
 
-	private JdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private ImageDao imageDao;
 
+	@Autowired
 	private ColorFreqRowMapper rowMapper;
 
 	@Autowired
+	private ColorFreqFactory freqFactory;
+
+	@Autowired
 	public void setDataSource(DataSource datasource) {
-		jdbcTemplate = new JdbcTemplate(datasource);
+		jdbcTemplate = new NamedParameterJdbcTemplate(datasource);
 
 	}
 
 	public List<ColorFreq> getAllColors() {
 		String sql = "SELECT * FROM color";
-		return jdbcTemplate.query(sql, new RowMapper<ColorFreq>() {
+		return jdbcTemplate.query(sql,new HashMap<String, String>(), new RowMapper<ColorFreq>() {
 
 
 			public ColorFreq mapRow(ResultSet rs, int rowNum)
 					throws SQLException {
 				Image image = imageDao.getImageByImageUri(rs.getString("image_uri"));
-				return new ColorFreqImpl(image, rs.getInt("color"), rs.getInt("relative_freq"));
+				return freqFactory.createColorFreq(image, rs.getInt("color"), rs.getInt("relative_freq"));
 			}
-			
+
 		});
 	}
 
 	public void insert(ColorFreq colorFreq) {
-		String sql = "INSERT INTO color(image_uri, color, relative_freq) VALUES (?,?,?)";
-		jdbcTemplate.update(sql, new Object[] {colorFreq.getImage().getImageUri(),colorFreq.getColor(),colorFreq.getRelativeFreq()});
+		String sql = "INSERT INTO color(image_uri, color, relative_freq, compression) VALUES (:image_uri, :color, :relative_freq, :compression)";
+		jdbcTemplate.update(sql, this.getMapSqlParameterSource(colorFreq));
 	}
 
 	public List<ColorFreq> getImageColorFreqs(Image image) {
-		String sql = "SELECT * FROM color WHERE image_uri = ?";
+		String sql = "SELECT * FROM color WHERE image_uri = :image_uri";
+		HashMap<String, Object> namedParameters = new HashMap<String, Object>();
+		namedParameters.put("image_uri",image.getImageUri());
 		rowMapper.setImage(image);
-		List<ColorFreq> colorFreqs = jdbcTemplate.query(sql,new Object[] {image.getImageUri()}, rowMapper);
+		List<ColorFreq> colorFreqs = jdbcTemplate.query(sql,namedParameters, rowMapper);
 		LOGGER.debug(colorFreqs.toString());
 		return colorFreqs;
 	}
 
-	public void batchInsert(final List<ColorFreq> colorList) {
-		String sql = "INSERT INTO color(image_uri, color, relative_freq) VALUES ( ?, ? ,?) ON DUPLICATE KEY UPDATE relative_freq = ? ";
-		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-			
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				ColorFreq colorFreq = colorList.get(i);
-				ps.setString(1, colorFreq.getImage().getImageUri());
-				ps.setInt(2, colorFreq.getColor());
-				ps.setInt(3, colorFreq.getRelativeFreq());
-				ps.setInt(4, colorFreq.getRelativeFreq());
-			}
-			
-			public int getBatchSize() {
-				return colorList.size();
-			}
-		});
-
+	public void batchInsert(final List<ColorFreq> colorFreqs) {
+		String sql = "INSERT INTO color(image_uri, color, relative_freq, compression) " +
+					 "VALUES ( :image_uri, :color, :relative_freq, :compression) " +
+					 "ON DUPLICATE KEY UPDATE relative_freq = :relative_freq, compression = :compression ";
+		jdbcTemplate.batchUpdate(sql,this.getSqlParameterSource(colorFreqs) );
 	}
 
 	public void remove(ColorFreq colorFreq) {
-		String sql = "DELETE FROM color WHERE image_uri = ?";
-		jdbcTemplate.update(sql, new Object[] {colorFreq.getImage().getImageUri()});
+		String sql = "DELETE FROM color WHERE image_uri = :image_uri";
+		HashMap<String, Object> namedParameters = new HashMap<String, Object>();
+		namedParameters.put("image_uri",colorFreq.getImage().getImageUri());
+		jdbcTemplate.update(sql, namedParameters);
 	}
 
 	public void remove(final List<ColorFreq> colorFreqs) {
-		String sql = "DELETE FROM color WHERE image_uri = ?";
-		jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-			
-			public void setValues(PreparedStatement ps, int i) throws SQLException {
-				ps.setString(1, colorFreqs.get(i).getImage().getImageUri());
-			}
-			
-			public int getBatchSize() {
-				return colorFreqs.size();
-			}
-		});
-		
+		String sql = "DELETE FROM color WHERE image_uri = :image_uri";
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(colorFreqs));
+	}
+	
+	
+	
+	private SqlParameterSource[] getSqlParameterSource(List<ColorFreq> colorFreqs) {
+		List<SqlParameterSource> parameters = new ArrayList<SqlParameterSource>();
+		for(ColorFreq freq : colorFreqs) {
+			parameters.add(this.getMapSqlParameterSource(freq));
+		}
+		return parameters.toArray(new SqlParameterSource[0]);
+	}
+	
+	private MapSqlParameterSource getMapSqlParameterSource(ColorFreq colorFreq) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("image_uri",colorFreq.getImage().getImageUri());
+		namedParameters.addValue("color",colorFreq.getColor());
+		namedParameters.addValue("relative_freq",colorFreq.getRelativeFreq());
+		namedParameters.addValue("compression",colorFreq.getCompression());
+		return namedParameters;
 	}
 
 }
