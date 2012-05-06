@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -25,7 +26,7 @@ import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageFactory;
 
 @Component
-public class ImageDaoMySql implements ImageDao {
+public class ImageDaoMySql implements ImageDao{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageDaoMySql.class);
 	private NamedParameterJdbcTemplate jdbcTemplate;
@@ -57,7 +58,7 @@ public class ImageDaoMySql implements ImageDao {
 					 "FROM image_page " +
 					 "WHERE image_uri = :image_uri";
 
-		return this.jdbcTemplate.query(sql, this.getMapSqlParameterSource(imageFactory.createImage(imageUri)), new ResultSetExtractor<Image>() {
+		Image image =  this.jdbcTemplate.query(sql, this.getMapSqlParameterSource(imageFactory.createImage(imageUri)), new ResultSetExtractor<Image>() {
 
 			public Image extractData(ResultSet rs) throws SQLException,
 			DataAccessException {
@@ -65,19 +66,22 @@ public class ImageDaoMySql implements ImageDao {
 				
 				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
 			}});
+		image.addPageUri(this.getPagesForImage(image));
+		return image;
 	}
 
 	public List<Image> getAllImages() {
 		List<Image> images = new ArrayList<Image>();
-		String sql = "SELECT image_uri, page_uri FROM image_page";
+		String sql = "SELECT image_uri FROM image";
 		images = this.jdbcTemplate.query(sql, new MapSqlParameterSource() ,new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
+				return imageFactory.createImage(rs.getString("image_uri"));
 			}
 
 		});
-		return images;
+		
+		return this.getPagesForImages(images);
 	}
 
 	
@@ -118,6 +122,7 @@ public class ImageDaoMySql implements ImageDao {
 
 	public List<Image> getImagesWithColor(String color) {
 		Color decodedColor = Color.decode(color);
+		LOGGER.debug("Retrieving images with color " + color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
 		String sql = "SELECT image.image_uri " +
 				"FROM image, color " +
@@ -134,14 +139,30 @@ public class ImageDaoMySql implements ImageDao {
 			}
 			
 		});
+		LOGGER.debug("Found " + imagesWithoutPages.size() + " images");
 		return this.getPagesForImages(imagesWithoutPages);
 	}
 	
-	private List<Image> getPagesForImages(List<Image> image) {
-		String sql = "SELECT page_uri FROM image, image_page WHERE";
-		return image;
+	private List<Image> getPagesForImages(List<Image> images) {
+		LOGGER.debug("Getting the pages for the images");
+		for(Image image : images) {
+			image.addPageUri(this.getPagesForImage(image));
+		}
+		LOGGER.debug("Pages found");
+		return images;
 	}
 	
+	private List<String> getPagesForImage(Image image) {
+		String sql = "SELECT page_uri FROM image_page WHERE image_uri = :image_uri";
+		List<String> pages = Collections.emptyList(); 
+		try {
+			pages = jdbcTemplate.queryForList(sql, this.getMapSqlParameterSource(image), String.class);
+		}catch (Throwable t) {
+			LOGGER.error("Got throwable " + t.getLocalizedMessage());
+		}
+		return pages;
+	}
+
 	private SqlParameterSource[] getSqlParameterSource(List<Image> images) {
 		List<SqlParameterSource> parameters = new ArrayList<SqlParameterSource>();
 		for(Image image : images) {
@@ -154,7 +175,7 @@ public class ImageDaoMySql implements ImageDao {
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("image_uri", image.getImageUri());
-		parameterSource.addValue("page_uri", image.getPageUri());
+		parameterSource.addValue("page_uri", image.getPageUris());
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
 		return parameterSource; 
 	}
