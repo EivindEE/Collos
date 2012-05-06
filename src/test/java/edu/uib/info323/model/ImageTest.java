@@ -17,7 +17,7 @@ public class ImageTest extends AbstractCollosTest{
 	public void testConstructorAndGet() {
 		image = new ImageImpl(imageUri, Arrays.asList(pageUri));
 		assertEquals("Image URI should be " + imageUri + " but was " + image.getImageUri(),imageUri, image.getImageUri());
-		assertEquals("Page URI should be " + pageUri + " but was " + image.getPageUri(),pageUri, image.getPageUri());
+		assertEquals("Page URI should be " + pageUri + " but was " + image.getPageUris(),pageUri, image.getPageUris());
 	}
 	
 	@Test
