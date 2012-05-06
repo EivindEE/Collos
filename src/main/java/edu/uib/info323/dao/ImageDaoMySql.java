@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -51,17 +53,16 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public List<Image> getAllImages() {
-		List<Image> images = new ArrayList<Image>();
-		String sql = "SELECT image_uri FROM image";
-		images = this.jdbcTemplate.query(sql, new MapSqlParameterSource() ,new RowMapper<Image>() {
+		
+		String sql = "SELECT image_uri FROM image_page";
+		List<Image> images = this.jdbcTemplate.query(sql, new MapSqlParameterSource() ,new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("image_uri"));
 			}
-
 		});
 		
-		return this.getPagesForImages(images);
+		return this.removeDuplicates(images);
 	}
 
 	public Image getImageByImageUri(String imageUri) {
@@ -79,23 +80,40 @@ public class ImageDaoMySql implements ImageDao{
 		Color decodedColor = Color.decode(color);
 		LOGGER.debug("Retrieving images with color " + color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
-		String sql = "SELECT image.image_uri " +
-				"FROM image, color " +
-				"WHERE image.image_uri = color.image_uri " +
+		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
+				"FROM image_page, color " +
+				"WHERE image_page.image_uri = color.image_uri " +
 				"AND color = :color " +
 				"ORDER BY color.relative_freq DESC " +
 				"LIMIT 0, 100";
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
 		
-		List<Image> imagesWithoutPages = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
+		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
 			}
 			
 		});
-		LOGGER.debug("Found " + imagesWithoutPages.size() + " images");
-		return this.getPagesForImages(imagesWithoutPages);
+		
+		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
+
+		
+		return images; 
+	}
+
+	private List<Image> removeDuplicates(List<Image> imagesWithDuplicates) {
+		Map<String,Image> imageMap = new HashMap<String, Image>();
+		for(Image image : imagesWithDuplicates) {
+			if(imageMap.containsKey(image.getImageUri())) {
+				imageMap.get(image.getImageUri()).addPageUri(image.getPageUris());
+			}
+			else {
+				imageMap.put(image.getImageUri(), image);
+			}
+		
+		}
+		return new ArrayList<Image>(imageMap.values());
 	}
 
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
@@ -104,26 +122,6 @@ public class ImageDaoMySql implements ImageDao{
 		parameterSource.addValue("page_uri", image.getPageUris());
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
 		return parameterSource; 
-	}
-	
-	private List<String> getPagesForImage(Image image) {
-		String sql = "SELECT page_uri FROM image_page WHERE image_uri = :image_uri";
-		List<String> pages = Collections.emptyList(); 
-		try {
-			pages = jdbcTemplate.queryForList(sql, this.getMapSqlParameterSource(image), String.class);
-		}catch (Throwable t) {
-			LOGGER.error("Got throwable " + t.getLocalizedMessage());
-		}
-		return pages;
-	}
-
-	private List<Image> getPagesForImages(List<Image> images) {
-		LOGGER.debug("Getting the pages for the images");
-		for(Image image : images) {
-			image.addPageUri(this.getPagesForImage(image));
-		}
-		LOGGER.debug("Pages found");
-		return images;
 	}
 
 	private SqlParameterSource[] getSqlParameterSource(List<Image> images) {
