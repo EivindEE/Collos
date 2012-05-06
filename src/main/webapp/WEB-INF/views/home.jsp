@@ -76,7 +76,7 @@
 		$('#container').html('');
 		
 		for(var i = 0; i < images.length; i++){
-			var $imagebox = $("<div class='box'> <a href='" + images[i].pageUri + "'><img src='" +  images[i].imageUri + "'></a>");
+			var $imagebox = $("<div class='box'> <a href='" + images[i].pageUris[0] + "'><img src='" +  images[i].imageUri + "'></a>");
 			$('#container').append($imagebox)
 			
 			
