@@ -5,11 +5,11 @@ import java.util.List;
 
 public class ImageImpl implements Image {
 	private String imageUri;
-	private List<String> pageUri;
+	private List<String> pageUris;
 	
 	public ImageImpl(String imageUri, List<String> pageUri){
 		this.imageUri = imageUri;
-		this.pageUri = pageUri;
+		this.pageUris = pageUri;
 	}
 	
 	/* (non-Javadoc)
@@ -27,19 +27,19 @@ public class ImageImpl implements Image {
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.model.Image#getPageUri()
 	 */
-	public List<String> getPageUri() {
-		return pageUri;
+	public List<String> getPageUris() {
+		return pageUris;
 	}
 	/* (non-Javadoc)
-	 * @see edu.uib.info323.model.Image#setPageUri(java.lang.String)
+	 * @see edu.uib.info323.model.Image#setPageUri(java.util.List<String>)
 	 */
 	public void setPageUri(List<String> pageUri) {
-		this.pageUri = pageUri;
+		this.pageUris = pageUri;
 	}
 	
 	@Override
 	public String toString() {
-		return "Image [imageUri=" + imageUri + ", pageUri=" + pageUri + "]";
+		return "Image [imageUri=" + imageUri + ", pageUri=" + pageUris + "]";
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ImageImpl implements Image {
 		int result = 1;
 		result = prime * result
 				+ ((imageUri == null) ? 0 : imageUri.hashCode());
-		result = prime * result + ((pageUri == null) ? 0 : pageUri.hashCode());
+		result = prime * result + ((pageUris == null) ? 0 : pageUris.hashCode());
 		return result;
 	}
 
@@ -66,12 +66,26 @@ public class ImageImpl implements Image {
 				return false;
 		} else if (!imageUri.equals(other.getImageUri()))
 			return false;
-		if (pageUri == null) {
-			if (other.getPageUri() != null)
+		if (pageUris == null) {
+			if (other.getPageUris() != null)
 				return false;
-		} else if (!pageUri.equals(other.getPageUri()))
+		} else if (!pageUris.equals(other.getPageUris()))
 			return false;
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.model.Image#addPageUri(java.lang.String)
+	 */
+	public void addPageUri(String pageUri) {
+		this.pageUris.add(pageUri);
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.uib.info323.model.Image#addPageUri(java.util.List<String>)
+	 */
+	public void addPageUri(List<String> pageUris) {
+		this.pageUris.addAll(pageUris);
 	}
 	
 

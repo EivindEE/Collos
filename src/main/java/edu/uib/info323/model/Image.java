@@ -9,6 +9,10 @@ public interface Image {
 	
 	public abstract String getImageUri();
 
-	public abstract List<String> getPageUri();
+	public abstract List<String> getPageUris();
+	
+	public abstract void addPageUri(String pageUri);
+	
+	public abstract void addPageUri(List<String> pageUris);
 
 }
