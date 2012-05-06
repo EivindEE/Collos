@@ -14,7 +14,9 @@ public class ImageFactoryImpl implements ImageFactory {
 	}
 
 	public Image createImage(String imageUri, String pageUri) {
-		return this.createImage(imageUri, Arrays.asList(pageUri));
+		List<String> pageUris = new ArrayList<String>();
+		pageUris.add(pageUri);
+		return this.createImage(imageUri, pageUris);
 	}
 	
 	public Image createImage(String imageUri, List<String> pageUri) {
