@@ -5,8 +5,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +32,7 @@ public class ImageDaoMySql implements ImageDao{
 	private CompressedColorFactory colorFactory;
 	@Autowired
 	private ImageFactory imageFactory;
-	
+
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	public void insert(final List<Image> images) {
@@ -54,7 +52,7 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public List<Image> getAllImages() {
-		
+
 		String sql = "SELECT image_uri FROM image_page";
 		List<Image> images = this.jdbcTemplate.query(sql, new MapSqlParameterSource() ,new RowMapper<Image>() {
 
@@ -62,20 +60,20 @@ public class ImageDaoMySql implements ImageDao{
 				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("image_uri"));
 			}
 		});
-		
+
 		return this.removeDuplicates(images);
 	}
 
 	public Image getImageByImageUri(String imageUri) {
 		String sql = "SELECT page_uri " +
-					 "FROM image_page " +
-					 "WHERE image_uri = :image_uri";
+				"FROM image_page " +
+				"WHERE image_uri = :image_uri";
 		List<String> pageUris = jdbcTemplate.queryForList(sql, new MapSqlParameterSource("image_uri", imageUri), String.class);
-		
+
 		return imageFactory.createImage(imageUri, pageUris);
 	}
 
-	
+
 
 	public List<Image> getImagesWithColor(String color) {
 		Color decodedColor = Color.decode(color);
@@ -87,18 +85,18 @@ public class ImageDaoMySql implements ImageDao{
 				"AND color = :color " +
 				"ORDER BY color.relative_freq DESC ";
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
-		
+
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
 				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
 			}
-			
+
 		});
-		
+
 		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
 
-		
+
 		return images; 
 	}
 
@@ -111,7 +109,7 @@ public class ImageDaoMySql implements ImageDao{
 			else {
 				imageMap.put(image.getImageUri(), image);
 			}
-		
+
 		}
 		return new ArrayList<Image>(imageMap.values());
 	}
@@ -133,7 +131,7 @@ public class ImageDaoMySql implements ImageDao{
 		}
 		return parameters.toArray(new SqlParameterSource[0]);
 	}
-	
+
 	public List<Image> getUnprocessedImages() {
 		String sql = "SELECT * FROM image WHERE date_analyzed IS NULL LIMIT 0, 100";
 
@@ -144,7 +142,7 @@ public class ImageDaoMySql implements ImageDao{
 			}
 		});
 	}
-	
+
 	public void insert(Image image) {
 		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		MapSqlParameterSource mapSqlParameterSource = this.getMapSqlParameterSource(image);
@@ -152,7 +150,7 @@ public class ImageDaoMySql implements ImageDao{
 
 		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		jdbcTemplate.update(sql, mapSqlParameterSource);
-		
+
 		LOGGER.debug("Inserted " + image + " into database");
 
 	}
@@ -164,19 +162,13 @@ public class ImageDaoMySql implements ImageDao{
 
 
 	public void updateAnalysedDate(final List<Image> images) {
-//		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
-//		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
-		
+		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 
 	public void update(List<Image> images) {
-		LOGGER.debug("Images should get updated");
 		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
-		 int[] updates = jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
-		 List<Integer> updatesList = new ArrayList<Integer>();
-		 for(int i = 0; i < updates.length; i++) {
-			 updatesList.add(updates[i]);
-		 }
-		LOGGER.debug("Images updated " + updatesList);
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
+
 	}
 }
