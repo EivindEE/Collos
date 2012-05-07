@@ -1,6 +1,7 @@
 package edu.uib.info323.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import edu.uib.info323.dao.ImageDao;
 import edu.uib.info323.image.ImageProcessor;
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageFactory;
 
 @Scope("prototype")
 @Controller
@@ -31,6 +33,8 @@ public class ImageProcessorController {
 	@Autowired
 	ImageProcessor imageProcessor;
 
+	@Autowired
+	ImageFactory imageFactory;
 //	File colorFreqFile = new File("src/main/resources/color_freq.sql");
 
 
@@ -43,15 +47,16 @@ public class ImageProcessorController {
 	public void process() throws IOException {
 		LOGGER.debug("Starting to process images.");
 		while(true) {
-			List<Image> images = imageDao.getUnprocessedImages();
+			List<Image> unprocessedImages = imageDao.getUnprocessedImages();
+			List<Image> processedImages = new ArrayList<Image>(unprocessedImages.size());
 			LOGGER.debug("Setting images as analyzed");
-			imageDao.updateAnalysedDate(images);
-			for(Image image : images) {
+			imageDao.updateAnalysedDate(unprocessedImages);
+			for(Image image : unprocessedImages) {
 				try {
 					imageProcessor.setImage(image);
-					image.setHeight(imageProcessor.getImageHeight());
-					image.setWidth(imageProcessor.getImageWidth());
-					
+					int imageHeight = imageProcessor.getImageHeight();
+					int imageWidth = imageProcessor.getImageWidth();
+					processedImages.add(imageFactory.createImage(image.getImageUri(), imageHeight, imageWidth));
 					List<ColorFreq> freqs = imageProcessor.getColorFreqs();
 					colorFreqDao.batchInsert(freqs);
 				}
@@ -66,7 +71,7 @@ public class ImageProcessorController {
 					}
 				}
 			}
-			imageDao.update(images);
+			imageDao.update(processedImages);
 		}
 
 	}
