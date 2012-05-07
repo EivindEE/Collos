@@ -8,4 +8,6 @@ public interface ImageFactory {
 	public Image createImage(String imageUri, String pageUri);
 	
 	public Image createImage(String imageUri, List<String> pageUri);
+
+	public Image createImage(String imageUri, int height, int width);
 }
