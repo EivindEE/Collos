@@ -38,11 +38,8 @@ public class ImageProcessorController {
 	File colorFreqFile = new File("src/main/resources/color_freq.sql");
 
 
-
-	BufferedWriter writer;
-
-	public ImageProcessorController() throws IOException {
-		writer = new BufferedWriter(new FileWriter(colorFreqFile,true));
+	public ImageProcessorController(){
+		LOGGER.debug(this.getClass().getName() + " bean created");
 	}
 
 

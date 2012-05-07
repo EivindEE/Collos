@@ -18,6 +18,10 @@ public class CrawlerController {
 	@Autowired
 	CrawlController controller;
 
+	public CrawlerController() {
+		LOGGER.debug(this.getClass().getName() + " bean created");
+	}
+	
 	@RequestMapping(value = "/crawl", method = RequestMethod.GET)
 	public void crawl() throws Exception {
 		/*
