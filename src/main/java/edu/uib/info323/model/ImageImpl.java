@@ -6,6 +6,8 @@ import java.util.List;
 public class ImageImpl implements Image {
 	private String imageUri;
 	private List<String> pageUris;
+	private int height;
+	private int width;
 	
 	public ImageImpl(String imageUri, List<String> pageUri){
 		this.imageUri = imageUri;
@@ -87,8 +89,20 @@ public class ImageImpl implements Image {
 	public void addPageUri(List<String> pageUris) {
 		this.pageUris.addAll(pageUris);
 	}
-	
 
-	
+	public int getHeight() {
+		return this.height;
+	}
 
+	public int getWidth() {
+		return this.width;
+	}
+
+	public void setHeight(int imageHeight) {
+		this.height = imageHeight;
+	}
+
+	public void setWidth(int imageWidth) {
+		this.width = imageWidth;
+	}
 }
