@@ -1,6 +1,5 @@
 package edu.uib.info323.image;
 
-import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,46 +15,43 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.Image;
-import edu.uib.info323.model.ImageFactory;
 import edu.uib.info323.model.ImageImpl;
 
+@Scope("prototype")
 @Component
 public class ImageProcessorImpl implements ImageProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessorImpl.class);
-	private BufferedImage bufferedImage;
 	
 	@Autowired
 	private CompressedColorFactory colorFactory;
+	
 	@Autowired
 	private ColorFreqFactory freqFactory;
-
 	
-	
+	private int imageHeight;
+	private int imageWidth;
 	
 	private Integer numberOfPixels;
 	private Image image;
 	private int threshold = 5;
+	
+	private WritableRaster raster;
 
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.image.ImageProcessor#readColors()
 	 */
 	private HashMap<CompressedColor, Integer> getColorFrequencies() {
 		HashMap<CompressedColor, Integer> colorFreq = new HashMap<CompressedColor, Integer>();
-		WritableRaster raster = null;
-		try{
-			raster = bufferedImage.getRaster();
-		}catch (NullPointerException e) {
-			LOGGER.error("Got exception of type " + e.getClass() +"  for image " + bufferedImage);
-		}
-		numberOfPixels = raster.getHeight() * raster.getWidth();
-		for(int x = raster.getMinX(); x < raster.getWidth(); x++){
-			for(int y = raster.getMinY(); y < raster.getHeight(); y++){
+
+		for(int x = raster.getMinX(); x < this.imageWidth; x++){
+			for(int y = raster.getMinY(); y < this.imageHeight; y++){
 				int[] pixel = raster.getPixel(x, y, new int[4]);
 				CompressedColor color = colorFactory.createCompressedColor(pixel[0], pixel[1], pixel[2]);
 				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
@@ -108,7 +104,10 @@ public class ImageProcessorImpl implements ImageProcessor {
 		try {
 			this.image = image;
 			InputStream inputStream = new URL(image.getImageUri()).openStream();
-			bufferedImage = ImageIO.read(inputStream);
+			raster = ImageIO.read(inputStream).getRaster();
+			this.imageHeight = raster.getHeight();
+			this.imageWidth = raster.getWidth();
+			this.numberOfPixels = this.imageHeight * this.imageWidth;
 		}catch (Exception e) {
 			throw new InvalidParameterException("Could not open stream for image " + image);
 		}
@@ -124,6 +123,9 @@ public class ImageProcessorImpl implements ImageProcessor {
 			Integer freq = colorMap.get(color);
 			int relativeFreq = (int) ((freq.doubleValue() / numberOfPixels.doubleValue()) * 100);
 			if(relativeFreq > threshold) {
+				if(relativeFreq > 100) {
+					LOGGER.error("Relative freq > 100 for color in " + image.getImageUri());
+				}
 				colorFreqs.add(freqFactory.createColorFreq(image, color.getColor(), relativeFreq));
 			}
 
@@ -140,5 +142,17 @@ public class ImageProcessorImpl implements ImageProcessor {
 		for(ColorFreq color : colors) {
 			System.out.println(color);
 		}
+	}
+
+
+
+	public int getImageHeight() {
+		return this.imageHeight;
+	}
+
+
+
+	public int getImageWidth() {
+		return this.imageWidth;
 	}
 }

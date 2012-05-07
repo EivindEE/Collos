@@ -20,14 +20,12 @@ public interface ImageProcessor {
 	 */
 	public abstract void setImage(Image image);
 	
-//	public abstract void setImage(File f) throws IOException;
-//	
-//	public abstract void setImage(InputStream inputStream) throws IOException;
-
-//	public abstract HashMap<CompressedColor, Integer> getColorFrequencies();
-	
 	public abstract List<ColorFreq> getColorFreqs();
 
 	public abstract void setColorFactory(CompressedColorFactory colorFactory);
+	
+	public abstract int getImageHeight();
+	
+	public abstract int getImageWidth();
 
 }
