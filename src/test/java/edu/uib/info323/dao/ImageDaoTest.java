@@ -39,11 +39,11 @@ public class ImageDaoTest extends AbstractDaoCollosTest{
 		expectedImageList.add(new ImageImpl("image2", Arrays.asList("page2")));
 		expectedImageList.add(new ImageImpl("image3", Arrays.asList("page3")));
 		expectedImageList.add(new ImageImpl("image4", Arrays.asList("page4")));
-		dao.batchInsert(expectedImageList);
+		dao.insert(expectedImageList);
 		assertTrue(dao.getAllImages().containsAll(expectedImageList));
 
 		// DAO Should not cause duplicates
-		dao.batchInsert(expectedImageList);
+		dao.insert(expectedImageList);
 		assertTrue(dao.getAllImages().containsAll(expectedImageList));
 	}
 	@Test
