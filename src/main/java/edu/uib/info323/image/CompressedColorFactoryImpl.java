@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CompressedColorFactoryImpl implements CompressedColorFactory {
-	private int compression = 64;
+	private int compression = 32;
 
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.image.CompressedColorFactory#createCompressedColor(int, int, int, int)
