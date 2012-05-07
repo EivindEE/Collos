@@ -10,10 +10,16 @@ public class ImageImpl implements Image {
 	private int width;
 	
 	public ImageImpl(String imageUri, List<String> pageUri){
-		this.imageUri = imageUri;
-		this.pageUris = pageUri;
+		this(imageUri, pageUri, 0, 0);
 	}
 	
+	public ImageImpl(String imageUri, List<String> pageUris, int height, int width) {
+		this.imageUri = imageUri;
+		this.pageUris = pageUris;
+		this.height = height;
+		this.width = width;
+	}
+
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.model.Image#getImageUri()
 	 */
