@@ -10,6 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -19,6 +20,7 @@ import edu.uib.info323.image.ImageProcessor;
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.Image;
 
+@Scope("prototype")
 @Controller
 public class ImageProcessorController {
 
