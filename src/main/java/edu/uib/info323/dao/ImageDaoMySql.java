@@ -84,8 +84,7 @@ public class ImageDaoMySql implements ImageDao{
 				"FROM image_page, color " +
 				"WHERE image_page.image_uri = color.image_uri " +
 				"AND color = :color " +
-				"ORDER BY color.relative_freq DESC " +
-				"LIMIT 0, 100";
+				"ORDER BY color.relative_freq DESC ";
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
 		
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
