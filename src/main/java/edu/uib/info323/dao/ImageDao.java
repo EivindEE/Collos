@@ -16,7 +16,7 @@ public interface ImageDao {
 
 	public abstract List<Image> getAllImages();
 
-	public abstract void batchInsert(List<Image> imageList);
+	public abstract void insert(List<Image> imageList);
 
 	public abstract List<Image> getUnprocessedImages();
 
@@ -25,4 +25,6 @@ public interface ImageDao {
 	public abstract List<Image> getImagesWithColor(String color);
 	
 	public abstract void updateAnalysedDate(List<Image> images);
+
+	public abstract void update(List<Image> images);
 }

@@ -36,7 +36,7 @@ public class ImageDaoMySql implements ImageDao{
 	
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
-	public void batchInsert(final List<Image> images) {
+	public void insert(final List<Image> images) {
 		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
 		jdbcTemplate.batchUpdate(sql, parameterSource);
@@ -121,6 +121,8 @@ public class ImageDaoMySql implements ImageDao{
 		parameterSource.addValue("image_uri", image.getImageUri());
 		parameterSource.addValue("page_uri", image.getPageUris());
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
+		parameterSource.addValue("height", image.getHeight());
+		parameterSource.addValue("width", image.getHeight());
 		return parameterSource; 
 	}
 
@@ -163,8 +165,12 @@ public class ImageDaoMySql implements ImageDao{
 
 	public void updateAnalysedDate(final List<Image> images) {
 		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 		
-		jdbcTemplate.batchUpdate(sql, getSqlParameterSource(images));
-		
+	}
+
+	public void update(List<Image> images) {
+		String sql = "UPDATE image SET height = :height AND width = :width AND date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 }
