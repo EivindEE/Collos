@@ -2,8 +2,8 @@ CREATE TABLE image(
 	image_uri VARCHAR(500),
 	date_analyzed DATE,
 	suspended INT,
-	width INT,
-	height INT,
+	width  MEDIUMINT UNSIGNED,
+	height MEDIUMINT UNSIGNED,
 	PRIMARY KEY(image_uri)
 );
 
