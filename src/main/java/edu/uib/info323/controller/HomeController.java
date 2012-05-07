@@ -30,6 +30,8 @@ public class HomeController {
 
 	@Autowired
 	private ImageDao imageDao;
+	
+	private int maxNumberOfImages = 100;
 
 
 	/**
@@ -60,8 +62,15 @@ public class HomeController {
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors){
-		LOGGER.debug("Returning images for color: " + colors);
-		return imageDao.getImagesWithColor("0x"+colors);
+		LOGGER.debug("Got request for images with color: " + "0x"+colors);
+		List<Image> images = imageDao.getImagesWithColor("0x"+colors);
+		LOGGER.debug("Found " +  images.size() + " images");
+		int imagesToShow = this.maxNumberOfImages;
+		if(images.size() < this.maxNumberOfImages) {
+			imagesToShow = images.size();
+		}
+		
+		return images.subList(0, imagesToShow);
 	}
 
 	@RequestMapping("/spring")
