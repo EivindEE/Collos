@@ -69,7 +69,7 @@ public class CollosCrawler extends WebCrawler{
 					imageList.add(imageFactory.createImage(webUrl.getURL(),url));
 				}
 				if(imageList.size() >= 200) {
-					imageDao.batchInsert(imageList);
+					imageDao.insert(imageList);
 					LOGGER.debug("Added images from crawler " + this);
 					imageList.clear();
 				}
