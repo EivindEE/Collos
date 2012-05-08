@@ -1,5 +1,7 @@
 package edu.uib.info323.image;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.InputStream;
 import java.net.URL;
@@ -47,7 +49,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 	private Image image;
 	private int threshold = 5;
 	
-	private WritableRaster raster;
+	private BufferedImage bufferedImage;
 
 	/* (non-Javadoc)
 	 * @see edu.uib.info323.image.ImageProcessor#readColors()
@@ -55,10 +57,11 @@ public class ImageProcessorImpl implements ImageProcessor {
 	private HashMap<CompressedColor, Integer> getColorFrequencies() {
 		HashMap<CompressedColor, Integer> colorFreq = new HashMap<CompressedColor, Integer>();
 
-		for(int x = raster.getMinX(); x < this.imageWidth; x++){
-			for(int y = raster.getMinY(); y < this.imageHeight; y++){
-				int[] pixel = raster.getPixel(x, y, new int[4]);
-				CompressedColor color = colorFactory.createCompressedColor(pixel[0], pixel[1], pixel[2]);
+		for(int x = bufferedImage.getMinX(); x < this.imageWidth; x++){
+			for(int y = bufferedImage.getMinY(); y < this.imageHeight; y++){
+				int pixel = bufferedImage.getRGB(x, y);
+				
+				CompressedColor color = colorFactory.createCompressedColor(new Color(pixel));
 				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
 				colorFreq.put(color,++count);
 			}
@@ -109,9 +112,9 @@ public class ImageProcessorImpl implements ImageProcessor {
 		try {
 			this.image = image;
 			InputStream inputStream = new URL(image.getImageUri()).openStream();
-			raster = ImageIO.read(inputStream).getRaster();
-			this.imageHeight = raster.getHeight();
-			this.imageWidth = raster.getWidth();
+			bufferedImage = ImageIO.read(inputStream);
+			this.imageHeight = bufferedImage.getHeight();
+			this.imageWidth = bufferedImage.getWidth();
 			this.numberOfPixels = this.imageHeight * this.imageWidth;
 		}catch (Exception e) {
 			throw new InvalidParameterException("Could not open stream for image " + image);
