@@ -15,8 +15,13 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.ContextConfiguration;
 
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
@@ -65,7 +70,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 	/**
 	 * Sets the compressionrate of the RGB color space.
-	 * Accepted values are ³ 4
+	 * Accepted values are ï¿½ 4
 	 * @param imageCompressionRate
 	 */
 	public void setImageCompression(int imageCompressionRate) {
@@ -73,13 +78,13 @@ public class ImageProcessorImpl implements ImageProcessor {
 			colorFactory.setDefaultCompression(imageCompressionRate);
 		}
 		else {
-			throw new InvalidParameterException("Compression rate must be ³4 but was " + imageCompressionRate );
+			throw new InvalidParameterException("Compression rate must be ï¿½4 but was " + imageCompressionRate );
 		}
 	}
 
 	/**
 	 * Sets the compressionrate of the RGB color space.
-	 * Accepted values are ³ 4
+	 * Accepted values are ï¿½ 4
 	 * @param imageCompressionRate
 	 */
 	public int getImageCompression() {
@@ -133,9 +138,11 @@ public class ImageProcessorImpl implements ImageProcessor {
 		return colorFreqs;
 	}
 
-	public static void main(String[] args) {
-		ImageProcessor imageProcessor = new ImageProcessorImpl();
-		Image image = new ImageImpl("http://jv.wikipedia.org/wiki/Gambar:Sugeng-rawuh2.png", Arrays.asList(new String[] {"http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/"}));
+	
+	public static void main(String... args) {
+	    ApplicationContext context = new FileSystemXmlApplicationContext(new String[] {"src/main/webapp/WEB-INF/spring/app/model-context.xml", "src/main/webapp/WEB-INF/spring/app/db-context.xml"});   
+		ImageProcessor imageProcessor = context.getBean(ImageProcessor.class);
+		Image image = new ImageImpl("https://lh6.googleusercontent.com/-1fCBWsC9btk/AAAAAAAAAAI/AAAAAAAAAAA/G8aMBLX2ie0/s24-c/photo.jpg", Arrays.asList(new String[] {"http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/"}));
 		imageProcessor.setImage(image);
 		imageProcessor.setColorFactory(new CompressedColorFactoryImpl());
 		List<ColorFreq> colors = imageProcessor.getColorFreqs();
