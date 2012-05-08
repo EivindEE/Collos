@@ -39,7 +39,7 @@ public class ImageDaoMySql implements ImageDao{
 		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
 		jdbcTemplate.batchUpdate(sql, parameterSource);
-
+		
 		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		jdbcTemplate.batchUpdate(sql, parameterSource);
 
@@ -80,9 +80,9 @@ public class ImageDaoMySql implements ImageDao{
 		LOGGER.debug("Retrieving images with color " + color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
 		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
-				"FROM image_page, color " +
+				"FROM image_page, color, image " +
 				"WHERE image_page.image_uri = color.image_uri " +
-				"AND color = :color " +
+				"AND color = :color AND image.image_uri = color.image_uri  AND image.width > 50 AND image.height > 50 " +
 				"ORDER BY color.relative_freq DESC ";
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
 
@@ -169,6 +169,5 @@ public class ImageDaoMySql implements ImageDao{
 	public void update(List<Image> images) {
 		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
-
 	}
 }
