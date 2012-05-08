@@ -105,6 +105,7 @@
 			
 			
 		}
+		
 		$('#container').masonry('reload');	
 		
 	};
@@ -149,12 +150,11 @@
 					$container.masonry({
 						itemSelector : '.box',
 						isFitWidth: true,
-						//columnWidth : 100,
- 						isAnimated : !Modernizr.csstransitions,
+ 						isAnimated : true,
  					 	animationOptions : {
-					    duration : 100,
- 						//easing : 'linear',
-						//queue : false
+					    duration : 1000,
+ 						easing : 'linear',
+						queue : false
 						} 
 
 					});
