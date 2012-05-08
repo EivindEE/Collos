@@ -23,31 +23,13 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class CollosCrawlController extends CrawlController implements ApplicationContextAware{
 	private final static Logger LOGGER = LoggerFactory.getLogger(CollosCrawlController.class);
 	private ApplicationContext applicationContext;
-	
 
-	
-	public CollosCrawlController() throws Exception {
-		this(new CollosCrawlConfig(), new CollosPageFetcher(), new CollosRobotstxtServer());
-	}
-	
+	@Autowired
 	public CollosCrawlController(CrawlConfig config, PageFetcher pageFetcher,
 			RobotstxtServer robotstxtServer) throws Exception {
 		super(config, pageFetcher, robotstxtServer);
 	}
 
-	
-	public void setConfig(CrawlConfig configurable) {
-		super.config = configurable; 
-	}
-	
-	public void setPageFetcher(PageFetcher pageFetcher) {
-		super.pageFetcher = pageFetcher;
-	}
-	
-	public void setRobotTxtServer(RobotstxtServer robotstxtServer) {
-		super.robotstxtServer = robotstxtServer;
-	}
-	
 	@Override
 	protected <T extends WebCrawler> void start(final Class<T> _c, final int numberOfCrawlers, boolean isBlocking) {
 		try {
@@ -169,8 +151,6 @@ public class CollosCrawlController extends CrawlController implements Applicatio
 		}
 	}
 
-
-	
 	public void setApplicationContext(ApplicationContext arg0)
 			throws BeansException {
 		this.applicationContext = arg0;
