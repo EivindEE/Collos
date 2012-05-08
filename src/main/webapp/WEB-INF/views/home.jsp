@@ -100,7 +100,7 @@
 		$('#container').html('');
 		
 		for(var i = 0; i < images.length; i++){
-			var $imagebox = $("<div class='box'> <a href='" + images[i].pageUris[0] + "'><img src='" +  images[i].imageUri + "'></a>");
+			var $imagebox = $("<div class='box'> <a href='" + images[i].pageUris[0] + "'><img style='width:100px;height:auto' src='" +  images[i].imageUri + "'></a>");
 			$('#container').append($imagebox)
 			
 			
@@ -152,7 +152,7 @@
 						isFitWidth: true,
  						isAnimated : true,
  					 	animationOptions : {
-					    duration : 1000,
+					    duration : 300,
  						easing : 'linear',
 						queue : false
 						} 

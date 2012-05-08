@@ -385,8 +385,7 @@ button {
 .box img,
 #tumblelog img {
   display: block;
-  width: 100px;
-  height: auto;
+  
   }
 
 .rtl .box {
