@@ -2,6 +2,7 @@ package edu.uib.info323.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -50,13 +51,13 @@ public class ImageProcessorController {
 			LOGGER.debug("Starting processing loop");
 			List<Image> images = imageDao.getUnprocessedImages();
 			imageDao.updateAnalysedDate(images);
+			List<ColorFreq> freqs = new LinkedList<ColorFreq>();
 			for(Image image : images) {
 				try {
 					imageProcessor.setImage(image);
 					image.setHeight(imageProcessor.getImageHeight());
 					image.setWidth(imageProcessor.getImageWidth());
-					List<ColorFreq> freqs = imageProcessor.getColorFreqs();
-					colorFreqDao.batchInsert(freqs);
+					freqs.addAll(imageProcessor.getColorFreqs());
 				}
 				catch(Exception e) {
 					LOGGER.error("Got " + e.getClass() + "exception for image " + image.getImageUri() + ". Deleting image from DB");
@@ -69,6 +70,7 @@ public class ImageProcessorController {
 					}
 				}
 			}
+			colorFreqDao.batchInsert(freqs);
 			imageDao.update(images);
 		}
 
