@@ -10,11 +10,12 @@
 <!-- 	<link rel="shortcut icon" type="image/x-icon" href="resources/images/favicon.ico" /> -->
 <!-- 	<link rel="icon" type="image/png" href="resources/images/favicon.png" /> -->
 <link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
-<script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-	<script src="resources/javascript/modernizr-transitions.js"></script>
-<script type="text/javascript"
-	src="resources/javascript/jquery.masonry.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/overcast/jquery-ui.css">
+
+<script src="resources/javascript/modernizr-transitions.js"></script>
+<script type="text/javascript" src="resources/javascript/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="resources/javascript/colorutils.js"></script>
 <script type="text/javascript">
  
@@ -39,7 +40,27 @@
 		}).sucess(function(mydata){
 		  alert( "Data Saved: "+ mydata);
 		}); */
-		
+		$('.color').resizable({
+			handles: 'e',
+			maxHeight: '50',
+			maxWidth: $('.color').parent().width(),
+			resize:function(){
+				var resizeWidth = $(this).width();
+				var parentWidth = $(this).parent().width();
+				var percent = 100*resizeWidth/parentWidth;
+				var numberSiblings = $(this).siblings().size();
+				var restPercent = 100-percent;
+				var siblingPercent = restPercent/numberSiblings;
+				//console.log(this.offsetParent());
+				console.log(resizeWidth);
+				console.log(parentWidth);
+				console.log(percent);
+				$(this).css('width',percent+'%')
+				$(this).siblings().css('width',siblingPercent+'%')
+				
+				
+			}
+		});	
 		
 		$.getJSON("/Collos/color?colors=" + colorPalette.current_display_color,
 				function(data){
@@ -55,7 +76,8 @@
 	console.log("index" +id);
 	$(this).parent().remove();
 	color.splice(id,1);
-	
+	var width = 100/color.length
+	  $('.color').css('width',width+'%');
 	console.log(color.length);
 	});
 	
@@ -64,12 +86,14 @@
 	function writeHtml(color){
 	$('#col').html('');
  	for(var i = 0; i < color.length; i++) {
-       var item = "<div class=\"color\" style=\"width:160px;height:50px;background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"></div>";
+       var item = "<div class=\"color ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"></div>";
        console.log(color);
 	  $('#col').append(item);	
 		}
+ 	var width = 100/color.length
+	  $('.color').css('width',width+'%');
 	console.log(color.length);
-	
+	console.log(width);
 	};
 	
 	function writeImages(images){
@@ -99,7 +123,12 @@
 
 		</div>
 	</div>
-
+<!-- 	<div id="resizable" style=" width: 150px; height: 150px; padding: 0.5em; " class="ui-widget-content">
+    <h3 class="ui-widget-header">Resizable</h3>
+</div> -->
+	<script>
+	
+	</script>
 	<div id="col"></div>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled clearfix masonry">
