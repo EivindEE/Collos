@@ -8,7 +8,7 @@
 
 	<!-- Scans within the base package of the application for @Components to 
 		configure as beans -->
-	<context:component-scan base-package="edu.uib.info323" />
+	<context:component-scan base-package="edu.uib.info323.controller" />
 
 	<mvc:annotation-driven />
 
