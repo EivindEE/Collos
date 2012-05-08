@@ -1,5 +1,7 @@
 package edu.uib.info323.image;
 
+import java.awt.Color;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,5 +39,9 @@ public class CompressedColorFactoryImpl implements CompressedColorFactory {
 	 */
 	public int getDefaultCompression() {
 		return compression;
+	}
+
+	public CompressedColor createCompressedColor(Color color) {
+		return this.createCompressedColor(color.getRed(), color.getGreen(), color.getBlue());
 	}
 }
