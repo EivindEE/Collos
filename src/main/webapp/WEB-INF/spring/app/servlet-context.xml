@@ -22,7 +22,8 @@
 	</beans:bean>
 	
 	<!-- Imports user-defined @Controller beans that process client requests -->
-	<beans:import resource="controllers.xml" />
+	<beans:import resource="model-context.xml"/>
+	<beans:import resource="controller-context.xml" />
 	<beans:import resource="db-context.xml"/>
 	
 </beans:beans>
