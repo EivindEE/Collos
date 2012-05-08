@@ -69,7 +69,7 @@ public abstract class ColorFreqDaoDerbyImpl implements ColorFreqDao {
 	/**
 	 * Ignores duplicates
 	 */
-	public void batchInsert(final List<ColorFreq> colorList) {
+	public void insert(final List<ColorFreq> colorList) {
 		String sql = "INSERT INTO COLOR_FREQ (" +
 				"SELECT ? AS image_uri, ? AS color, ? AS relative_freq " +
 				"FROM COLOR_FREQ " +

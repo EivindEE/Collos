@@ -70,7 +70,7 @@ public class ImageProcessorController {
 					}
 				}
 			}
-			colorFreqDao.batchInsert(freqs);
+			colorFreqDao.insert(freqs);
 			imageDao.update(images);
 		}
 

@@ -71,7 +71,7 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 		return colorFreqs;
 	}
 
-	public void batchInsert(final List<ColorFreq> colorFreqs) {
+	public void insert(final List<ColorFreq> colorFreqs) {
 		String sql = "INSERT INTO color(image_uri, color, relative_freq, compression) " +
 					 "VALUES ( :image_uri, :color, :relative_freq, :compression) " +
 					 "ON DUPLICATE KEY UPDATE relative_freq = :relative_freq, compression = :compression ";

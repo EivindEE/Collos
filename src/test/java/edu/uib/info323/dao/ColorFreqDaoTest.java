@@ -65,14 +65,14 @@ public class ColorFreqDaoTest extends AbstractDaoCollosTest {
 	public void testBatchInsert() {
 		assertEquals(Collections.emptyList(), dao.getAllColors());
 		List<ColorFreq> expectedColorList = new LinkedList<ColorFreq>();
-		dao.batchInsert(expectedColorList);
+		dao.insert(expectedColorList);
 		assertEquals(Collections.emptyList(), dao.getAllColors());
 		expectedColorList.add(colorFreq1);
 		expectedColorList.add(colorFreq2);
-		dao.batchInsert(expectedColorList);
+		dao.insert(expectedColorList);
 		List<ColorFreq> actualColorList = dao.getAllColors();
 		assertTrue(actualColorList + " should contain all the elements in " + expectedColorList, actualColorList.containsAll(expectedColorList));
-		dao.batchInsert(expectedColorList);
+		dao.insert(expectedColorList);
 		actualColorList = dao.getAllColors();
 		assertTrue(actualColorList + " should contain all the elements in " + expectedColorList, actualColorList.containsAll(expectedColorList));
 		
