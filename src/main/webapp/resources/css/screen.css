@@ -338,8 +338,7 @@ button {
 #col{
  clear:both;
  padding-top:10px;
- padding-left: 20px;
- width:80%;
+ width:100%;
 }
 
 #col div {
@@ -354,10 +353,7 @@ button {
 
 #container {
   background:;
-  padding: 20px;
-  margin-bottom: 20px;
-  margin-right:20px;
-  margin-left:20px;
+  margin:0 auto;
   border-radius: 5px;
   clear: both;
   -webkit-border-radius: 5px;
@@ -374,6 +370,7 @@ button {
   background: #D8D5D2;
   font-size: 11px;
   line-height: 1.4em;
+  min-height: 50px;
   
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
@@ -388,9 +385,8 @@ button {
 .box img,
 #tumblelog img {
   display: block;
-  width: 100px;
-  height: auto;
-}
+  
+  }
 
 .rtl .box {
   float: right;
