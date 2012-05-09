@@ -133,7 +133,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 		for(CompressedColor color : colorMap.keySet()) {
 			Integer freq = colorMap.get(color);
 			int relativeFreq = (int) ((freq.doubleValue() / numberOfPixels.doubleValue()) * 100);
-			if(relativeFreq > threshold) {
+			if(relativeFreq >= threshold) {
 				if(relativeFreq > 100) {
 					LOGGER.error("Relative freq > 100 for color in " + image.getImageUri());
 				}
