@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -34,8 +36,7 @@ public class HomeController {
 
 	@Autowired
 	private ImageDao imageDao;
-	
-	private int maxNumberOfImages = 100;
+
 
 
 	/**
@@ -46,28 +47,17 @@ public class HomeController {
 		return "home";
 	}
 
-	/**
-	 * Selects the home page and populates the model with a message
-	 */
-	@RequestMapping(value = "/search")
-	@ResponseStatus(value = HttpStatus.OK)
-	public ModelAndView search(@RequestParam(required=false) String color) {
-		LOGGER.error("Returning color: " + color);
-
-		List<Image> urls = imageDao.getAllImages();
-
-		LOGGER.debug("Number of images returned:" + urls.size());
-		Map<String, Object> model = new TreeMap<String, Object>();
-		model.put("images", urls);
-		ModelAndView mav = new ModelAndView("home", model);
-		return mav;
-	}
-
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors){
-		LOGGER.debug("Got request for images with color: " + "0x"+colors);
-		List<Image> images = imageDao.getImagesWithColor("0x"+colors, 0, 1000);
+		LOGGER.debug("Got request for colors: " + colors);
+		String[] colorArray = colors.split(",");
+		List<String>  colorList = new ArrayList<String>();
+		for(String color : colorArray) {
+			colorList.add("0x" + color);
+		}
+		
+		List<Image> images = imageDao.getImagesWithColor(colorList, 0, 1000);
 		LOGGER.debug("Found " +  images.size() + " images");
 		return images;
 	}
