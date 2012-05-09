@@ -66,7 +66,7 @@
 		
 		
 		
-		$.getJSON("/Collos/color?colors=" + colorPalette.current_display_color,
+		$.getJSON("/Collos/color?colors=" + color,
 				function(data){
 			writeImages(data);
 			imagesArray = data;
@@ -107,7 +107,7 @@
 		$('#container').html('');
 		
 		for(var i = 0; i < images.length; i++){
-			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img style='width:100px;height:auto' src='" +  images[i].imageUri + "'></a>");
+			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img src='" +  images[i].imageUri + "'></a>");
 			$('#container').append($imagebox)
 			
 			
