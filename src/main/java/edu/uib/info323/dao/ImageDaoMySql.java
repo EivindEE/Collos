@@ -85,7 +85,7 @@ public class ImageDaoMySql implements ImageDao{
 		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
 				"FROM image_page, color, image " +
 				"WHERE image_page.image_uri = color.image_uri " +
-				"AND color = :color AND relative_freq >= :relative_freq AND image.image_uri = color.image_uri  AND image.width > 50 AND image.height > 50 " +
+				"AND color = :color AND relative_freq >= :relative_freq AND image.image_uri = color.image_uri  AND image.width >= 100 AND image.height > 100 " +
 				"ORDER BY color.relative_freq DESC " + 
 				"LIMIT :start_index , :end_index ";
 
