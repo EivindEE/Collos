@@ -17,8 +17,10 @@
 <script src="resources/javascript/modernizr-transitions.js"></script>
 <script type="text/javascript" src="resources/javascript/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="resources/javascript/colorutils.js"></script>
+<script type="text/javascript" src="resources/javascript/jquery.colorbox.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/css/colorbox.css" />
 <script type="text/javascript">
- 
+		var imagesArray;
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
@@ -62,14 +64,19 @@
 			}
 		});	
 		
+		
+		
 		$.getJSON("/Collos/color?colors=" + colorPalette.current_display_color,
 				function(data){
 			writeImages(data);
-			
+			imagesArray = data;
 		}
 	
 			);
+		
 		});
+		
+		
 		
 	$('.delete_color').live('click',function() { 
 	var id = $(this).parent().index();
@@ -100,14 +107,30 @@
 		$('#container').html('');
 		
 		for(var i = 0; i < images.length; i++){
-			var $imagebox = $("<div class='box'> <a href='" + images[i].pageUris[0] + "'><img style='width:100px;height:auto' src='" +  images[i].imageUri + "'></a>");
+			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img style='width:100px;height:auto' src='" +  images[i].imageUri + "'></a>");
 			$('#container').append($imagebox)
+			
 			
 			
 		}
 		
 		$('#container').masonry('reload');	
-		
+		$('a.gallery').colorbox({
+			next:"Next",
+			previous:"Previous",
+			title: function(){
+				var i = $(this).attr('id');
+				var pageUrisList = imagesArray[i].pageUris;
+				var pageUris ="<div><div style='float:left'>Source:</div>";
+				console.log(pageUrisList);
+				for(var j = 0; j <pageUrisList.length && j < 20; j++){
+					console.log(pageUrisList[j]);
+				pageUris = pageUris + '<a style="float:left" href="' + pageUrisList[j] + '" target="_blank">'+(j+1)+' &nbsp;</a>'
+				}
+				console.log(pageUris);
+				return pageUris+ "</div>";
+			}
+		});
 	};
 
 </script>
@@ -133,14 +156,9 @@
 	<div id="col"></div>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled clearfix masonry">
-			<c:forEach var="image" items="${images}">
-				<div class="box">
-					<a href="${image.pageUri}"><img src="${image.imageUri}"></a>
-				</div>
-			</c:forEach>
-
 		</div>
 	</div>
+	
 	<script>
 			$(function() {
 
