@@ -120,7 +120,7 @@ public class ImageDaoMySql implements ImageDao{
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("image_uri", image.getImageUri());
-		parameterSource.addValue("page_uri", image.getPageUris());
+		parameterSource.addValue("page_uri", image.getPageUris().get(0));
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
 		parameterSource.addValue("height", image.getHeight());
 		parameterSource.addValue("width", image.getHeight());
