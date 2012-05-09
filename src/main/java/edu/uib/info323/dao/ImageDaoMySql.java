@@ -87,7 +87,7 @@ public class ImageDaoMySql implements ImageDao{
 				"LIMIT  " + startIndex + ", " + endIndex;
 		
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
-
+		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -95,7 +95,8 @@ public class ImageDaoMySql implements ImageDao{
 			}
 
 		});
-
+		long endTime = System.currentTimeMillis();
+		LOGGER.debug("Query time: " + (( endTime - startTime) / 1000.0));
 		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
 
 
