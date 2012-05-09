@@ -69,19 +69,6 @@ public class HomeController {
 		LOGGER.debug("Got request for images with color: " + "0x"+colors);
 		List<Image> images = imageDao.getImagesWithColor("0x"+colors, 0, 1000);
 		LOGGER.debug("Found " +  images.size() + " images");
-		File testFile = new File("testSQLsize");
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(testFile));
-			for(Image image : images) {
-				writer.append(image.toString());
-			}
-		} catch (IOException e) {
-		}
-		int imagesToShow = this.maxNumberOfImages;
-		if(images.size() < this.maxNumberOfImages) {
-			imagesToShow = images.size();
-		}
-		
 		return images;
 	}
 
