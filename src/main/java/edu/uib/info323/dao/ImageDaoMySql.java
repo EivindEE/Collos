@@ -39,7 +39,7 @@ public class ImageDaoMySql implements ImageDao{
 		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
 		jdbcTemplate.batchUpdate(sql, parameterSource);
-		
+
 		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
 		jdbcTemplate.batchUpdate(sql, parameterSource);
 
@@ -85,7 +85,7 @@ public class ImageDaoMySql implements ImageDao{
 				"AND color = :color AND image.image_uri = color.image_uri  AND image.width > 50 AND image.height > 50 " +
 				"ORDER BY color.relative_freq DESC " + 
 				"LIMIT  " + startIndex + ", " + endIndex;
-		
+
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
@@ -120,7 +120,9 @@ public class ImageDaoMySql implements ImageDao{
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("image_uri", image.getImageUri());
-		parameterSource.addValue("page_uri", image.getPageUris().get(0));
+		if(image.getPageUris().size() > 0) {
+			parameterSource.addValue("page_uri", image.getPageUris().get(0));
+		}
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
 		parameterSource.addValue("height", image.getHeight());
 		parameterSource.addValue("width", image.getHeight());
