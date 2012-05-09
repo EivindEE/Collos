@@ -20,6 +20,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
+import edu.uib.info323.image.CompressedColor;
 import edu.uib.info323.image.CompressedColorFactory;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageFactory;
@@ -32,6 +33,10 @@ public class ImageDaoMySql implements ImageDao{
 	private CompressedColorFactory colorFactory;
 	@Autowired
 	private ImageFactory imageFactory;
+
+	private int defaultImageReturnThreshold = 30;
+	private int defaultIndexStart = 0;
+	private int defaultIndexEnd = 1000;
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -64,17 +69,17 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public List<Image> getImagesWithColor(String color) {
-		return this.getImagesWithColor(color, 0);
+		return this.getImagesWithColor(color, this.defaultImageReturnThreshold);
 	}
 
 
 
 	public List<Image> getImagesWithColor(String color, int relativeFreq) {
-		return this.getImagesWithColor(color, relativeFreq, 0, 1000);
+		return this.getImagesWithColor(color, relativeFreq, this.defaultIndexStart, this.defaultIndexEnd);
 	}
 
 	public List<Image> getImagesWithColor(String color, int startIndex, int endIndex) {
-		return this.getImagesWithColor(color, 50, startIndex, endIndex);
+		return this.getImagesWithColor(color, defaultImageReturnThreshold, startIndex, endIndex);
 	}
 
 	public List<Image> getImagesWithColor(String color, int relativeFreq,
@@ -85,7 +90,8 @@ public class ImageDaoMySql implements ImageDao{
 		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
 				"FROM image_page, color, image " +
 				"WHERE image_page.image_uri = color.image_uri " +
-				"AND color = :color AND relative_freq >= :relative_freq AND image.image_uri = color.image_uri  AND image.width >= 100 AND image.height > 100 " +
+				"AND color = :color AND relative_freq >= :relative_freq " +
+				"AND image.image_uri = color.image_uri  AND image.width >= 100 AND image.height > 100 " +
 				"ORDER BY color.relative_freq DESC " + 
 				"LIMIT :start_index , :end_index ";
 
@@ -190,5 +196,44 @@ public class ImageDaoMySql implements ImageDao{
 	public void updateAnalysedDate(final List<Image> images) {
 		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
+	}
+
+	public List<Image> getImagesWithColor(List<String> colorList, int startIndex, int endIndex) {
+		StringBuilder sql = new StringBuilder("SELECT image_page.image_uri, image_page.page_uri " +
+				"FROM image_page, image " +
+				"WHERE image_page.image_uri = image.image_uri " +
+				"AND image.width >= 100 AND image.height > 100 " +
+				"AND image.image_uri IN (SELECT a.image_uri FROM " 
+				);
+		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+		parameterSource.addValue("start_index", startIndex);
+		parameterSource.addValue("end_index", endIndex);
+//		parameterSource.addValue("relative_freq", this.defaultImageReturnThreshold);
+		for(int i = 0; i < colorList.size(); i++) {
+			if(i>0) {
+				sql.append(" INNER JOIN ");
+			}
+			sql.append("(SELECT image_uri FROM color WHERE color = :color" + i + " AND relative_freq > :relative_freq" +  i +") as "+ Character.toChars((i+97))[0]);
+			if(i>0) {
+				sql.append(" USING (image_uri) ");
+			}
+			CompressedColor color = colorFactory.createCompressedColor(Color.decode(colorList.get(i)));
+			parameterSource.addValue("color"+i, color.getColor());
+			parameterSource.addValue("relative_freq"+i, defaultImageReturnThreshold);
+		}
+		sql.append(" ) LIMIT :start_index , :end_index ");
+		LOGGER.debug("SQL query to run: " + sql.toString());
+		long startTime = System.currentTimeMillis();
+		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
+
+			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
+			}
+
+		});
+		long endTime = System.currentTimeMillis();
+		LOGGER.debug("Query time: " + (( endTime - startTime) / 1000.0));
+		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
+		return images;
 	}
 }

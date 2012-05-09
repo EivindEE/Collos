@@ -32,4 +32,7 @@ public interface ImageDao {
 	public abstract void updateAnalysedDate(List<Image> images);
 
 	public abstract void update(List<Image> images);
+
+	public abstract List<Image> getImagesWithColor(List<String> colorList,
+			int startIndex, int endIndex);
 }
