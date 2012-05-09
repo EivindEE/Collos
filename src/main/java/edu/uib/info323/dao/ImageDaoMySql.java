@@ -35,16 +35,6 @@ public class ImageDaoMySql implements ImageDao{
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
-	public void insert(final List<Image> images) {
-		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
-		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
-		jdbcTemplate.batchUpdate(sql, parameterSource);
-
-		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
-		jdbcTemplate.batchUpdate(sql, parameterSource);
-
-	}
-
 	public void delete(Image image) {
 		String sql = "DELETE FROM image WHERE image_uri = :image_uri";
 		jdbcTemplate.update(sql, this.getMapSqlParameterSource(image));
@@ -73,20 +63,36 @@ public class ImageDaoMySql implements ImageDao{
 		return imageFactory.createImage(imageUri, pageUris);
 	}
 
+	public List<Image> getImagesWithColor(String color) {
+		return this.getImagesWithColor(color, 0);
+	}
 
+
+
+	public List<Image> getImagesWithColor(String color, int relativeFreq) {
+		return this.getImagesWithColor(color, relativeFreq, 0, 1000);
+	}
 
 	public List<Image> getImagesWithColor(String color, int startIndex, int endIndex) {
+		return this.getImagesWithColor(color, 50, startIndex, endIndex);
+	}
+
+	public List<Image> getImagesWithColor(String color, int relativeFreq,
+			int startIndex, int endIndex) {
 		Color decodedColor = Color.decode(color);
 		LOGGER.debug("Retrieving images with color " + color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
 		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
 				"FROM image_page, color, image " +
 				"WHERE image_page.image_uri = color.image_uri " +
-				"AND color = :color AND image.image_uri = color.image_uri  AND image.width > 50 AND image.height > 50 " +
+				"AND color = :color AND relative_freq >= :relative_freq AND image.image_uri = color.image_uri  AND image.width > 50 AND image.height > 50 " +
 				"ORDER BY color.relative_freq DESC " + 
-				"LIMIT  " + startIndex + ", " + endIndex;
+				"LIMIT :start_index , :end_index ";
 
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
+		parameterSource.addValue("start_index", startIndex);
+		parameterSource.addValue("end_index", endIndex);
+		parameterSource.addValue("relative_freq", relativeFreq);
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
 
@@ -101,20 +107,6 @@ public class ImageDaoMySql implements ImageDao{
 
 
 		return images; 
-	}
-
-	private List<Image> removeDuplicates(List<Image> imagesWithDuplicates) {
-		Map<String,Image> imageMap = new HashMap<String, Image>();
-		for(Image image : imagesWithDuplicates) {
-			if(imageMap.containsKey(image.getImageUri())) {
-				imageMap.get(image.getImageUri()).addPageUri(image.getPageUris());
-			}
-			else {
-				imageMap.put(image.getImageUri(), image);
-			}
-
-		}
-		return new ArrayList<Image>(imageMap.values());
 	}
 
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
@@ -160,19 +152,43 @@ public class ImageDaoMySql implements ImageDao{
 
 	}
 
+
+	public void insert(final List<Image> images) {
+		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
+		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
+		jdbcTemplate.batchUpdate(sql, parameterSource);
+
+		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
+		jdbcTemplate.batchUpdate(sql, parameterSource);
+
+	}
+
+	private List<Image> removeDuplicates(List<Image> imagesWithDuplicates) {
+		Map<String,Image> imageMap = new HashMap<String, Image>();
+		for(Image image : imagesWithDuplicates) {
+			if(imageMap.containsKey(image.getImageUri())) {
+				imageMap.get(image.getImageUri()).addPageUri(image.getPageUris());
+			}
+			else {
+				imageMap.put(image.getImageUri(), image);
+			}
+
+		}
+		return new ArrayList<Image>(imageMap.values());
+	}
+
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-
-	public void updateAnalysedDate(final List<Image> images) {
-		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+	public void update(List<Image> images) {
+		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 
-	public void update(List<Image> images) {
-		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+	public void updateAnalysedDate(final List<Image> images) {
+		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 }
