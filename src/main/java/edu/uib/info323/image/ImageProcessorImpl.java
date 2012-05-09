@@ -48,7 +48,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 	private Integer numberOfPixels;
 	private Image image;
-	private int threshold = 1;
+	private int threshold = 5;
 
 	private BufferedImage bufferedImage;
 
