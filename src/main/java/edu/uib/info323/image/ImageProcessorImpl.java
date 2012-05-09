@@ -28,6 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.Image;
+import edu.uib.info323.model.ImageFactory;
 import edu.uib.info323.model.ImageImpl;
 
 @Scope("prototype")
@@ -35,20 +36,20 @@ import edu.uib.info323.model.ImageImpl;
 public class ImageProcessorImpl implements ImageProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessorImpl.class);
-	
+
 	@Autowired
 	private CompressedColorFactory colorFactory;
-	
+
 	@Autowired
 	private ColorFreqFactory freqFactory;
-	
+
 	private int imageHeight;
 	private int imageWidth;
-	
+
 	private Integer numberOfPixels;
 	private Image image;
-	private int threshold = 5;
-	
+	private int threshold = 1;
+
 	private BufferedImage bufferedImage;
 
 	/* (non-Javadoc)
@@ -60,10 +61,12 @@ public class ImageProcessorImpl implements ImageProcessor {
 		for(int x = bufferedImage.getMinX(); x < this.imageWidth; x++){
 			for(int y = bufferedImage.getMinY(); y < this.imageHeight; y++){
 				int pixel = bufferedImage.getRGB(x, y);
-				
-				CompressedColor color = colorFactory.createCompressedColor(new Color(pixel));
-				Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
-				colorFreq.put(color,++count);
+				int transparency = ((pixel & 0xff000000) >> 24);
+				if(transparency != 0x00) {
+					CompressedColor color = colorFactory.createCompressedColor(new Color(pixel));
+					Integer count = colorFreq.containsKey(color) ? colorFreq.get(color) : 0;
+					colorFreq.put(color,++count);
+				}
 			}
 		}
 		return colorFreq;
@@ -119,7 +122,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 		}catch (Exception e) {
 			throw new InvalidParameterException("Could not open stream for image " + image);
 		}
-	
+
 	}
 
 
@@ -141,11 +144,12 @@ public class ImageProcessorImpl implements ImageProcessor {
 		return colorFreqs;
 	}
 
-	
+
 	public static void main(String... args) {
-	    ApplicationContext context = new FileSystemXmlApplicationContext(new String[] {"src/main/webapp/WEB-INF/spring/app/model-context.xml", "src/main/webapp/WEB-INF/spring/app/db-context.xml"});   
+		ApplicationContext context = new FileSystemXmlApplicationContext(new String[] {"src/main/webapp/WEB-INF/spring/app/model-context.xml", "src/main/webapp/WEB-INF/spring/app/db-context.xml"});   
 		ImageProcessor imageProcessor = context.getBean(ImageProcessor.class);
-		Image image = new ImageImpl("https://lh6.googleusercontent.com/-1fCBWsC9btk/AAAAAAAAAAI/AAAAAAAAAAA/G8aMBLX2ie0/s24-c/photo.jpg", Arrays.asList(new String[] {"http://pritisprettyblog.wordpress.com/2012/01/08/ying-yang/"}));
+		ImageFactory imageFactory = context.getBean(ImageFactory.class);
+		Image image = imageFactory.createImage("http://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Lojban_flag_public_domain.svg/300px-Lojban_flag_public_domain.svg.png","");
 		imageProcessor.setImage(image);
 		imageProcessor.setColorFactory(new CompressedColorFactoryImpl());
 		List<ColorFreq> colors = imageProcessor.getColorFreqs();
