@@ -75,7 +75,7 @@ public class ImageDaoMySql implements ImageDao{
 
 
 
-	public List<Image> getImagesWithColor(String color) {
+	public List<Image> getImagesWithColor(String color, int startIndex, int endIndex) {
 		Color decodedColor = Color.decode(color);
 		LOGGER.debug("Retrieving images with color " + color);
 		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
@@ -83,7 +83,9 @@ public class ImageDaoMySql implements ImageDao{
 				"FROM image_page, color, image " +
 				"WHERE image_page.image_uri = color.image_uri " +
 				"AND color = :color AND image.image_uri = color.image_uri  AND image.width > 50 AND image.height > 50 " +
-				"ORDER BY color.relative_freq DESC ";
+				"ORDER BY color.relative_freq DESC " + 
+				"LIMIT  " + startIndex + ", " + endIndex;
+		
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
 
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {

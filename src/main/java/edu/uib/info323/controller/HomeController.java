@@ -1,6 +1,10 @@
 package edu.uib.info323.controller;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -63,14 +67,22 @@ public class HomeController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors){
 		LOGGER.debug("Got request for images with color: " + "0x"+colors);
-		List<Image> images = imageDao.getImagesWithColor("0x"+colors);
+		List<Image> images = imageDao.getImagesWithColor("0x"+colors, 0, 1000);
 		LOGGER.debug("Found " +  images.size() + " images");
+		File testFile = new File("testSQLsize");
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(testFile));
+			for(Image image : images) {
+				writer.append(image.toString());
+			}
+		} catch (IOException e) {
+		}
 		int imagesToShow = this.maxNumberOfImages;
 		if(images.size() < this.maxNumberOfImages) {
 			imagesToShow = images.size();
 		}
 		
-		return images.subList(0, imagesToShow);
+		return images;
 	}
 
 	@RequestMapping("/spring")
