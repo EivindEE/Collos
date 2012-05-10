@@ -60,7 +60,7 @@ public class ImageProcessorController {
 					freqs.addAll(imageProcessor.getColorFreqs());
 				}
 				catch(Exception e) {
-					LOGGER.error("Got " + e.getClass() + "exception for image " + image.getImageUri() + ". Deleting image from DB");
+					LOGGER.error("Got " + e.getClass() + "exception with message "+ e.getLocalizedMessage() + " for image " + image.getImageUri() + ". Deleting image from DB");
 					try{
 						imageDao.delete(image);
 						LOGGER.debug("Image deleted"); 
