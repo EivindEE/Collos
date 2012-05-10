@@ -35,9 +35,9 @@ public class ImageDaoMySql implements ImageDao{
 	@Autowired
 	private ImageFactory imageFactory;
 
-	private int defaultImageReturnThreshold = 10;
+	private int defaultImageReturnThreshold = 40;
 	private int defaultIndexStart = 0;
-	private int defaultIndexEnd = 150;
+	private int defaultIndexEnd = 100;
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -49,11 +49,11 @@ public class ImageDaoMySql implements ImageDao{
 
 	public List<Image> getAllImages() {
 
-		String sql = "SELECT image_uri FROM image_page";
+		String sql = "SELECT i.image_uri, ip.image_page FROM image_page AS ip INNER JOIN image AS i ON (ip.image = i.id)";
 		List<Image> images = this.jdbcTemplate.query(sql, new MapSqlParameterSource() ,new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("image_uri"));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("image_page"));
 			}
 		});
 
@@ -85,35 +85,11 @@ public class ImageDaoMySql implements ImageDao{
 
 	public List<Image> getImagesWithColor(String color, int relativeFreq,
 			int startIndex, int endIndex) {
-		Color decodedColor = Color.decode(color);
-		LOGGER.debug("Retrieving images with color " + color);
-		int colorValue = colorFactory.createCompressedColor(decodedColor.getRed(), decodedColor.getGreen(), decodedColor.getBlue()).getColor();
-		String sql = "SELECT image_page.image_uri, image_page.page_uri " +
-				"FROM image_page, color, image " +
-				"WHERE image_page.image_uri = color.image_uri " +
-				"AND color = :color AND relative_freq >= :relative_freq " +
-				"AND image.image_uri = color.image_uri  AND image.width >= 100 AND image.height > 100 " +
-				"ORDER BY color.relative_freq DESC " + 
-				"LIMIT :start_index , :end_index ";
-
-		MapSqlParameterSource parameterSource = new MapSqlParameterSource("color", colorValue);
-		parameterSource.addValue("start_index", startIndex);
-		parameterSource.addValue("end_index", endIndex);
-		parameterSource.addValue("relative_freq", relativeFreq);
-		long startTime = System.currentTimeMillis();
-		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql,parameterSource, new RowMapper<Image>() {
-
-			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
-			}
-
-		});
-		long endTime = System.currentTimeMillis();
-		LOGGER.debug("Query time: " + (( endTime - startTime) / 1000.0));
-		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
-
-
-		return images; 
+		List<String> colorList = new LinkedList<String>();
+		colorList.add(color);
+		List<Integer> freqList = new LinkedList<Integer>();
+		freqList.add(relativeFreq);
+		return this.getImagesWithColor(colorList,freqList, startIndex, endIndex); 
 	}
 
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
@@ -215,27 +191,28 @@ public class ImageDaoMySql implements ImageDao{
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 
-	public List<Image> getImagesWithColor(List<String> colorList, int startIndex, int endIndex) {
-		StringBuilder sql = new StringBuilder("SELECT image_uri, page_uri " +
-				"FROM image_page " +
-				"WHERE image_uri IN (");
+	public List<Image> getImagesWithColor(List<String> colorList, List<Integer> freqList, int startIndex, int endIndex) {
+		StringBuilder sql = new StringBuilder("SELECT i.image_uri, ip.page_uri " +
+				"FROM image_page AS ip INNER JOIN image AS i ON ip.image = i.id " +
+				"WHERE ip.image IN ( SELECT a.image FROM ( ");
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("start_index", startIndex);
 		parameterSource.addValue("end_index", endIndex);
-		//		parameterSource.addValue("relative_freq", this.defaultImageReturnThreshold);
 		for(int i = 0; i < colorList.size(); i++) {
 			if(i>0) {
 				sql.append(" INNER JOIN ");
 			}
-			sql.append("(SELECT image_uri FROM color WHERE color = :color" + i + " AND relative_freq > :relative_freq" +  i +") as "+ Character.toChars((i+97))[0]);
-			if(i>0) {
-				sql.append(" USING (image_uri) ");
+			sql.append("(SELECT image FROM color WHERE color = :color" + i + " AND relative_freq >= :relative_freq_low" +  i +" AND relative_freq <= :relative_freq_high" +  i +") AS "+ Character.toChars((i+97))[0]);
+			if( i > 0 ) {
+				sql.append(" USING (image) ");
 			}
 			CompressedColor color = colorFactory.createCompressedColor(Color.decode(colorList.get(i)));
 			parameterSource.addValue("color"+i, color.getColor());
-			parameterSource.addValue("relative_freq"+i, defaultImageReturnThreshold);
+			parameterSource.addValue("relative_freq_low"  + i, defaultImageReturnThreshold - 5 );
+			parameterSource.addValue("relative_freq_high" + i, defaultImageReturnThreshold + 5);
+
 		}
-		sql.append(" ) LIMIT :start_index, :end_index ");
+		sql.append(" )) LIMIT :start_index, :end_index ");
 		LOGGER.debug("SQL query to run: " + sql.toString());
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
