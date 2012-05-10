@@ -54,7 +54,8 @@ public class ImageImpl implements Image {
 	
 	@Override
 	public String toString() {
-		return "Image [imageUri=" + imageUri + ", pageUri=" + pageUris + "]";
+		return "ImageImpl [imageUri=" + imageUri + ", pageUris=" + pageUris
+				+ ", height=" + height + ", width=" + width + "]";
 	}
 
 	@Override
