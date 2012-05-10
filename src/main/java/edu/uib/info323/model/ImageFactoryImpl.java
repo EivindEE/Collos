@@ -27,7 +27,7 @@ public class ImageFactoryImpl implements ImageFactory {
 	
 	
 	public Image createImage(String imageUri, List<String> pageUris, int height, int width) {
-		return new ImageImpl(imageUri, pageUris, height, width);
+		return this.createImage(-1, imageUri, pageUris, height, width);
 	}
 
 	public Image createImage(String imageUri, List<String> pageUris) {
@@ -36,6 +36,10 @@ public class ImageFactoryImpl implements ImageFactory {
 
 	public Image createImage(String imageUri, int height, int width) {
 		return this.createImage(imageUri, new ArrayList<String>(), height, width);
+	}
+	
+	public Image createImage(int id, String imageUri, List<String> pageUris, int height, int width) {
+		return new ImageImpl(id, imageUri, pageUris, height, width);
 	}
 
 }

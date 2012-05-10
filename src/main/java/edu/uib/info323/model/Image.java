@@ -48,5 +48,7 @@ public interface Image {
 	public abstract void setHeight(int imageHeight);
 
 	public abstract void setWidth(int imageWidth);
+	
+	public abstract int getId();
 
 }

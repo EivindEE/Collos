@@ -4,16 +4,23 @@ import java.util.List;
 
 
 public class ImageImpl implements Image {
+	
 	private String imageUri;
 	private List<String> pageUris;
 	private int height;
 	private int width;
+	private int id;
 	
 	public ImageImpl(String imageUri, List<String> pageUri){
 		this(imageUri, pageUri, 0, 0);
 	}
 	
 	public ImageImpl(String imageUri, List<String> pageUris, int height, int width) {
+		this(-1, imageUri,pageUris, height, width);
+	}
+	
+	public ImageImpl(int id, String imageUri, List<String> pageUris, int height, int width) {
+		this.id = id;
 		this.imageUri = imageUri;
 		this.pageUris = pageUris;
 		this.height = height;
@@ -110,5 +117,9 @@ public class ImageImpl implements Image {
 
 	public void setWidth(int imageWidth) {
 		this.width = imageWidth;
+	}
+
+	public int getId() {
+		return this.id;
 	}
 }
