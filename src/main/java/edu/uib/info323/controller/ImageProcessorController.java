@@ -52,6 +52,7 @@ public class ImageProcessorController {
 			List<Image> images = imageDao.getUnprocessedImages();
 			imageDao.updateAnalysedDate(images);
 			List<ColorFreq> freqs = new LinkedList<ColorFreq>();
+			List<Image> failures = new LinkedList<Image>();
 			for(Image image : images) {
 				try {
 					imageProcessor.setImage(image);
@@ -60,17 +61,15 @@ public class ImageProcessorController {
 					freqs.addAll(imageProcessor.getColorFreqs());
 				}
 				catch(Exception e) {
-					LOGGER.error("Got " + e.getClass() + "exception with message "+ e.getLocalizedMessage() + " for image " + image.getImageUri() + ". Deleting image from DB");
-					try{
-						imageDao.delete(image);
-						LOGGER.debug("Image deleted"); 
-					}
-					catch (Exception ee) {
-						LOGGER.error("Image not deleted, got exception " + e.getClass() );
-					}
+					failures.add(image);
 				}
 			}
+			if(failures.size() > 0) {
+				LOGGER.debug(failures.size()  + " images could not be processed and were deleted");
+				imageDao.delete(failures);
+			}
 			colorFreqDao.insert(freqs);
+			images.removeAll(failures);
 			imageDao.update(images);
 		}
 
