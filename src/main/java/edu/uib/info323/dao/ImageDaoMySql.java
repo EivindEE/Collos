@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +42,8 @@ public class ImageDaoMySql implements ImageDao{
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	public void delete(Image image) {
-		String sql = "DELETE FROM image WHERE image_uri = :image_uri";
-		jdbcTemplate.update(sql, this.getMapSqlParameterSource(image));
+		List<Image> images = new LinkedList<Image>();
+		this.delete(images);
 
 	}
 
@@ -62,7 +63,7 @@ public class ImageDaoMySql implements ImageDao{
 	public Image getImageByImageUri(String imageUri) {
 		String sql = "SELECT page_uri " +
 				"FROM image_page " +
-				"WHERE image_uri = :image_uri";
+				"WHERE image = :image";
 		List<String> pageUris = jdbcTemplate.queryForList(sql, new MapSqlParameterSource("image_uri", imageUri), String.class);
 
 		return imageFactory.createImage(imageUri, pageUris);
@@ -125,8 +126,10 @@ public class ImageDaoMySql implements ImageDao{
 			parameterSource.addValue("page", image.getPageUris().get(0).hashCode());
 		}
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
+
 		parameterSource.addValue("height", image.getHeight());
 		parameterSource.addValue("width", image.getHeight());
+
 		return parameterSource; 
 	}
 
@@ -144,7 +147,7 @@ public class ImageDaoMySql implements ImageDao{
 		return 	jdbcTemplate.query(sql,new MapSqlParameterSource(), new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException { 
-				return imageFactory.createImage(rs.getString("image_uri"));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getInt("id"));
 			}
 		});
 	}
@@ -156,11 +159,11 @@ public class ImageDaoMySql implements ImageDao{
 		jdbcTemplate.update(sql, mapSqlParameterSource);
 		long insertEnd = System.currentTimeMillis();
 		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
-		
+
 		insertStart = System.currentTimeMillis();
 		sql = "INSERT INTO image_page (image, page, page_uri) VALUES (:image, :page, :page_uri) ON DUPLICATE KEY UPDATE image = image";
 		jdbcTemplate.update(sql, mapSqlParameterSource);
-		
+
 		insertEnd = System.currentTimeMillis();
 		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
 
@@ -174,7 +177,7 @@ public class ImageDaoMySql implements ImageDao{
 		jdbcTemplate.batchUpdate(sql, parameterSource);
 		long insertEnd = System.currentTimeMillis();
 		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
-		
+
 		insertStart = System.currentTimeMillis();
 		sql = "INSERT INTO image_page (image, page, page_uri) VALUES (:image, :page, :page_uri) ON DUPLICATE KEY UPDATE image = image";
 		jdbcTemplate.batchUpdate(sql, parameterSource);
@@ -203,12 +206,12 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public void update(List<Image> images) {
-		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE id = :id";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 
 	public void updateAnalysedDate(final List<Image> images) {
-		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE image_uri = :image_uri";
+		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE id = :id";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 
@@ -219,7 +222,7 @@ public class ImageDaoMySql implements ImageDao{
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("start_index", startIndex);
 		parameterSource.addValue("end_index", endIndex);
-//		parameterSource.addValue("relative_freq", this.defaultImageReturnThreshold);
+		//		parameterSource.addValue("relative_freq", this.defaultImageReturnThreshold);
 		for(int i = 0; i < colorList.size(); i++) {
 			if(i>0) {
 				sql.append(" INNER JOIN ");
@@ -246,5 +249,11 @@ public class ImageDaoMySql implements ImageDao{
 		LOGGER.debug("Query time: " + (( endTime - startTime) / 1000.0));
 		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
 		return images;
+	}
+
+	public void delete(List<Image> images) {
+		String sql = "DELETE FROM image WHERE id = :id";
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
+
 	}
 }
