@@ -59,12 +59,12 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 	}
 
 	public void insert(ColorFreq colorFreq) {
-		String sql = "INSERT INTO color(image_uri, color, relative_freq, compression) VALUES (:image_uri, :color, :relative_freq, :compression)";
+		String sql = "INSERT INTO color(image, color, relative_freq, compression) VALUES (:image, :color, :relative_freq, :compression)";
 		jdbcTemplate.update(sql, this.getMapSqlParameterSource(colorFreq));
 	}
 
 	public List<ColorFreq> getImageColorFreqs(Image image) {
-		String sql = "SELECT * FROM color WHERE image_uri = :image_uri";
+		String sql = "SELECT * FROM color WHERE image = :image";
 
 		rowMapper.setImage(image);
 		List<ColorFreq> colorFreqs = jdbcTemplate.query(sql,this.getMapSqlParameterSource(image), rowMapper);
@@ -72,21 +72,21 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 	}
 
 	public void insert(final List<ColorFreq> colorFreqs) {
-		String sql = "INSERT INTO color(image_uri, color, relative_freq, compression) " +
-					 "VALUES ( :image_uri, :color, :relative_freq, :compression) " +
+		String sql = "INSERT INTO color(image, color, relative_freq, compression) " +
+					 "VALUES ( :image, :color, :relative_freq, :compression) " +
 					 "ON DUPLICATE KEY UPDATE relative_freq = :relative_freq, compression = :compression ";
 		jdbcTemplate.batchUpdate(sql,this.getSqlParameterSource(colorFreqs) );
 	}
 
 	public void remove(ColorFreq colorFreq) {
-		String sql = "DELETE FROM color WHERE image_uri = :image_uri";
+		String sql = "DELETE FROM color WHERE image = :image";
 		HashMap<String, Object> namedParameters = new HashMap<String, Object>();
 		namedParameters.put("image_uri",colorFreq.getImage().getImageUri());
 		jdbcTemplate.update(sql, namedParameters);
 	}
 
 	public void remove(final List<ColorFreq> colorFreqs) {
-		String sql = "DELETE FROM color WHERE image_uri = :image_uri";
+		String sql = "DELETE FROM color WHERE image = :image";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(colorFreqs));
 	}
 	
@@ -102,7 +102,7 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 	
 	private MapSqlParameterSource getMapSqlParameterSource(ColorFreq colorFreq) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-		namedParameters.addValue("image_uri",colorFreq.getImage().getImageUri());
+		namedParameters.addValue("image",colorFreq.getImage().getImageUri().hashCode());
 		namedParameters.addValue("color",colorFreq.getColor());
 		namedParameters.addValue("relative_freq",colorFreq.getRelativeFreq());
 		namedParameters.addValue("compression",colorFreq.getCompression());
@@ -110,6 +110,8 @@ public class ColorFreqDaoMySql implements ColorFreqDao {
 	}
 
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
-		return new MapSqlParameterSource("image_uri",image.getImageUri());
+		MapSqlParameterSource parameterSource = new MapSqlParameterSource("image_uri",image.getImageUri());
+		parameterSource.addValue("id", image.getImageUri().hashCode());
+		return parameterSource;
 	}
 }
