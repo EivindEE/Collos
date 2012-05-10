@@ -35,4 +35,6 @@ public interface ImageDao {
 
 	public abstract List<Image> getImagesWithColor(List<String> colorList,
 			int startIndex, int endIndex);
+
+	public abstract void delete(List<Image> failures);
 }
