@@ -34,9 +34,9 @@ public class ImageDaoMySql implements ImageDao{
 	@Autowired
 	private ImageFactory imageFactory;
 
-	private int defaultImageReturnThreshold = 30;
+	private int defaultImageReturnThreshold = 10;
 	private int defaultIndexStart = 0;
-	private int defaultIndexEnd = 1000;
+	private int defaultIndexEnd = 150;
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -118,8 +118,11 @@ public class ImageDaoMySql implements ImageDao{
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("image_uri", image.getImageUri());
+		parameterSource.addValue("id", image.getImageUri().hashCode());
+		parameterSource.addValue("image", image.getImageUri().hashCode());
 		if(image.getPageUris().size() > 0) {
 			parameterSource.addValue("page_uri", image.getPageUris().get(0));
+			parameterSource.addValue("page", image.getPageUris().get(0).hashCode());
 		}
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
 		parameterSource.addValue("height", image.getHeight());
@@ -147,25 +150,36 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public void insert(Image image) {
-		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
+		long insertStart = System.currentTimeMillis();
+		String sql = "INSERT INTO image (id, image_uri) VALUES (:id, :image_uri) ON DUPLICATE KEY UPDATE id = id";
 		MapSqlParameterSource mapSqlParameterSource = this.getMapSqlParameterSource(image);
 		jdbcTemplate.update(sql, mapSqlParameterSource);
-
-		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
+		long insertEnd = System.currentTimeMillis();
+		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
+		
+		insertStart = System.currentTimeMillis();
+		sql = "INSERT INTO image_page (image, page, page_uri) VALUES (:image, :page, :page_uri) ON DUPLICATE KEY UPDATE image = image";
 		jdbcTemplate.update(sql, mapSqlParameterSource);
-
-		LOGGER.debug("Inserted " + image + " into database");
+		
+		insertEnd = System.currentTimeMillis();
+		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
 
 	}
 
 
 	public void insert(final List<Image> images) {
-		String sql = "INSERT INTO image (image_uri) VALUES (:image_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
+		long insertStart = System.currentTimeMillis();
+		String sql = "INSERT INTO image (id, image_uri) VALUES (:id, :image_uri) ON DUPLICATE KEY UPDATE id = id";
 		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
 		jdbcTemplate.batchUpdate(sql, parameterSource);
-
-		sql = "INSERT INTO image_page (image_uri,page_uri) VALUES (:image_uri,:page_uri) ON DUPLICATE KEY UPDATE image_uri = image_uri";
+		long insertEnd = System.currentTimeMillis();
+		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
+		
+		insertStart = System.currentTimeMillis();
+		sql = "INSERT INTO image_page (image, page, page_uri) VALUES (:image, :page, :page_uri) ON DUPLICATE KEY UPDATE image = image";
 		jdbcTemplate.batchUpdate(sql, parameterSource);
+		insertEnd = System.currentTimeMillis();
+		LOGGER.debug("Image insert time: " + ((insertEnd -  insertStart) / 1000.0));
 
 	}
 
@@ -199,12 +213,9 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public List<Image> getImagesWithColor(List<String> colorList, int startIndex, int endIndex) {
-		StringBuilder sql = new StringBuilder("SELECT image_page.image_uri, image_page.page_uri " +
-				"FROM image_page, image " +
-				"WHERE image_page.image_uri = image.image_uri " +
-				"AND image.width >= 100 AND image.height > 100 " +
-				"AND image.image_uri IN (SELECT a.image_uri FROM " 
-				);
+		StringBuilder sql = new StringBuilder("SELECT image_uri, page_uri " +
+				"FROM image_page " +
+				"WHERE image_uri IN (");
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("start_index", startIndex);
 		parameterSource.addValue("end_index", endIndex);
@@ -221,7 +232,7 @@ public class ImageDaoMySql implements ImageDao{
 			parameterSource.addValue("color"+i, color.getColor());
 			parameterSource.addValue("relative_freq"+i, defaultImageReturnThreshold);
 		}
-		sql.append(" ) LIMIT :start_index , :end_index ");
+		sql.append(" ) LIMIT :start_index, :end_index ");
 		LOGGER.debug("SQL query to run: " + sql.toString());
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
