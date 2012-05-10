@@ -57,7 +57,7 @@ public class HomeController {
 			colorList.add("0x" + color);
 		}
 		
-		List<Image> images = imageDao.getImagesWithColor(colorList, 0, 1000);
+		List<Image> images = imageDao.getImagesWithColor(colorList, null, 0, 100);
 		LOGGER.debug("Found " +  images.size() + " images");
 		return images;
 	}
