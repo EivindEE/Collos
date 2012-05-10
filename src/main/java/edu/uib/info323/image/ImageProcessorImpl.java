@@ -3,6 +3,7 @@ package edu.uib.info323.image;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -118,8 +119,11 @@ public class ImageProcessorImpl implements ImageProcessor {
 			bufferedImage = ImageIO.read(inputStream);
 			this.imageHeight = bufferedImage.getHeight();
 			this.imageWidth = bufferedImage.getWidth();
+			if( imageWidth < 100 || imageHeight < 100) {
+				throw new InvalidParameterException("Image less that 100 x 100 px. To small for db.");
+			}
 			this.numberOfPixels = this.imageHeight * this.imageWidth;
-		}catch (Exception e) {
+		}catch (IOException e) {
 			throw new InvalidParameterException("Could not open stream for image " + image);
 		}
 
