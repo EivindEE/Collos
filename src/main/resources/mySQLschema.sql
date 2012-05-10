@@ -1,24 +1,25 @@
 CREATE TABLE image(
-	image_uri VARCHAR(500),
+	id INT UNSIGNED,
+	image_uri VARCHAR(2000),
 	date_analyzed DATE,
-	suspended INT,
 	width  MEDIUMINT UNSIGNED,
 	height MEDIUMINT UNSIGNED,
-	PRIMARY KEY(image_uri)
+	PRIMARY KEY(id)
 );
 
 
 CREATE TABLE image_page(
-	image_uri VARCHAR(500),
-	page_uri VARCHAR(500),
-	FOREIGN KEY (image_uri) REFERENCES image (image_uri) ON DELETE CASCADE ON UPDATE CASCADE ,
-	PRIMARY KEY (image_uri , page_uri)
+	image INT UNSIGNED,
+	page INT UNSIGNED,
+	page_uri VARCHAR(2000),
+	FOREIGN KEY (image) REFERENCES image (id) ON DELETE CASCADE ON UPDATE CASCADE ,
+	PRIMARY KEY (image , page)
 );
   
 CREATE TABLE color(
-	image_uri VARCHAR(500),
-	color INT,
-	relative_freq INT,
-	FOREIGN KEY (image_uri) REFERENCES image (image_uri) ON DELETE CASCADE ON UPDATE CASCADE ,
-	PRIMARY KEY(image_uri, color)
+	image INT UNSIGNED,
+	color INT UNSIGNED,
+	relative_freq TINYINT(3) UNSIGNED,
+	FOREIGN KEY (image) REFERENCES image (id) ON DELETE CASCADE ON UPDATE CASCADE ,
+	PRIMARY KEY(image, color)
 );
