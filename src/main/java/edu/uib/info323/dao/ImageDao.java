@@ -34,7 +34,7 @@ public interface ImageDao {
 	public abstract void update(List<Image> images);
 
 	public abstract List<Image> getImagesWithColor(List<String> colorList,
-			int startIndex, int endIndex);
+			List<Integer> freqList, int startIndex, int endIndex);
 
 	public abstract void delete(List<Image> failures);
 }
