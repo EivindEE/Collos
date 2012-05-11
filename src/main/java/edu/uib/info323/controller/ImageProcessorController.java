@@ -2,8 +2,10 @@ package edu.uib.info323.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +55,7 @@ public class ImageProcessorController {
 			imageDao.updateAnalysedDate(images);
 			List<ColorFreq> freqs = new LinkedList<ColorFreq>();
 			List<Image> failures = new LinkedList<Image>();
+			Map<String,Integer> exceptions = new HashMap<String, Integer>();
 			for(Image image : images) {
 				try {
 					imageProcessor.setImage(image);
@@ -61,11 +64,14 @@ public class ImageProcessorController {
 					freqs.addAll(imageProcessor.getColorFreqs());
 				}
 				catch(Exception e) {
+					int count = exceptions.containsKey(e.getClass().getName()) ? exceptions.get(e.getClass().getName()) : 0;
+					exceptions.put(e.getClass().getName(), ++count);
 					failures.add(image);
 				}
 			}
 			if(failures.size() > 0) {
-				LOGGER.debug(failures.size()  + " images could not be processed and were deleted");
+
+				LOGGER.warn(failures.size()  + " images could not be processed and were deleted, because of exceptions: " + exceptions.toString());
 				imageDao.delete(failures);
 			}
 			colorFreqDao.insert(freqs);
