@@ -123,7 +123,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 				throw new InvalidParameterException("Image less that 100 x 100 px. To small for db.");
 			}
 			this.numberOfPixels = this.imageHeight * this.imageWidth;
-		}catch (IOException e) {
+		}catch (Exception e) {
 			throw new InvalidParameterException("Could not open stream for image " + image);
 		}
 
