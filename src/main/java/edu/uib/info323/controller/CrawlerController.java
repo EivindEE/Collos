@@ -29,7 +29,7 @@ public class CrawlerController {
 		 * true to make sure they are included in the crawl.
 		 */
 
-		String[] crawlDomains = new String[] { "http://www.flickr.com", "http://www.aftenposten.no/", "http://www.smbc-comics.com/", "http://imgur.com/", "http://www.bt.no", "http://wikipedia.org" };
+		String[] crawlDomains = new String[] { "http://photobucket.com/images/colorful/", "http://www.flickr.com/groups/best100only/pool/", "http://www.reddit.com/r/photography/","http://www.reddit.com/r/PictureChallenge","http://www.reddit.com/r/photos","http://www.nationalgeographic.com/","http://www.sciencephoto.com/","http://www.google.com/search?client=safari&rls=en&q=animal+images&ie=UTF-8&oe=UTF-8" };
 
 
 		for (String domain : crawlDomains) {
