@@ -49,9 +49,18 @@ public class ImageDaoMySql implements ImageDao{
 	public void delete(List<Image> images) {
 		String sql = "DELETE FROM image WHERE id = :id";
 		SqlParameterSource[] parameterSource = this.getSqlParameterSource(images);
-		jdbcTemplate.batchUpdate(sql, parameterSource);
+		int[] deleted = jdbcTemplate.batchUpdate(sql, parameterSource);
+		int imagesDeleted = 0;
+		for(Integer i : deleted) {
+			imagesDeleted += i;
+		}
 		sql = "DELETE FROM image_page WHERE image = :image";
-		jdbcTemplate.batchUpdate(sql, parameterSource);
+		deleted = jdbcTemplate.batchUpdate(sql, parameterSource);
+		int pagesDeleted = 0;
+		for(Integer i : deleted) {
+			pagesDeleted += i;
+		}
+		LOGGER.debug(imagesDeleted + " images and " + pagesDeleted + " pages deleted");
 		
 	}
 
