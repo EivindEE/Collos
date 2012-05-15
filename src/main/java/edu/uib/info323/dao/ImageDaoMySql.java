@@ -161,7 +161,7 @@ public class ImageDaoMySql implements ImageDao{
 		parameterSource.addValue("date_analyzed", new Date(System.currentTimeMillis()));
 
 		parameterSource.addValue("height", image.getHeight());
-		parameterSource.addValue("width", image.getHeight());
+		parameterSource.addValue("width", image.getWidth());
 
 		return parameterSource; 
 	}
