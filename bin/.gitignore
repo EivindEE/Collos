@@ -1,0 +1,10 @@
+.classpath
+.project
+.DS_Store
+.springBeans
+.settings/
+logs/
+target/
+src/main/java/edu/uib/info323/config/jdbc.properties
+src/main/resources/jdbc.properties
+Collos/crawl/frontier/*
