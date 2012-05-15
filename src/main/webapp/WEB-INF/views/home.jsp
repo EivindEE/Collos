@@ -30,6 +30,8 @@
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
+		var relativeFreqs = new Array();
+
 
 		$("#collos").click(function() {
 
@@ -39,29 +41,52 @@
 			color.push(colorPalette.current_display_color);
 			console.log(colorPalette.current_display_color);
 			writeHtml(color);
-
+			var startWidth = 0;
 			$('.color').resizable({
 				handles : 'e',
 				maxHeight : '50',
 				maxWidth : $('.color').parent().width(),
+				start: function(){
+					startWidth = $(this).width();				
+				},
 				resize : function() {
 					var resizeWidth = $(this).width();
 					var parentWidth = $(this).parent().width();
 					var percent = 100 * resizeWidth / parentWidth;
-					var numberSiblings = $(this).siblings().size();
 					var restPercent = 100 - percent;
+					
+					var numberSiblings = $(this).siblings().size();
 					var siblingPercent = restPercent / numberSiblings;
-					//console.log(this.offsetParent());
-					console.log(resizeWidth);
-					console.log(parentWidth);
-					console.log(percent);
-					$(this).css('width', percent + '%')
-					$(this).siblings().css('width', siblingPercent + '%')
-
+					$(this).css('width', percent + '%');
+					var next = $(this).next();
+					var siblingsWidth = 0;
+					$(next).siblings().each(function(i,el){
+						siblingsWidth += $(el).width();
+					});
+					var nextWidth = parentWidth - siblingsWidth;
+					var nextPercent = 100 * nextWidth / parentWidth;
+					if($(next).width() <= 1){
+						var id = $(next).index();
+						color.splice(id, 1);
+						$(next).remove();
+					}
+					$(next).css('width', nextPercent + '%	');
+					
+					
+				},
+				stop: function(){
+					relativeFreqs = new Array();
+					var parentWidth = $(this).parent().width();
+					$(this).parent().children().each(function(i, el){
+						var percent = 100 * $(el).width() / parentWidth; 
+						relativeFreqs.push(percent);
+					});
+					console.log(relativeFreqs);
 				}
+			
 			});
 
-			$.getJSON("/Collos/color?colors=" + color, function(data) {
+			$.getJSON("/Collos/color?colors=" + color + "&freq=" + relativeFreqs , function(data) {
 				writeImages(data);
 				imagesArray = data;
 			}
@@ -79,6 +104,8 @@
 		});
 
 	});
+	
+	
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
