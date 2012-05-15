@@ -75,13 +75,7 @@
 					
 				},
 				stop: function(){
-					relativeFreqs = new Array();
-					var parentWidth = $(this).parent().width();
-					$(this).parent().children().each(function(i, el){
-						var percent = 100 * $(el).width() / parentWidth; 
-						relativeFreqs.push(percent);
-					});
-					console.log(relativeFreqs);
+					calculateFreq();
 				}
 			
 			});
@@ -100,6 +94,7 @@
 			color.splice(id, 1);
 			var width = 100 / color.length
 			$('.color').css('width', width + '%');
+			calculateFreq();
 			console.log(color.length);
 		});
 
@@ -115,9 +110,20 @@
 		}
 		var width = 100 / color.length
 		$('.color').css('width', width + '%');
+		calculateFreq();
 		console.log(color.length);
 		console.log(width);
 	};
+	
+	function calculateFreq(){
+		relativeFreqs = new Array();
+		var parentWidth = $('#col').width();
+		$('#col').children().each(function(i, el){
+			var percent = 100 * $(el).width() / parentWidth;
+			relativeFreqs.push(percent);
+		});
+		console.log(relativeFreqs);
+	}
 
 	function writeImages(images) {
 		$('#container').html('');
