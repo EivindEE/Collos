@@ -135,7 +135,7 @@
 		$('#container').html('');
 
 		for ( var i = 0; i < images.length; i++) {
-			var height = images[i].width/=images[i].height
+			var height = 100 * (1.0 * images[i].height) / images[i].width;
 			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='100px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
 			
 			$('#container').append($imagebox)
