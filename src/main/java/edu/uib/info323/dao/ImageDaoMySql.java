@@ -105,8 +105,8 @@ public class ImageDaoMySql implements ImageDao{
 			}
 			CompressedColor color = colorFactory.createCompressedColor(Color.decode(colorList.get(i)));
 			parameterSource.addValue("color"+i, color.getColor());
-			parameterSource.addValue("relative_freq_low"  + i, defaultImageReturnThreshold - 5 );
-			parameterSource.addValue("relative_freq_high" + i, defaultImageReturnThreshold + 5);
+			parameterSource.addValue("relative_freq_low"  + i, freqList.get(i) - 5 );
+			parameterSource.addValue("relative_freq_high" + i, freqList.get(i) + 5);
 
 		}
 		sql.append(" )) LIMIT :start_index, :end_index ");
