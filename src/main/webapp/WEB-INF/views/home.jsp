@@ -40,6 +40,7 @@
 		$("#palette").click(function(e) {
 			color.push(colorPalette.current_display_color);
 			console.log(colorPalette.current_display_color);
+			
 			writeHtml(color);
 			var startWidth = 0;
 			$('.color').resizable({
@@ -75,16 +76,11 @@
 					
 				},
 				stop: function(){
-					calculateFreq();
+					getImages(color);
 				}
 			
 			});
-
-			$.getJSON("/Collos/color?colors=" + color + "&freq=" + relativeFreqs , function(data) {
-				writeImages(data);
-				imagesArray = data;
-			}
-			);
+		getImages(color);
 		});
 
 		$('.delete_color').live('click', function() {
@@ -94,12 +90,21 @@
 			color.splice(id, 1);
 			var width = 100 / color.length
 			$('.color').css('width', width + '%');
-			calculateFreq();
+			getImages(color);
 			console.log(color.length);
 		});
 
 	});
 	
+	function getImages(color){
+		$.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {
+			
+			writeImages(data);
+			imagesArray = data;
+		}
+		);
+		
+	}
 	
 	function writeHtml(color) {
 		$('#col').html('');
@@ -110,12 +115,11 @@
 		}
 		var width = 100 / color.length
 		$('.color').css('width', width + '%');
-		calculateFreq();
 		console.log(color.length);
 		console.log(width);
 	};
 	
-	function calculateFreq(){
+	function getFreqs(){
 		relativeFreqs = new Array();
 		var parentWidth = $('#col').width();
 		$('#col').children().each(function(i, el){
@@ -123,6 +127,7 @@
 			relativeFreqs.push(percent);
 		});
 		console.log(relativeFreqs);
+		return relativeFreqs;
 	}
 
 	function writeImages(images) {
