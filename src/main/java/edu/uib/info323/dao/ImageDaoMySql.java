@@ -77,6 +77,17 @@ public class ImageDaoMySql implements ImageDao{
 		return this.removeDuplicates(images);
 	}
 
+	public List<Image> getOldestAnalyzed() {
+		String sql = "SELECT * FROM image WHERE date_analyzed IS NOT NULL ORDER BY date_analyzed ASC LIMIT 0, 500";
+		return jdbcTemplate.query(sql, new MapSqlParameterSource(), new RowMapper<Image>() {
+
+			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"),rs.getInt("height"),rs.getInt("width"));
+			}
+
+		});
+	}
+	
 	public Image getImageByImageUri(String imageUri) {
 		String sql = "SELECT page_uri " +
 					 "FROM image_page " +

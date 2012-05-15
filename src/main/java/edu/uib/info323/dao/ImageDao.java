@@ -37,4 +37,6 @@ public interface ImageDao {
 			List<Integer> freqList, int startIndex, int endIndex);
 
 	public abstract void delete(List<Image> failures);
+	
+	public List<Image> getOldestAnalyzed();
 }
