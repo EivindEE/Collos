@@ -28,11 +28,12 @@ public class ReindexSize {
 	@RequestMapping("/reindex")
 	public void reindex() {
 		while(true) {
-			List<Image> images = imageDao.getOldestAnalyzed();
+			List<Image> images = imageDao.getNotReIndexed();
 			imageDao.updateAnalysedDate(images);
 			Map<String, Integer> exceptions = new HashMap<String, Integer>();
 			List<Image> failures = new ArrayList<Image>(100);
 			for(Image image : images) {
+				LOGGER.debug("(Re)starting reindex loop");
 				try {
 				processor.setImage(image);
 				image.setHeight(processor.getImageHeight());
@@ -49,7 +50,7 @@ public class ReindexSize {
 				imageDao.delete(failures);
 			}
 			images.removeAll(failures);
-			imageDao.update(images);
+			imageDao.updateReIndexed(images);
 		}
 	}
 }

@@ -38,5 +38,7 @@ public interface ImageDao {
 
 	public abstract void delete(List<Image> failures);
 	
-	public List<Image> getOldestAnalyzed();
+	public List<Image> getNotReIndexed();
+	
+	public void updateReIndexed(List<Image> images);
 }

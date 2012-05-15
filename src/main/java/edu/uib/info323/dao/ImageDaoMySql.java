@@ -77,12 +77,12 @@ public class ImageDaoMySql implements ImageDao{
 		return this.removeDuplicates(images);
 	}
 
-	public List<Image> getOldestAnalyzed() {
-		String sql = "SELECT * FROM image WHERE date_analyzed IS NOT NULL ORDER BY date_analyzed ASC LIMIT 0, 500";
+	public List<Image> getNotReIndexed() {
+		String sql = "SELECT * FROM image WHERE date_analyzed IS NOT NULL AND reindexed = 0 ORDER BY date_analyzed ASC LIMIT 0, 500";
 		return jdbcTemplate.query(sql, new MapSqlParameterSource(), new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"),rs.getInt("height"),rs.getInt("width"));
+				return imageFactory.createImage(rs.getString("image_uri"), new ArrayList<String>(),rs.getInt("height"),rs.getInt("width"), rs.getInt("id"));
 			}
 
 		});
@@ -241,6 +241,11 @@ public class ImageDaoMySql implements ImageDao{
 
 	public void update(List<Image> images) {
 		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE id = :id";
+		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
+	}
+	
+	public void updateReIndexed(List<Image> images) {
+		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed, reindexed = 1 WHERE id = :id";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 
