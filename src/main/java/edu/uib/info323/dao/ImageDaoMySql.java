@@ -124,7 +124,7 @@ public class ImageDaoMySql implements ImageDao{
 			parameterSource.addValue("relative_freq_high" + i, freqList.get(i) + 15);
 			}
 		}
-		sql.append(" )) LIMIT :start_index, :end_index ");
+		sql.append(" ) WHERE reindexed = 1) LIMIT :start_index, :end_index ");
 		LOGGER.debug("SQL query to run: " + sql.toString());
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
@@ -240,7 +240,7 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public void update(List<Image> images) {
-		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed WHERE id = :id";
+		String sql = "UPDATE image SET height = :height, width = :width , date_analyzed = :date_analyzed, reindexed = 1 WHERE id = :id";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 	
