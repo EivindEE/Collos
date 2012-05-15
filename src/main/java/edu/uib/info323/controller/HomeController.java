@@ -41,15 +41,22 @@ public class HomeController {
 
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors){
-		LOGGER.debug("Got request for colors: " + colors);
+	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs){
+		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs);
 		String[] colorArray = colors.split(",");
 		List<String>  colorList = new ArrayList<String>();
 		for(String color : colorArray) {
 			colorList.add("0x" + color);
 		}
 		
-		List<Image> images = imageDao.getImagesWithColor(colorList, null, 0, 100);
+		String[] freqArray = freqs.split(",");
+		List<Integer> freqList = new ArrayList<Integer>();
+		for(String freq : freqArray){
+			freqList.add((int)Double.parseDouble(freq));
+		}
+		
+		
+		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, 0, 100);
 		LOGGER.debug("Found " +  images.size() + " images");
 		return images;
 	}
