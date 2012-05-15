@@ -19,5 +19,7 @@ public interface ImageFactory {
 	
 	public Image createImage(String imageUri, int height, int width, int id);
 	
-	public Image createImage(String imageUri, List<String> pageUris, int width, int height, int id);
+	public Image createImage(String imageUri, List<String> pageUris, int height, int width, int id);
+
+	public Image createImage(String imageUri, String pageUri, int height, int width);
 }

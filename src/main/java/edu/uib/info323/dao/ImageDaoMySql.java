@@ -89,7 +89,7 @@ public class ImageDaoMySql implements ImageDao{
 
 
 	public List<Image> getImagesWithColor(List<String> colorList, List<Integer> freqList, int startIndex, int endIndex) {
-		StringBuilder sql = new StringBuilder("SELECT i.image_uri, ip.page_uri " +
+		StringBuilder sql = new StringBuilder("SELECT i.image_uri, ip.page_uri, i.height, i.width " +
 				"FROM image_page AS ip INNER JOIN image AS i ON ip.image = i.id " +
 				"WHERE ip.image IN ( SELECT a.image FROM ( ");
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
@@ -119,7 +119,7 @@ public class ImageDaoMySql implements ImageDao{
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
 
 			public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"));
+				return imageFactory.createImage(rs.getString("image_uri"), rs.getString("page_uri"),rs.getInt("height"),rs.getInt("width"));
 			}
 
 		});

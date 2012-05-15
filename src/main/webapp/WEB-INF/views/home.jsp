@@ -135,12 +135,18 @@
 		$('#container').html('');
 
 		for ( var i = 0; i < images.length; i++) {
-			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img src='" +  images[i].imageUri + "'></a>");
+			var height = images[i].width/=images[i].height
+			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='100px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
+			
 			$('#container').append($imagebox)
+			console.log("image number" +i+ " height="+images[i].height)
+			console.log("image number" +i+ " width="+images[i].width)
+
+			console.log("this is height "+ height)
 
 		}
 
-		$('#container').masonry('reload');
+		$('#container').imagesLoaded($container.masonry('reload'));
 		$('a.gallery')
 				.colorbox(
 						{
@@ -190,7 +196,6 @@
 	</div>
 
 	<script>
-		$(function() {
 
 			var $container = $('#container');
 
@@ -208,7 +213,7 @@
 				});
 			});
 
-		});
+		
 	</script>
 
 </body>
