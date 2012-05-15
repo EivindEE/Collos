@@ -27,6 +27,7 @@
 <link rel="stylesheet" type="text/css" href="resources/css/colorbox.css" />
 <script type="text/javascript">
 	var imagesArray;
+	var request =$.ajax();
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
@@ -97,8 +98,8 @@
 	});
 	
 	function getImages(color){
-		$.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {
-			
+	request.abort();
+	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {
 			writeImages(data);
 			imagesArray = data;
 		}
