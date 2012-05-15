@@ -250,7 +250,7 @@ public class ImageDaoMySql implements ImageDao{
 	}
 
 	public void updateAnalysedDate(final List<Image> images) {
-		String sql = "UPDATE image SET date_analyzed = :date_analyzed WHERE id = :id";
+		String sql = "UPDATE image SET date_analyzed = :date_analyzed, reindexed = 2 WHERE id = :id";
 		jdbcTemplate.batchUpdate(sql, this.getSqlParameterSource(images));
 	}
 }
