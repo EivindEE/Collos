@@ -2,13 +2,10 @@ package edu.uib.info323.image;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ContextConfiguration;
 
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageFactory;
-import edu.uib.info323.model.ImageImpl;
 
 @Scope("prototype")
 @Component
