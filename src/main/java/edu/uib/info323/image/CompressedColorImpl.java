@@ -3,7 +3,7 @@ package edu.uib.info323.image;
 import java.security.InvalidParameterException;
 /**
  * CompressedColor contains information about a color in a reduced RGB color space given a certain compression.
- * Accepts RGB color ranges (0-255), and comression rates ³4. 
+ * Accepts RGB color ranges (0-255), and comression rates 4. 
  *
  */
 
@@ -32,11 +32,11 @@ public class CompressedColorImpl implements CompressedColor {
 	/**
 	 * Creates a new compressed color object.
 	 * Allowed ranges for colors is 0-255.
-	 * Allowed range for compression is ³4 or greater
+	 * Allowed range for compression is 4 or greater
 	 * @param red (0-255)
 	 * @param green (0-255)
 	 * @param blue (0-255)
-	 * @param compression (Must be ³4 )
+	 * @param compression (Must be 4 )
 	 */
 	public CompressedColorImpl(int red, int green, int blue, int compression) {
 		String exeptionString = "";
