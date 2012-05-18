@@ -100,6 +100,7 @@
 	
 	function getImages(color){
 	request.abort();
+	showLoading();
 	if(color.length != 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
 		writeQueryTime(data.images, data.pageCount, data.queryTime );
@@ -182,6 +183,13 @@
 		var qt = $('#query-time').html('');
 		qt.append('Found '+ images.length +' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
 	}
+	
+	function showLoading(){
+		var loading = $('#container').html('');
+		loading.append('<div id="loading"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
+		
+	}
+	
 </script>
 </head>
 
@@ -189,21 +197,23 @@
 	<div id="top">
 
 		<img src="resources/images/colloslogo.png" alt="Collos" id="collos" />
-
+		
 		<div id="palette_container">
 
 			<div id="palette">&nbsp;</div>
 
 		</div>
+		<div id="palette_text"> 
+		Click on the color palette to select color.
+		</div>
+		
 	</div>
-	<!-- 	<div id="resizable" style=" width: 150px; height: 150px; padding: 0.5em; " class="ui-widget-content">
-    <h3 class="ui-widget-header">Resizable</h3>
-</div> -->
+
 	<script>
 		
 	</script>
 	<div id="col"></div>
-	<span id="query-time"></span>
+	<div id="query-time"></div>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled clearfix masonry">
 		</div>
