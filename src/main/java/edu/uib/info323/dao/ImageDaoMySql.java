@@ -125,7 +125,6 @@ public class ImageDaoMySql implements ImageDao{
 			}
 		}
 		sql.append(" ) WHERE reindexed = 1) LIMIT :start_index, :end_index ");
-		LOGGER.debug("SQL query to run: " + sql.toString());
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
 
