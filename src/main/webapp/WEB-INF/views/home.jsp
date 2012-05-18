@@ -35,11 +35,8 @@
 		var relativeFreqs = new Array();
 
 
-		$("#collos").click(function() {
-
-		});
-
 		$("#palette").click(function(e) {
+			if(color.length <= 4){
 			color.push(colorPalette.current_display_color);
 			console.log(colorPalette.current_display_color);
 			
@@ -83,8 +80,14 @@
 			
 			});
 		getImages(color);
+			}else{
+			var info_box = $('#info_box').html('');
+			info_box.append("You have selected to many colors. Please remove one before choosing a new color");
+			}
 		});
-
+	
+// end of palette click
+		
 		$('.delete_color').live('click', function() {
 			var id = $(this).parent().index();
 			console.log("index" + id);
@@ -100,6 +103,7 @@
 	
 	function getImages(color){
 	request.abort();
+	clearInfoBox();
 	showLoading();
 	if(color.length != 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
@@ -141,7 +145,7 @@
 
 	function writeImages(images) {
 		$('#container').html('');
-
+		if(images.length > 0){
 		for ( var i = 0; i < images.length; i++) {
 			var height = 200 * (1.0 * images[i].height / images[i].width) ;
 			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='200px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
@@ -153,8 +157,9 @@
 			console.log("this is height "+ height)
 
 		}
-
+		
 		$('#container').imagesLoaded($container.masonry('reload'));
+		
 		$('a.gallery')
 				.colorbox(
 						{
@@ -176,14 +181,20 @@
 								console.log(pageUris);
 								return pageUris + "</div>";
 							}
+						
 						});
+		}else{
+			console.log("No images found")
+		}
 	};
 	
 	function writeQueryTime(images, pageCount, queryTime){
-		var qt = $('#query-time').html('');
+		var qt = $('#info_box').html('');
 		qt.append('Found '+ images.length +' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
 	}
-	
+	function clearInfoBox(){
+		$('#info_box').html('');
+	} 
 	function showLoading(){
 		var loading = $('#container').html('');
 		loading.append('<div id="loading"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
@@ -213,7 +224,7 @@
 		
 	</script>
 	<div id="col"></div>
-	<div id="query-time"></div>
+	<div id="info_box"></div>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled clearfix masonry">
 		</div>
