@@ -140,8 +140,8 @@
 		$('#container').html('');
 
 		for ( var i = 0; i < images.length; i++) {
-			var height = 100 * (1.0 * images[i].height) / images[i].width;
-			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='100px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
+			var height = 200 * (1.0 * images[i].height / images[i].width) ;
+			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='200px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
 			
 			$('#container').append($imagebox)
 			console.log("image number" +i+ " height="+images[i].height)
