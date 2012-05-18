@@ -64,7 +64,7 @@
 						siblingsWidth += $(el).width();
 					});
 					var nextWidth = parentWidth - siblingsWidth;
-					var nextPercent = 100 * nextWidth / parentWidth;
+					var nextPercent = (100 * nextWidth / parentWidth);
 					if($(next).width() <= 1){
 						var id = $(next).index();
 						color.splice(id, 1);
@@ -93,7 +93,7 @@
 			console.log("index" + id);
 			$(this).parent().remove();
 			color.splice(id, 1);
-			var width = 100 / color.length
+			var width = 100 / color.length;
 			$('.color').css('width', width + '%');
 			getImages(color);
 			console.log(color.length);
@@ -126,7 +126,7 @@
 			console.log(color);
 			$('#col').append(item);
 		}
-		var width = 100 / color.length
+		var width = 100 / color.length;
 		$('.color').css('width', width + '%');
 		console.log(color.length);
 		console.log(width);
