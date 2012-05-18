@@ -2,7 +2,9 @@ package edu.uib.info323.controller;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,14 +43,15 @@ public class HomeController {
 
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody List<Image> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs){
+	public @ResponseBody Map<String, Object> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs){
+		long queryStart = System.currentTimeMillis();
 		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs);
 		String[] colorArray = colors.split(",");
 		List<String>  colorList = new ArrayList<String>();
 		for(String color : colorArray) {
 			colorList.add("0x" + color);
 		}
-		
+		Map<String, Object> responseMap = new HashMap<String, Object>();
 		String[] freqArray = freqs.split(",");
 		List<Integer> freqList = new ArrayList<Integer>();
 		for(String freq : freqArray){
@@ -58,7 +61,10 @@ public class HomeController {
 		
 		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, 0, 100);
 		LOGGER.debug("Found " +  images.size() + " images");
-		return images;
+		long queryEnd = System.currentTimeMillis();
+		responseMap.put("images", images);
+		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
+		return responseMap;
 	}
 
 	@RequestMapping("/spring")
