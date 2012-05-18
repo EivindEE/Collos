@@ -28,6 +28,7 @@
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
+	
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
@@ -100,9 +101,10 @@
 	function getImages(color){
 	request.abort();
 	if(color.length != 0){
-	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {
-			writeImages(data);
-			imagesArray = data;
+	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
+		writeQueryTime(data.images, data.pageCount, data.queryTime );
+		writeImages(data.images);
+		imagesArray = data.images;
 		}
 		);
 	}else {
@@ -157,6 +159,7 @@
 						{
 							next : "Next",
 							previous : "Previous",
+							width: 500,
 							title : function() {
 								var i = $(this).attr('id');
 								var pageUrisList = imagesArray[i].pageUris;
@@ -174,6 +177,11 @@
 							}
 						});
 	};
+	
+	function writeQueryTime(images, pageCount, queryTime){
+		var qt = $('#query-time').html('');
+		qt.append('Found '+ images.length +' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
+	}
 </script>
 </head>
 
@@ -195,6 +203,7 @@
 		
 	</script>
 	<div id="col"></div>
+	<span id="query-time"></span>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled clearfix masonry">
 		</div>

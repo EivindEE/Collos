@@ -154,6 +154,10 @@ strong {
 	padding: 10px 10px 10px 210px;
 }
 
+#query-time {
+	padding-left:10px;
+}
+
 /* screens smaller than 640 */
 @media screen and (max-width: 640px) {
 	#site-nav {
