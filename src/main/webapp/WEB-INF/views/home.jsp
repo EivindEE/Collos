@@ -99,12 +99,17 @@
 	
 	function getImages(color){
 	request.abort();
+	if(color.length != 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {
 			writeImages(data);
 			imagesArray = data;
 		}
 		);
-		
+	}else {
+		request.abort();	
+		console.log("Request aborted");
+
+	}
 	}
 	
 	function writeHtml(color) {
