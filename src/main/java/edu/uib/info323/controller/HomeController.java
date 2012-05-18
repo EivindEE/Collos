@@ -64,6 +64,11 @@ public class HomeController {
 		long queryEnd = System.currentTimeMillis();
 		responseMap.put("images", images);
 		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
+		int pageCount = 0;
+		for(Image image : images) {
+			pageCount += image.getPageUris().size();
+		}
+		responseMap.put("pageCount", pageCount);
 		return responseMap;
 	}
 

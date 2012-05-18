@@ -102,7 +102,7 @@
 	request.abort();
 	if(color.length != 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
-		writeQueryTime(data.queryTime, data.images);
+		writeQueryTime(data.images, data.pageCount, data.queryTime );
 		writeImages(data.images);
 		imagesArray = data.images;
 		}
@@ -159,6 +159,7 @@
 						{
 							next : "Next",
 							previous : "Previous",
+							width: 500,
 							title : function() {
 								var i = $(this).attr('id');
 								var pageUrisList = imagesArray[i].pageUris;
@@ -177,9 +178,9 @@
 						});
 	};
 	
-	function writeQueryTime(queryTime, images){
+	function writeQueryTime(images, pageCount, queryTime){
 		var qt = $('#query-time').html('');
-		qt.append('Found '+ images.length +'  images in ' + queryTime + ' seconds');
+		qt.append('Found '+ images.length +' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
 	}
 </script>
 </head>
