@@ -120,6 +120,7 @@
 			var colorBox = $(pickedColor);
 			console.log("Colorbox object style:" + colorBox.css('background-color'));
 			colorBox.css("background-color","" + $('#color').attr('value'));
+			colorBox.attr("id","" + $('#color').attr('value').replace("#",""));
 			$('#picker').hide();
 			getImages(color);
 			
