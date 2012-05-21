@@ -115,7 +115,8 @@
 		
 		$('#change_color').live('click',function(){
 			var change_color = $('#color').attr('value');
-			console.log("Collor to change:" + change_color);
+			var colorToReplace = color.indexOf(pickedColor.replace("#",""));
+			color[colorToReplace] = $('#color').attr('value').replace("#","");
 			var colorBox = $(pickedColor);
 			console.log("Colorbox object style:" + colorBox.css('background-color'));
 			colorBox.css("background-color","" + $('#color').attr('value'));
