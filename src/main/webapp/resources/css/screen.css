@@ -348,12 +348,12 @@ button {
 	float: left;
 }
 
-.color{
+.color_box{
 	height: 50px;
 	position:relative;
 	
 }
-.color:after {
+.color_box:after {
 	position:absolute;
 	right:-2px;
 	top:-3px;
@@ -364,9 +364,18 @@ button {
 	z-index:10;
 	
 }
-.color:last-child:after {
+.color_box:last-child:after {
  display:none;
 
+}
+
+.pick_color{
+	padding-left:3px;
+	
+}
+
+#picker{
+	display:none;
 }
 
 .delete_color{

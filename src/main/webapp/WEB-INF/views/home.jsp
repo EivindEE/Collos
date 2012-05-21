@@ -25,6 +25,9 @@
 <script type="text/javascript"
 	src="resources/javascript/jquery.colorbox.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/colorbox.css" />
+<script type="text/javascript"
+	src="resources/javascript/farbtastic.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/css/farbtastic.css" />
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
@@ -42,10 +45,10 @@
 			
 			writeHtml(color);
 			var startWidth = 0;
-			$('.color').resizable({
+			$('.color_box').resizable({
 				handles : 'e',
 				maxHeight : '50',
-				maxWidth : $('.color').parent().width(),
+				maxWidth : $('.color_box').parent().width(),
 				start: function(){
 					startWidth = $(this).width();				
 				},
@@ -98,8 +101,38 @@
 			getImages(color);
 			console.log(color.length);
 		});
+		
+		
+		$('.pick_color').live('click',function(){
+			var id = $(this).parent().index();
+			change_color = "#"+color[id];
+			$('#picker').show();
+			$('#color').val(change_color);
+			$('#colorpicker').farbtastic('#color');
+		});
+		
+		$('#change_color').live('click',function(){
+			var change_color = $('#color').attr('value');
+			var rgb_color = hex2rgb(change_color);
+			var b_color = $(change_color).css("background");
+			console.log(change_color);
+			console.log(rgb_color);
+			console.log(b_color);
+			$(change_color).css("background-color",rgb_color);
+			$('#picker').hide();
+			
+		});
+		
 
 	});
+	function hex2rgb(hexStr){
+		var hex=parseInt(hexStr.substring(1),16);
+		var r =(hex & 0xff0000) >>16;
+		var g =(hex & 0x00ff00) >>8;
+		var b =(hex & 0x0000ff);
+		return "rgb("+r+" ,"+g+" ,"+b+")";
+	}
+	
 	
 	function getImages(color){
 	request.abort();
@@ -122,12 +155,12 @@
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
-			var item = "<div class=\"color ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"></div>";
+			var item = "<div id='"+color[i]+"' class=\"color_box ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"><img class=\"pick_color\" id=\"pick_color_"+i+"\" src=\"resources/images/change.png\" title=\"Change this color\"></div>";
 			console.log(color);
 			$('#col').append(item);
 		}
 		var width = 100 / color.length;
-		$('.color').css('width', width + '%');
+		$('.color_box').css('width', width + '%');
 		console.log(color.length);
 		console.log(width);
 	};
@@ -223,8 +256,14 @@
 	<script>
 		
 	</script>
+	
 	<div id="col"></div>
 	<div id="info_box"></div>
+	<div id="picker">
+	<form><input type="text" id="color" name="color" value="" /></form>
+	<div id="colorpicker"></div>
+	 <button id="change_color">Change color</button>
+	</div>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled clearfix masonry">
 		</div>
