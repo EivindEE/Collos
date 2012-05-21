@@ -36,6 +36,7 @@
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
 		var relativeFreqs = new Array();
+		var pickedColor;
 
 
 		$("#palette").click(function(e) {
@@ -105,6 +106,7 @@
 		
 		$('.pick_color').live('click',function(){
 			var id = $(this).parent().index();
+			pickedColor ="#"+color[id];
 			change_color = "#"+color[id];
 			$('#picker').show();
 			$('#color').val(change_color);
@@ -113,26 +115,15 @@
 		
 		$('#change_color').live('click',function(){
 			var change_color = $('#color').attr('value');
-			var rgb_color = hex2rgb(change_color);
-			var b_color = $(change_color).css("background");
-			console.log(change_color);
-			console.log(rgb_color);
-			console.log(b_color);
-			$(change_color).css("background-color",rgb_color);
+			console.log("Collor to change:" + change_color);
+			var colorBox = $(pickedColor);
+			console.log("Colorbox object style:" + colorBox.css('background-color'));
+			colorBox.css("background-color","" + $('#color').attr('value'));
 			$('#picker').hide();
 			
 		});
 		
-
-	});
-	function hex2rgb(hexStr){
-		var hex=parseInt(hexStr.substring(1),16);
-		var r =(hex & 0xff0000) >>16;
-		var g =(hex & 0x00ff00) >>8;
-		var b =(hex & 0x0000ff);
-		return "rgb("+r+" ,"+g+" ,"+b+")";
-	}
-	
+	});	
 	
 	function getImages(color){
 	request.abort();
