@@ -3,7 +3,6 @@ package edu.uib.info323.model;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.uib.info323.image.test.AbstractCollosTest;
 

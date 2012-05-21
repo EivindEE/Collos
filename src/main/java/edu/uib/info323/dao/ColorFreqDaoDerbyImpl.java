@@ -13,12 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
 import edu.uib.info323.dao.rowmapper.ColorFreqRowMapper;
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
-import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 
 
