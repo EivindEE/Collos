@@ -95,11 +95,7 @@
 			color.splice(id, 1);
 			var width = 100 / color.length;
 			$('.color').css('width', width + '%');
-			if (color.length > 0){
-				getImages(color);
-			} else{
-				hideLoading();
-			}
+			getImages(color);
 			console.log(color.length);
 		});
 
@@ -109,16 +105,16 @@
 	request.abort();
 	clearInfoBox();
 	showLoading();
-	if(color.length != 0){
+	if(color.length !== 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
 		writeQueryTime(data.images, data.pageCount, data.queryTime );
 		writeImages(data.images);
 		imagesArray = data.images;
 		}
 		);
-	}else { 
+	}else {
+		hideLoading();
 		request.abort();
-		loading.hidden();
 		console.log("Request aborted");
 
 	}
