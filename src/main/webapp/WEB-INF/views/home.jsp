@@ -121,6 +121,7 @@
 			console.log("Colorbox object style:" + colorBox.css('background-color'));
 			colorBox.css("background-color","" + $('#color').attr('value'));
 			$('#picker').hide();
+			getImages(color);
 			
 		});
 		
