@@ -28,7 +28,7 @@
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
-	
+
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
@@ -95,7 +95,11 @@
 			color.splice(id, 1);
 			var width = 100 / color.length;
 			$('.color').css('width', width + '%');
-			getImages(color);
+			if (color.length > 0){
+				getImages(color);
+			} else{
+				hideLoading();
+			}
 			console.log(color.length);
 		});
 
@@ -112,8 +116,9 @@
 		imagesArray = data.images;
 		}
 		);
-	}else {
-		request.abort();	
+	}else { 
+		request.abort();
+		loading.hidden();
 		console.log("Request aborted");
 
 	}
@@ -153,9 +158,6 @@
 			$('#container').append($imagebox)
 			console.log("image number" +i+ " height="+images[i].height)
 			console.log("image number" +i+ " width="+images[i].width)
-
-			console.log("this is height "+ height)
-
 		}
 		
 		$('#container').imagesLoaded($container.masonry('reload'));
@@ -194,11 +196,16 @@
 	}
 	function clearInfoBox(){
 		$('#info_box').html('');
-	} 
+	}
+	
 	function showLoading(){
 		var loading = $('#container').html('');
-		loading.append('<div id="loading"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
-		
+		loading.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
+	}
+	
+	function hideLoading(){
+		var load = $('#loading');
+		load.css("visibility", "hidden");
 	}
 	
 </script>
