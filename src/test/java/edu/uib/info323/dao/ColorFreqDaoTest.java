@@ -9,18 +9,14 @@ import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
-import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageImpl;
 
 public class ColorFreqDaoTest extends AbstractDaoCollosTest {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoTest.class);
 
 	@Autowired
 	private ColorFreqDao dao;
