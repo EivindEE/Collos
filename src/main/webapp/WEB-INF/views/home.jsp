@@ -39,6 +39,15 @@
 		var relativeFreqs = new Array();
 		var pickedColor;
 		
+		$('#container').infinitescroll({
+		    navSelector  : '#page_bottom',            
+            // selector for the paged navigation (it will be hidden)
+			nextSelector : getImages(color),    
+            // selector for the NEXT link (to page 2)
+			itemSelector : '.box'          
+            // selector for all items you'll retrieve
+		})
+		
 		$("#palette").click(function(e) {
 			if(color.length <= 4){
 			color.push(colorPalette.current_display_color);
@@ -143,6 +152,7 @@
 		writeQueryTime(data.images, data.pageCount, data.queryTime );
 		writeImages(data.images);
 		imagesArray = data.images;
+		$('#container').append('<nav id="page_bottom"></nav>')
 		}
 		);
 	}else {
@@ -275,8 +285,9 @@
 	 <button id="change_color">Change color</button>
 	</div>
 	<div Id="pictures">
-		<div id="container" class="transitions-enabled clearfix masonry"></div>
+		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
 	</div>
+	
 
 	<script>
 
