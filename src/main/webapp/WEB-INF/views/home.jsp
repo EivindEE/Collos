@@ -9,14 +9,14 @@
 <title>Collos - Colorfull image searching</title>
 <!-- 	<link rel="shortcut icon" type="image/x-icon" href="resources/images/favicon.ico" /> -->
 <!-- 	<link rel="icon" type="image/png" href="resources/images/favicon.png" /> -->
-<link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
 <link rel="icon" type="image/png" href="resources/images/favicon.png">
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/overcast/jquery-ui.css">
+	href="resources/css/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
 
 <script src="resources/javascript/modernizr-transitions.js"></script>
 <script type="text/javascript"
@@ -31,7 +31,7 @@
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
-	
+
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
@@ -131,7 +131,7 @@
 	request.abort();
 	clearInfoBox();
 	showLoading();
-	if(color.length != 0){
+	if(color.length !== 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
 		writeQueryTime(data.images, data.pageCount, data.queryTime );
 		writeImages(data.images);
@@ -139,7 +139,8 @@
 		}
 		);
 	}else {
-		request.abort();	
+		hideLoading();
+		request.abort();
 		console.log("Request aborted");
 
 	}
@@ -148,7 +149,7 @@
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
-			var item = "<div id='"+color[i]+"' class=\"color_box ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"><img class=\"pick_color\" id=\"pick_color_"+i+"\" src=\"resources/images/change.png\" title=\"Change this color\"></div>";
+			var item = "<div id='"+color[i]+"' class=\"color_box ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete-1.png\" title=\"Delete this color\"><img class=\"pick_color\" id=\"pick_color_"+i+"\" src=\"resources/images/palette-small.png\" title=\"Change this color\"></div>";
 			console.log(color);
 			$('#col').append(item);
 		}
@@ -179,9 +180,6 @@
 			$('#container').append($imagebox)
 			console.log("image number" +i+ " height="+images[i].height)
 			console.log("image number" +i+ " width="+images[i].width)
-
-			console.log("this is height "+ height)
-
 		}
 		
 		$('#container').imagesLoaded($container.masonry('reload'));
@@ -220,11 +218,16 @@
 	}
 	function clearInfoBox(){
 		$('#info_box').html('');
-	} 
+	}
+	
 	function showLoading(){
 		var loading = $('#container').html('');
-		loading.append('<div id="loading"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
-		
+		loading.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
+	}
+	
+	function hideLoading(){
+		var load = $('#loading');
+		load.css("visibility", "hidden");
 	}
 	
 </script>
