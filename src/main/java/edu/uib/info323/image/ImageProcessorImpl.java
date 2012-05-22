@@ -70,7 +70,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 	/**
 	 * Sets the compressionrate of the RGB color space.
-	 * Accepted values are � 4
+	 * Accepted values are >= 4
 	 * @param imageCompressionRate
 	 */
 	public void setImageCompression(int imageCompressionRate) {
@@ -78,13 +78,13 @@ public class ImageProcessorImpl implements ImageProcessor {
 			colorFactory.setDefaultCompression(imageCompressionRate);
 		}
 		else {
-			throw new InvalidParameterException("Compression rate must be �4 but was " + imageCompressionRate );
+			throw new InvalidParameterException("Compression rate must be >=4 but was " + imageCompressionRate );
 		}
 	}
 
 	/**
 	 * Sets the compressionrate of the RGB color space.
-	 * Accepted values are � 4
+	 * Accepted values are >= 4
 	 * @param imageCompressionRate
 	 */
 	public int getImageCompression() {
