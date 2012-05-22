@@ -28,7 +28,7 @@
 <script type="text/javascript"
 	src="resources/javascript/farbtastic.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/farbtastic.css" />
-<script type="text/javascript" src="resources/javascript/jquery.endless-scroll.js"></script>
+<script type="text/javascript" src="resources/javascript/jquery.infinitescroll.js"></script>
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
@@ -38,10 +38,6 @@
 		var color = new Array();
 		var relativeFreqs = new Array();
 		var pickedColor;
-
-//		$(window).scroll(function () { 
-//		      console.log('hepp'); 
-//		    });
 		
 		$("#palette").click(function(e) {
 			if(color.length <= 4){
@@ -139,9 +135,9 @@
 	});
 	
 	function getImages(color){
-	//request.abort();
-	//clearInfoBox();
-	//showLoading();
+	request.abort();
+	clearInfoBox();
+	showLoading();
 	if(color.length !== 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
 		writeQueryTime(data.images, data.pageCount, data.queryTime );
