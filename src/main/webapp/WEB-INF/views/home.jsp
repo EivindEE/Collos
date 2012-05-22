@@ -222,6 +222,7 @@
 	
 	function showLoading(){
 		var loading = $('#container').html('');
+		$('#info_box').html('Loading please wait.')
 		loading.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
 	}
 	
@@ -254,15 +255,19 @@
 	</script>
 	
 	<div id="col"></div>
-	<div id="info_box"></div>
+	<div id="info_box">&nbsp;</div>
 	<div id="picker">
+	<div id="close_picker">
+	<input  type="image" src="resources/images/delete-1.png" onclick="$('#picker').hide();" width="20px" height="20px"/>
+	</div>
+	<div id="color_input">
 	<form><input type="text" id="color" name="color" value="" /></form>
+	</div>
 	<div id="colorpicker"></div>
 	 <button id="change_color">Change color</button>
 	</div>
 	<div Id="pictures">
-		<div id="container" class="transitions-enabled clearfix masonry">
-		</div>
+		<div id="container" class="transitions-enabled clearfix masonry"></div>
 	</div>
 
 	<script>
