@@ -4,13 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import edu.uib.info323.model.ColorFreq;
 import edu.uib.info323.model.ColorFreqFactory;
-import edu.uib.info323.model.ColorFreqImpl;
 import edu.uib.info323.model.Image;
 
 

@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,8 +22,6 @@ import edu.uib.info323.model.Image;
 
 @Component
 public class ColorFreqDaoMySql implements ColorFreqDao {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ColorFreqDaoMySql.class);
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 

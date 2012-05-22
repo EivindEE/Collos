@@ -2,7 +2,6 @@ package edu.uib.info323.crawler;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -19,7 +18,6 @@ import edu.uci.ics.crawler4j.url.WebURL;
 import edu.uib.info323.dao.ImageDao;
 import edu.uib.info323.model.Image;
 import edu.uib.info323.model.ImageFactory;
-import edu.uib.info323.model.ImageImpl;
 
 @Scope("prototype")
 @Component
