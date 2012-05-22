@@ -28,6 +28,7 @@
 <script type="text/javascript"
 	src="resources/javascript/farbtastic.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/farbtastic.css" />
+<script type="text/javascript" src="resources/javascript/jquery.infinitescroll.js"></script>
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
@@ -37,8 +38,7 @@
 		var color = new Array();
 		var relativeFreqs = new Array();
 		var pickedColor;
-
-
+		
 		$("#palette").click(function(e) {
 			if(color.length <= 4){
 			color.push(colorPalette.current_display_color);
@@ -132,7 +132,7 @@
 			
 		});
 		
-	});	
+	});
 	
 	function getImages(color){
 	request.abort();
@@ -217,6 +217,7 @@
 		}else{
 			console.log("No images found")
 		}
+		
 	};
 	
 	function writeQueryTime(images, pageCount, queryTime){
