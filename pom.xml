@@ -13,7 +13,16 @@
 		<slf4j.version>1.5.10</slf4j.version>
 	</properties>
 	<build>
+		<finalName>Collos</finalName>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<server>collos-server</server>
+					<path>/collos</path>
+				</configuration>
+			</plugin>
 			<!-- Plugin to run and test through maven -->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

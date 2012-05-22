@@ -9,14 +9,14 @@
 <title>Collos - Colorfull image searching</title>
 <!-- 	<link rel="shortcut icon" type="image/x-icon" href="resources/images/favicon.ico" /> -->
 <!-- 	<link rel="icon" type="image/png" href="resources/images/favicon.png" /> -->
-<link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
 <link rel="icon" type="image/png" href="resources/images/favicon.png">
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css"
-	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/themes/overcast/jquery-ui.css">
+	href="resources/css/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="resources/css/screen.css" />
 
 <script src="resources/javascript/modernizr-transitions.js"></script>
 <script type="text/javascript"
@@ -47,7 +47,7 @@
 			if(color.length <= 4){
 			color.push(colorPalette.current_display_color);
 			console.log(colorPalette.current_display_color);
-			
+			$('#picker').hide();
 			writeHtml(color);
 			var startWidth = 0;
 			$('.color_box').resizable({
@@ -105,15 +105,22 @@
 			$('.color_box').css('width', width + '%');
 			getImages(color);
 		});
-		
+			var color_picker_hidden = true;
 		
 		$('.pick_color').live('click',function(){
+			if(color_picker_hidden){
 			var id = $(this).parent().index();
 			pickedColor ="#"+color[id];
 			change_color = "#"+color[id];
 			$('#picker').show();
 			$('#color').val(change_color);
 			$('#colorpicker').farbtastic('#color');
+			color_picker_hidden=false;
+			}else{
+				color_picker_hidden=true;
+				$('#picker').hide();
+				
+			}
 		});
 		
 		$('#change_color').live('click',function(){
@@ -153,7 +160,7 @@
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
-			var item = "<div id='"+color[i]+"' class=\"color_box ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete.png\" title=\"Delete this color\"><img class=\"pick_color\" id=\"pick_color_"+i+"\" src=\"resources/images/change.png\" title=\"Change this color\"></div>";
+			var item = "<div id='"+color[i]+"' class=\"color_box ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete-1.png\" title=\"Delete this color\"><img class=\"pick_color\" id=\"pick_color_"+i+"\" src=\"resources/images/palette-small.png\" title=\"Change this color\"></div>";
 			console.log(color);
 			$('#col').append(item);
 		}
@@ -227,6 +234,7 @@
 	
 	function showLoading(){
 		var loading = $('#container').html('');
+		$('#info_box').html('Loading please wait.')
 		loading.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
 	}
 	
@@ -259,15 +267,19 @@
 	</script>
 	
 	<div id="col"></div>
-	<div id="info_box"></div>
+	<div id="info_box">&nbsp;</div>
 	<div id="picker">
+	<div id="close_picker">
+	<input  type="image" src="resources/images/delete-1.png" onclick="$('#picker').hide();" width="20px" height="20px"/>
+	</div>
+	<div id="color_input">
 	<form><input type="text" id="color" name="color" value="" /></form>
+	</div>
 	<div id="colorpicker"></div>
 	 <button id="change_color">Change color</button>
 	</div>
 	<div Id="pictures">
-		<div id="container" class="transitions-enabled clearfix masonry">
-		</div>
+		<div id="container" class="transitions-enabled clearfix masonry"></div>
 	</div>
 
 	<script>
