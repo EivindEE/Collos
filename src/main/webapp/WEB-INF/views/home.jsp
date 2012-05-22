@@ -98,9 +98,8 @@
 			$(this).parent().remove();
 			color.splice(id, 1);
 			var width = 100 / color.length;
-			$('.color').css('width', width + '%');
+			$('.color_box').css('width', width + '%');
 			getImages(color);
-			console.log(color.length);
 		});
 		
 		
@@ -119,7 +118,7 @@
 			color[colorToReplace] = $('#color').attr('value').replace("#","");
 			var colorBox = $(pickedColor);
 			console.log("Colorbox object style:" + colorBox.css('background-color'));
-			colorBox.css("background-color","" + $('#color').attr('value'));
+			colorBox.css("background-color",change_color);
 			colorBox.attr("id","" + $('#color').attr('value').replace("#",""));
 			$('#picker').hide();
 			getImages(color);
