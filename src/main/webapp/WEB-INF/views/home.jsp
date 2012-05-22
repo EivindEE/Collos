@@ -101,15 +101,22 @@
 			$('.color_box').css('width', width + '%');
 			getImages(color);
 		});
-		
+			var color_picker_hidden = true;
 		
 		$('.pick_color').live('click',function(){
+			if(color_picker_hidden){
 			var id = $(this).parent().index();
 			pickedColor ="#"+color[id];
 			change_color = "#"+color[id];
 			$('#picker').show();
 			$('#color').val(change_color);
 			$('#colorpicker').farbtastic('#color');
+			color_picker_hidden=false;
+			}else{
+				color_picker_hidden=true;
+				$('#picker').hide();
+				
+			}
 		});
 		
 		$('#change_color').live('click',function(){
