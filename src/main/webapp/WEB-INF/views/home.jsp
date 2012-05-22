@@ -43,7 +43,7 @@
 			if(color.length <= 4){
 			color.push(colorPalette.current_display_color);
 			console.log(colorPalette.current_display_color);
-			
+			$('#picker').hide();
 			writeHtml(color);
 			var startWidth = 0;
 			$('.color_box').resizable({
