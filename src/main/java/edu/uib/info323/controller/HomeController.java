@@ -65,10 +65,17 @@ public class HomeController {
 		responseMap.put("images", images);
 		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
 		int pageCount = 0;
-		for(Image image : images) {
+		StringBuilder imageUris = new StringBuilder();
+		
+		for(int i = 0; i < images.size() ; i++) {
+			Image image = images.get(i);
 			pageCount += image.getPageUris().size();
+			float height = 200 * image.getHeight() / image.getWidth();
+			
+			imageUris.append("<div class='box'> <a class='gallery' id=" + i + " href='" + image.getImageUri() + "'><img width='200px' height='"+height+"px' src='" +  image.getImageUri() + "'></a></div>\n");
 		}
 		responseMap.put("pageCount", pageCount);
+		responseMap.put("imageDivs", imageUris.toString());
 		return responseMap;
 	}
 

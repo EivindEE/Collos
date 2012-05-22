@@ -141,7 +141,7 @@
 	if(color.length !== 0){
 	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
 		writeQueryTime(data.images, data.pageCount, data.queryTime );
-		writeImages(data.images);
+		writeImages(data.imageDivs);
 		imagesArray = data.images;
 		}
 		);
@@ -177,68 +177,64 @@
 		return relativeFreqs;
 	}
 
+	
 	function writeImages(images) {
 		$('#container').html('');
-		if(images.length > 0){
-		for ( var i = 0; i < images.length; i++) {
-			var height = 200 * (1.0 * images[i].height / images[i].width) ;
-			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='200px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
-			
-			$('#container').append($imagebox)
-			console.log("image number" +i+ " height="+images[i].height)
-			console.log("image number" +i+ " width="+images[i].width)
-		}
-		
-		$('#container').imagesLoaded($container.masonry('reload'));
-		
-		$('a.gallery')
-				.colorbox(
-						{
-							next : "Next",
-							previous : "Previous",
-							width: 500,
-							title : function() {
-								var i = $(this).attr('id');
-								var pageUrisList = imagesArray[i].pageUris;
-								var pageUris = "<div><div style='float:left'>Source:</div>";
-								console.log(pageUrisList);
-								for ( var j = 0; j < pageUrisList.length
-										&& j < 20; j++) {
-									console.log(pageUrisList[j]);
-									pageUris = pageUris
-											+ '<a style="float:left" href="' + pageUrisList[j] + '" target="_blank">'
-											+ (j + 1) + ' &nbsp;</a>'
+		if (images.length > 0) {
+
+			$('#container').append(images)
+
+			$('#container').imagesLoaded($container.masonry('reload'));
+
+			$('a.gallery')
+					.colorbox(
+							{
+								next : "Next",
+								previous : "Previous",
+								width : 500,
+								title : function() {
+									var i = $(this).attr('id');
+									var pageUrisList = imagesArray[i].pageUris;
+									var pageUris = "<div><div style='float:left'>Source:</div>";
+									console.log(pageUrisList);
+									for ( var j = 0; j < pageUrisList.length
+											&& j < 20; j++) {
+										console.log(pageUrisList[j]);
+										pageUris = pageUris
+												+ '<a style="float:left" href="' + pageUrisList[j] + '" target="_blank">'
+												+ (j + 1) + ' &nbsp;</a>'
+									}
+									console.log(pageUris);
+									return pageUris + "</div>";
 								}
-								console.log(pageUris);
-								return pageUris + "</div>";
-							}
-						
-						});
-		}else{
+
+							});
+		} else {
 			console.log("No images found")
 		}
-		
+
 	};
-	
-	function writeQueryTime(images, pageCount, queryTime){
+
+	function writeQueryTime(images, pageCount, queryTime) {
 		var qt = $('#info_box').html('');
-		qt.append('Found '+ images.length +' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
+		qt.append('Found ' + images.length + ' images from ' + pageCount
+				+ ' pages in ' + queryTime + ' seconds');
 	}
-	function clearInfoBox(){
+	function clearInfoBox() {
 		$('#info_box').html('');
 	}
-	
-	function showLoading(){
+
+	function showLoading() {
 		var loading = $('#container').html('');
 		$('#info_box').html('Loading please wait.')
-		loading.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
+		loading
+				.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
 	}
-	
-	function hideLoading(){
+
+	function hideLoading() {
 		var load = $('#loading');
 		load.css("visibility", "hidden");
 	}
-	
 </script>
 </head>
 
