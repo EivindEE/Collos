@@ -28,26 +28,17 @@
 <script type="text/javascript" src="resources/javascript/farbtastic.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="resources/css/farbtastic.css" />
-<script type="text/javascript"
-	src="resources/javascript/jquery.infinitescroll.js"></script>
+
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
+	var imageDivs;
 
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
 		var color = new Array();
 		var relativeFreqs = new Array();
 		var pickedColor;
-		
-		$('#container').infinitescroll({
-		    navSelector  : '#page_bottom',            
-            // selector for the paged navigation (it will be hidden)
-			nextSelector : getImages(color),    
-            // selector for the NEXT link (to page 2)
-			itemSelector : '.box'          
-            // selector for all items you'll retrieve
-		})
 		
 		$("#palette").click(function(e) {
 			if(color.length <= 4){
@@ -196,7 +187,7 @@
 
 			$('#container').append(images)
 
-			$('#container').imagesLoaded($container.masonry('reload'));
+			$('#container').masonry('reload');
 
 			$('a.gallery')
 					.colorbox(
@@ -290,7 +281,16 @@
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
 	</div>
-	
+
+	<div id="postswrapper">   
+		<div class="item">content</div>		   
+		<div id="loadmoreajaxloader" style="display: none;">
+			<center>
+				<img src="resources/images/loading.gif" />
+			</center>
+		</div>
+	</div>
+
 
 	<script>
 		var $container = $('#container');
@@ -308,7 +308,47 @@
 
 			});
 		});
+
 	</script>
+	<script type="text/javascript">
+$(window).scroll(function()
+{
+    if($(window).scrollTop() == $(document).height() - $(window).height())
+    {
+        $('div#loadmoreajaxloader').show();
+
+if (color.length !== 0) {
+	request = $.getJSON("/Collos/color?colors=ffffff&freqs=100", function(data) {
+		var $newImages = $(data.imageDivs);
+		$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
+// 		imageDivs += data.imageDivs;
+// 		writeImages(imageDivs);
+// 		writeQueryTime(data.pageCount, data.queryTime);
+// 		imagesArray = data.imagePages;
+	});
+} else {
+	$('div#loadmoreajaxloader').show();
+	request.abort();
+	console.log("Request aborted");
+}
+
+//         $.ajax({
+//         url: "http://aftenposten.no",
+//         success: function(html)
+//         {
+//             if(html)
+//             {
+//                 $("#postswrapper").append(html);
+//                 $('div#loadmoreajaxloader').hide();
+//             }else
+//             {
+//                 $('div#loadmoreajaxloader').html('<center>No more posts to show.</center>');
+//             }
+//         }
+//         });
+    }
+});
+</script>
 
 </body>
 </html>
