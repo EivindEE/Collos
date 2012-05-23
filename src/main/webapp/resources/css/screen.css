@@ -405,6 +405,10 @@ button {
 	padding-left:5px;
 }
 
+#button_container{
+	float:left;
+}
+
 .delete_color{
 	padding-top:5px;
 	padding-left:5px;

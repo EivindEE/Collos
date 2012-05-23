@@ -25,10 +25,11 @@
 <script type="text/javascript"
 	src="resources/javascript/jquery.colorbox.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/colorbox.css" />
+<script type="text/javascript" src="resources/javascript/farbtastic.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="resources/css/farbtastic.css" />
 <script type="text/javascript"
-	src="resources/javascript/farbtastic.js"></script>
-<link rel="stylesheet" type="text/css" href="resources/css/farbtastic.css" />
-<script type="text/javascript" src="resources/javascript/jquery.infinitescroll.js"></script>
+	src="resources/javascript/jquery.infinitescroll.js"></script>
 <script type="text/javascript">
 	var imagesArray;
 	var request =$.ajax();
@@ -143,26 +144,28 @@
 		
 	});
 	
-	function getImages(color){
-	request.abort();
-	clearInfoBox();
-	showLoading();
-	if(color.length !== 0){
-	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
-		writeQueryTime(data.images, data.pageCount, data.queryTime );
-		writeImages(data.images);
-		imagesArray = data.images;
-		$('#container').append('<nav id="page_bottom"></nav>')
-		}
-		);
-	}else {
-		hideLoading();
-		request.abort();
-		console.log("Request aborted");
 
+	function getImages(color) {
+		request.abort();
+		clearInfoBox();
+		showLoading();
+		if (color.length !== 0) {
+			request = $.getJSON("/Collos/color?colors=" + color + "&freqs="
+					+ getFreqs(), function(data) {
+
+				console.log(data.imagePages);
+				writeImages(data.imageDivs);
+				writeQueryTime(data.pageCount, data.queryTime);
+				imagesArray = data.imagePages;
+				$('#container').append('<nav id="page_bottom"></nav>')
+			});
+		} else {
+			hideLoading();
+			request.abort();
+			console.log("Request aborted");
+		}
 	}
-	}
-	
+
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
@@ -175,11 +178,11 @@
 		console.log(color.length);
 		console.log(width);
 	};
-	
-	function getFreqs(){
+
+	function getFreqs() {
 		relativeFreqs = new Array();
 		var parentWidth = $('#col').width();
-		$('#col').children().each(function(i, el){
+		$('#col').children().each(function(i, el) {
 			var percent = 100 * $(el).width() / parentWidth;
 			relativeFreqs.push(percent);
 		});
@@ -189,66 +192,62 @@
 
 	function writeImages(images) {
 		$('#container').html('');
-		if(images.length > 0){
-		for ( var i = 0; i < images.length; i++) {
-			var height = 200 * (1.0 * images[i].height / images[i].width) ;
-			var $imagebox = $("<div class='box'> <a class='gallery' id='"+i+"' href='" + images[i].imageUri + "'><img width='200px' height='"+height+"px' src='" +  images[i].imageUri + "'></a>");
-			
-			$('#container').append($imagebox)
-			console.log("image number" +i+ " height="+images[i].height)
-			console.log("image number" +i+ " width="+images[i].width)
-		}
-		
-		$('#container').imagesLoaded($container.masonry('reload'));
-		
-		$('a.gallery')
-				.colorbox(
-						{
-							next : "Next",
-							previous : "Previous",
-							width: 500,
-							title : function() {
-								var i = $(this).attr('id');
-								var pageUrisList = imagesArray[i].pageUris;
-								var pageUris = "<div><div style='float:left'>Source:</div>";
-								console.log(pageUrisList);
-								for ( var j = 0; j < pageUrisList.length
-										&& j < 20; j++) {
-									console.log(pageUrisList[j]);
-									pageUris = pageUris
-											+ '<a style="float:left" href="' + pageUrisList[j] + '" target="_blank">'
-											+ (j + 1) + ' &nbsp;</a>'
+		if (images !== "") {
+
+			$('#container').append(images)
+
+			$('#container').imagesLoaded($container.masonry('reload'));
+
+			$('a.gallery')
+					.colorbox(
+							{
+								next : "Next",
+								previous : "Previous",
+								width : 500,
+								title : function() {
+									var image = $(this).attr('id');
+									var pageUrisList = imagesArray[image];
+									var pageUris = "<div><div style='float:left'>Source:</div>";
+									console.log(pageUrisList);
+									for ( var i = 0; i < pageUrisList.length
+											&& i < 20; i++) {
+										console.log(pageUrisList[i]);
+										pageUris = pageUris
+												+ '<a style="float:left" href="' + pageUrisList[i] + '" target="_blank">'
+												+ (i + 1) + ' &nbsp;</a>'
+									}
+									console.log(pageUris);
+									return pageUris + "</div>";
 								}
-								console.log(pageUris);
-								return pageUris + "</div>";
-							}
-						
-						});
-		}else{
+
+							});
+		} else {
 			console.log("No images found")
 		}
-		
+
 	};
-	
-	function writeQueryTime(images, pageCount, queryTime){
+
+	function writeQueryTime(pageCount, queryTime) {
 		var qt = $('#info_box').html('');
-		qt.append('Found '+ images.length +' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
+		var numImages = $('#container').children('.box').length;
+		qt.append('Found ' + numImages + ' images from ' + pageCount
+				+ ' pages in ' + queryTime + ' seconds');
 	}
-	function clearInfoBox(){
+	function clearInfoBox() {
 		$('#info_box').html('');
 	}
-	
-	function showLoading(){
+
+	function showLoading() {
 		var loading = $('#container').html('');
 		$('#info_box').html('Loading please wait.')
-		loading.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
+		loading
+				.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
 	}
-	
-	function hideLoading(){
+
+	function hideLoading() {
 		var load = $('#loading');
 		load.css("visibility", "hidden");
 	}
-	
 </script>
 </head>
 
@@ -256,33 +255,37 @@
 	<div id="top">
 
 		<img src="resources/images/colloslogo.png" alt="Collos" id="collos" />
-		
+
 		<div id="palette_container">
 
 			<div id="palette">&nbsp;</div>
 
 		</div>
-		<div id="palette_text"> 
-		Click on the color palette to select color.
-		</div>
-		
+		<div id="palette_text">Click on the color palette to select
+			color.</div>
+
 	</div>
 
 	<script>
 		
 	</script>
-	
+
 	<div id="col"></div>
 	<div id="info_box">&nbsp;</div>
 	<div id="picker">
-	<div id="close_picker">
-	<input  type="image" src="resources/images/delete-1.png" onclick="$('#picker').hide();" width="20px" height="20px"/>
-	</div>
-	<div id="color_input">
-	<form><input type="text" id="color" name="color" value="" /></form>
-	</div>
-	<div id="colorpicker"></div>
-	 <button id="change_color">Change color</button>
+		<div id="close_picker">
+			<input type="image" src="resources/images/delete-1.png"
+				onclick="$('#picker').hide();" width="20px" height="20px" />
+		</div>
+		<div id="color_input">
+			<form>
+				<input type="text" id="color" name="color" value="" />
+			</form>
+		</div>
+		<div id="colorpicker"></div>
+		<div id="button_container">
+			<button id="change_color">Change color</button>
+		</div>
 	</div>
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
@@ -290,24 +293,21 @@
 	
 
 	<script>
+		var $container = $('#container');
 
-			var $container = $('#container');
+		$container.imagesLoaded(function() {
+			$container.masonry({
+				itemSelector : '.box',
+				isFitWidth : true,
+				isAnimated : true,
+				animationOptions : {
+					duration : 300,
+					easing : 'linear',
+					queue : false
+				}
 
-			$container.imagesLoaded(function() {
-				$container.masonry({
-					itemSelector : '.box',
-					isFitWidth : true,
-					isAnimated : true,
-					animationOptions : {
-						duration : 300,
-						easing : 'linear',
-						queue : false
-					}
-
-				});
 			});
-
-		
+		});
 	</script>
 
 </body>

@@ -30,6 +30,8 @@ public class HomeController {
 
 	@Autowired
 	private ImageDao imageDao;
+	
+	private Integer maxPages = 100;
 
 
 
@@ -43,9 +45,16 @@ public class HomeController {
 
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody Map<String, Object> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs){
+	public @ResponseBody Map<String, Object> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs,
+			@RequestParam(required=false) Integer limitLow, @RequestParam(required=false) Integer limitHigh){
 		long queryStart = System.currentTimeMillis();
-		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs);
+		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs + ", From/To:" + limitLow + "/" + limitHigh);
+		if(limitHigh == null) {
+			limitHigh = maxPages;
+		}
+		if(limitLow == null) {
+			limitLow = 0;
+		}
 		String[] colorArray = colors.split(",");
 		List<String>  colorList = new ArrayList<String>();
 		for(String color : colorArray) {
@@ -58,17 +67,27 @@ public class HomeController {
 			freqList.add((int)Double.parseDouble(freq));
 		}
 		
-		
-		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, 0, 100);
+		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, limitLow, limitHigh); 
+		List<List<String>> imagePages = new ArrayList<List<String>>(limitHigh - limitLow); 
+		for(Image image : images){
+			imagePages.add(image.getPageUris());
+		}
 		LOGGER.debug("Found " +  images.size() + " images");
 		long queryEnd = System.currentTimeMillis();
-		responseMap.put("images", images);
+		responseMap.put("imagePages", imagePages);
 		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
 		int pageCount = 0;
-		for(Image image : images) {
+		StringBuilder imageUris = new StringBuilder();
+		
+		for(int i = 0; i < images.size() ; i++) {
+			Image image = images.get(i);
 			pageCount += image.getPageUris().size();
+			float height = 200 * image.getHeight() / image.getWidth();
+			
+			imageUris.append("<div class='box'> <a class='gallery' id=" + i + " href='" + image.getImageUri() + "'><img width='200px' height='"+height+"px' src='" +  image.getImageUri() + "'></a></div>\n");
 		}
 		responseMap.put("pageCount", pageCount);
+		responseMap.put("imageDivs", imageUris.toString());
 		return responseMap;
 	}
 
