@@ -33,11 +33,12 @@
 	var imagesArray;
 	var request =$.ajax();
 	var imageDivs;
+	var color = new Array();
+	var relativeFreqs = new Array();
+	var pageCount;
 
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
-		var color = new Array();
-		var relativeFreqs = new Array();
 		var pickedColor;
 		
 		$("#palette").click(function(e) {
@@ -144,7 +145,8 @@
 			request = $.getJSON("/Collos/color?colors=" + color + "&freqs="
 					+ getFreqs(), function(data) {
 
-				console.log(data.imagePages);
+				//console.log(data.imagePages);
+				pageCount = data.pageCount;
 				writeImages(data.imageDivs);
 				writeQueryTime(data.pageCount, data.queryTime);
 				imagesArray = data.imagePages;
@@ -308,23 +310,27 @@
 
 			});
 		});
-
 	</script>
 	<script type="text/javascript">
 $(window).scroll(function()
 {
     if($(window).scrollTop() == $(document).height() - $(window).height())
     {
+	var image_count = $('#container').children('.box').length;
+if(image_count >0){
         $('div#loadmoreajaxloader').show();
 
 if (color.length !== 0) {
-	request = $.getJSON("/Collos/color?colors=ffffff&freqs=100", function(data) {
+	var limitLow =pageCount;
+	var limitHigh = limitLow + 100;
+	request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&limitLow="+limitLow+"&limitHigh="+limitHigh, function(data) {
 		var $newImages = $(data.imageDivs);
 		$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
 // 		imageDivs += data.imageDivs;
 // 		writeImages(imageDivs);
 // 		writeQueryTime(data.pageCount, data.queryTime);
 // 		imagesArray = data.imagePages;
+		pageCount += data.pageCount;
 	});
 } else {
 	$('div#loadmoreajaxloader').show();
@@ -347,6 +353,7 @@ if (color.length !== 0) {
 //         }
 //         });
     }
+}
 });
 </script>
 
