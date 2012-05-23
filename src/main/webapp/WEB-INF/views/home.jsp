@@ -186,7 +186,7 @@
 
 			$('#container').append(images)
 
-			$('#container').imagesLoaded($container.masonry('reload'));
+			$('#container').masonry('reload'));
 
 			$('a.gallery')
 					.colorbox(
