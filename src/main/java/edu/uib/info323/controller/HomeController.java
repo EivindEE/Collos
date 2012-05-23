@@ -30,6 +30,8 @@ public class HomeController {
 
 	@Autowired
 	private ImageDao imageDao;
+	
+	private Integer maxPages = 100;
 
 
 
@@ -43,9 +45,16 @@ public class HomeController {
 
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public @ResponseBody Map<String, Object> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs){
+	public @ResponseBody Map<String, Object> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs,
+			@RequestParam(required=false) Integer limitLow, @RequestParam(required=false) Integer limitHigh){
 		long queryStart = System.currentTimeMillis();
-		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs);
+		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs + ", From/To:" + limitLow + "/" + limitHigh);
+		if(limitHigh == null) {
+			limitHigh = maxPages;
+		}
+		if(limitLow == null) {
+			limitLow = 0;
+		}
 		String[] colorArray = colors.split(",");
 		List<String>  colorList = new ArrayList<String>();
 		for(String color : colorArray) {
@@ -58,11 +67,14 @@ public class HomeController {
 			freqList.add((int)Double.parseDouble(freq));
 		}
 		
-		
-		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, 0, 100);
+		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, limitLow, limitHigh); 
+		List<List<String>> imagePages = new ArrayList<List<String>>(limitHigh - limitLow); 
+		for(Image image : images){
+			imagePages.add(image.getPageUris());
+		}
 		LOGGER.debug("Found " +  images.size() + " images");
 		long queryEnd = System.currentTimeMillis();
-		responseMap.put("images", images);
+		responseMap.put("imagePages", imagePages);
 		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
 		int pageCount = 0;
 		StringBuilder imageUris = new StringBuilder();
