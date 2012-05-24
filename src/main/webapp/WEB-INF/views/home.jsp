@@ -28,16 +28,17 @@
 <script type="text/javascript" src="resources/javascript/farbtastic.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="resources/css/farbtastic.css" />
-<script type="text/javascript"
-	src="resources/javascript/jquery.infinitescroll.js"></script>
+
 <script type="text/javascript">
-	var imagesArray;
+	var imagePageMap;
 	var request =$.ajax();
+	var imageDivs;
+	var color = new Array();
+	var relativeFreqs = new Array();
+	var pageCount;
 
 	jQuery(document).ready(function() {
 		var colorPalette = new ColorPalette($("#palette"));
-		var color = new Array();
-		var relativeFreqs = new Array();
 		var pickedColor;
 		
 		$("#palette").click(function(e) {
@@ -135,26 +136,28 @@
 		
 	});
 	
-	function getImages(color){
-	request.abort();
-	clearInfoBox();
-	showLoading();
-	if(color.length !== 0){
-	request = $.getJSON("/Collos/color?colors=" + color + "&freqs=" + getFreqs(), function(data) {	
-		console.log( data.imagePages);
-		writeImages(data.imageDivs);
-		writeQueryTime(data.pageCount, data.queryTime );
-		imagesArray = data.imagePages;
-		}
-		);
-	}else {
-		hideLoading();
-		request.abort();
-		console.log("Request aborted");
 
+	function getImages(color) {
+		request.abort();
+		clearInfoBox();
+		showLoading();
+		if (color.length !== 0) {
+			request = $.getJSON("/Collos/color?colors=" + color + "&freqs="
+					+ getFreqs(), function(data) {
+
+				//console.log(data.imagePages);
+				pageCount = data.pageCount;
+				writeImages(data.imageDivs);
+				writeQueryTime(data.pageCount, data.queryTime);
+				imagePageMap = data.imagePages;
+			});
+		} else {
+			hideLoading();
+			request.abort();
+			console.log("Request aborted");
+		}
 	}
-	}
-	
+
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
@@ -167,11 +170,11 @@
 		console.log(color.length);
 		console.log(width);
 	};
-	
-	function getFreqs(){
+
+	function getFreqs() {
 		relativeFreqs = new Array();
 		var parentWidth = $('#col').width();
-		$('#col').children().each(function(i, el){
+		$('#col').children().each(function(i, el) {
 			var percent = 100 * $(el).width() / parentWidth;
 			relativeFreqs.push(percent);
 		});
@@ -179,48 +182,55 @@
 		return relativeFreqs;
 	}
 
-	
 	function writeImages(images) {
 		$('#container').html('');
 		if (images !== "") {
 
 			$('#container').append(images)
 
-			$('#container').masonry('reload'));
 
-			$('a.gallery')
-					.colorbox(
-							{
-								next : "Next",
-								previous : "Previous",
-								width : 500,
-								title : function() {
-									var image = $(this).attr('id');
-									var pageUrisList = imagesArray[image];
-									var pageUris = "<div><div style='float:left'>Source:</div>";
-									console.log(pageUrisList);
-									for ( var i = 0; i < pageUrisList.length
-											&& i < 20; i++) {
-										console.log(pageUrisList[i]);
-										pageUris = pageUris
-												+ '<a style="float:left" href="' + pageUrisList[i] + '" target="_blank">'
-												+ (i + 1) + ' &nbsp;</a>'
-									}
-									console.log(pageUris);
-									return pageUris + "</div>";
-								}
+			$('#container').masonry('reload');
+			addColorbox();
 
-							});
+		
 		} else {
 			console.log("No images found")
 		}
 
 	};
+	
+	function addColorbox(){
+		$('a.gallery')
+		.colorbox(
+				{
+					next : "Next",
+					previous : "Previous",
+					width : 500,
+					title : function() {
+						console.log("this:" + this);
+						var pageUrisList = imagePageMap[this];
+						var pageUris = "<div><div style='float:left'>Source:</div>";
+						console.log(pageUrisList);
+						var count = 0;
+						for (var pageUri in pageUrisList) {
+							pageUris = pageUris
+									+ '<a style="float:left" href="' + pageUrisList[pageUri] + '" target="_blank">'
+									+ (count + 1) + ' &nbsp;</a>';
+									count++
+						}
+						console.log(pageUris);
+						return pageUris + "</div>";
+					}
+
+				});
+		
+	}
 
 	function writeQueryTime(pageCount, queryTime) {
 		var qt = $('#info_box').html('');
-		var numImages =  $('#container').children('.box').length;
-		qt.append('Found ' + numImages + ' images from ' + pageCount + ' pages in ' + queryTime + ' seconds');
+		var numImages = $('#container').children('.box').length;
+		qt.append('Found ' + numImages + ' images from ' + pageCount
+				+ ' pages in ' + queryTime + ' seconds');
 	}
 	function clearInfoBox() {
 		$('#info_box').html('');
@@ -277,8 +287,12 @@
 		</div>
 	</div>
 	<div Id="pictures">
-		<div id="container" class="transitions-enabled clearfix masonry"></div>
+		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
 	</div>
+		<div id="loadmoreajaxloader" style="display: none; margin-left:auto; margin-right:auto;width:30px;">		
+				<img  src="resources/images/loading.gif" />
+		</div>
+	
 
 	<script>
 		var $container = $('#container');
@@ -297,6 +311,45 @@
 			});
 		});
 	</script>
+	<script type="text/javascript">
+	var requestPending = false;
+$(window).scroll(function()
+{
+    if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending)
+    {
+	var image_count = $('#container').children('.box').length;
+if(image_count >0){
+        $('div#loadmoreajaxloader').show();
+if (color.length !== 0) {
+	var limitLow =pageCount;
+	var limitHigh = limitLow + 100;
+	requestPending = true;
+	request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&limitLow="+limitLow+"&limitHigh="+limitHigh, function(data) {
+		var $newImages = $(data.imageDivs);
+		$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
+		addColorbox();
+		pageCount = data.pageCount;
+		console.log("data imagePages length" + Object.keys(data.imagePages).length);
+		console.log("Before length" + Object.keys(imagePageMap).length);
+		var properties = '';
+		for(property in data.imagePages){
+			imagePageMap[property]= data.imagePages[property]; 
+			properties += property + ', ' + data.imagePages[property] + ' \n';
+		}
+		console.log("Properties:" + properties);
+		console.log("After length" + Object.keys(imagePageMap).length);
+		requestPending = false;
+	});
+} else {
+	$('div#loadmoreajaxloader').show();
+	request.abort();
+	console.log("Request aborted");
+}
+
+    }
+}
+});
+</script>
 
 </body>
 </html>
