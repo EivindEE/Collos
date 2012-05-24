@@ -61,8 +61,7 @@ public class HomeController {
 		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, limitLow, limitHigh); 
 		Map<String,List<String>> imagePages = getPageUris(limitLow, limitHigh, images);
 		
-		LOGGER.debug("Found " +  images.size() + " images");
-		LOGGER.debug("ImagePages" + imagePages);
+//		LOGGER.debug("ImagePages" + imagePages);
 		long queryEnd = System.currentTimeMillis();
 		responseMap.put("imagePages", imagePages);
 		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
@@ -74,6 +73,7 @@ public class HomeController {
 		StringBuilder imageDivs = createImageDivs(limitLow, images);
 		
 		responseMap.put("pageCount", pageCount);
+		LOGGER.debug("Found " +  images.size() + " images on " + pageCount + " pages");
 		responseMap.put("imageDivs", imageDivs.toString());
 		return responseMap;
 	}
