@@ -99,13 +99,13 @@ public class ImageDaoMySql implements ImageDao{
 
 
 
-	public List<Image> getImagesWithColor(List<String> colorList, List<Integer> freqList, int startIndex, int endIndex) {
+	public List<Image> getImagesWithColor(List<String> colorList, List<Integer> freqList, int limit, int offset) {
 		StringBuilder sql = new StringBuilder("SELECT i.image_uri, ip.page_uri, i.height, i.width " +
 				"FROM image_page AS ip INNER JOIN image AS i ON ip.image = i.id " +
 				"WHERE ip.image IN ( SELECT a.image FROM ( ");
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-		parameterSource.addValue("start_index", startIndex);
-		parameterSource.addValue("end_index", endIndex);
+		parameterSource.addValue("limit", limit);
+		parameterSource.addValue("offset", offset);
 		for(int i = 0; i < colorList.size(); i++) {
 			if(i>0) {
 				sql.append(" INNER JOIN ");
@@ -124,7 +124,7 @@ public class ImageDaoMySql implements ImageDao{
 			parameterSource.addValue("relative_freq_high" + i, freqList.get(i) + 15);
 			}
 		}
-		sql.append(" ) WHERE reindexed = 1) LIMIT :start_index, :end_index ");
+		sql.append(" ) WHERE reindexed = 1) LIMIT :limit OFFSET :offset");
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
 
@@ -134,8 +134,9 @@ public class ImageDaoMySql implements ImageDao{
 
 		});
 		long endTime = System.currentTimeMillis();
-		LOGGER.debug("Query time: " + (( endTime - startTime) / 1000.0));
 		List<Image> images = this.removeDuplicates(imagesWithDuplicates);
+		LOGGER.debug("Query time: " + (( endTime - startTime) / 1000.0) + ". Number of results: " +  images.size());
+		
 		return images;
 	}
 
@@ -147,16 +148,16 @@ public class ImageDaoMySql implements ImageDao{
 		return this.getImagesWithColor(color, relativeFreq, this.defaultIndexStart, this.defaultIndexEnd);
 	}
 
-	public List<Image> getImagesWithColor(String color, int startIndex, int endIndex) {
-		return this.getImagesWithColor(color, defaultImageReturnThreshold, startIndex, endIndex);
+	public List<Image> getImagesWithColor(String color, int limit, int offset) {
+		return this.getImagesWithColor(color, defaultImageReturnThreshold, limit, offset);
 	}
 
-	public List<Image> getImagesWithColor(String color, int relativeFreq, int startIndex, int endIndex) {
+	public List<Image> getImagesWithColor(String color, int relativeFreq, int limit, int offset) {
 		List<String> colorList = new LinkedList<String>();
 		colorList.add(color);
 		List<Integer> freqList = new LinkedList<Integer>();
 		freqList.add(relativeFreq);
-		return this.getImagesWithColor(colorList,freqList, startIndex, endIndex); 
+		return this.getImagesWithColor(colorList,freqList, limit, offset); 
 	}
 
 	private MapSqlParameterSource getMapSqlParameterSource(Image image) {

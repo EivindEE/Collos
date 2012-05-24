@@ -25,16 +25,16 @@ public interface ImageDao {
 	public List<Image> getImagesWithColor(String color);
 	
 	public List<Image> getImagesWithColor(String color, int reletiveFreq);
-	public List<Image> getImagesWithColor(String color, int reletiveFreq, int startIndex, int endIndex);
+	public List<Image> getImagesWithColor(String color, int reletiveFreq, int limit, int offset);
 	
-	public abstract List<Image> getImagesWithColor(String color, int startIndex, int endIndex);
+	public abstract List<Image> getImagesWithColor(String color, int limit, int offset);
 	
 	public abstract void updateAnalysedDate(List<Image> images);
 
 	public abstract void update(List<Image> images);
 
 	public abstract List<Image> getImagesWithColor(List<String> colorList,
-			List<Integer> freqList, int startIndex, int endIndex);
+			List<Integer> freqList, int limit, int offset);
 
 	public abstract void delete(List<Image> failures);
 	
