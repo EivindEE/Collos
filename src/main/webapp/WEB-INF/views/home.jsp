@@ -315,20 +315,19 @@
 	var requestPending = false;
 $(window).scroll(function()
 {
-    if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending)
+    if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending && pageCount % 100 == 0)
     {
 	var image_count = $('#container').children('.box').length;
 if(image_count >0){
         $('div#loadmoreajaxloader').show();
 if (color.length !== 0) {
-	var limitLow =pageCount;
-	var limitHigh = limitLow + 100;
+	
 	requestPending = true;
-	request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&limitLow="+limitLow+"&limitHigh="+limitHigh, function(data) {
+	request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&pageCount=" + pageCount, function(data) {
 		var $newImages = $(data.imageDivs);
 		$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
 		addColorbox();
-		pageCount = data.pageCount;
+		pageCount += data.pageCount;
 		console.log("data imagePages length" + Object.keys(data.imagePages).length);
 		console.log("Before length" + Object.keys(imagePageMap).length);
 		var properties = '';
