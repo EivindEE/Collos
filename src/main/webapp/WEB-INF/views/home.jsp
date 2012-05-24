@@ -288,16 +288,10 @@
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
 	</div>
-
-	<div id="postswrapper">   
-		<div class="item">content</div>		   
-		<div id="loadmoreajaxloader" style="display: none;">
-			<center>
-				<img src="resources/images/loading.gif" />
-			</center>
+		<div id="loadmoreajaxloader" style="display: none; margin-left:auto; margin-right:auto;width:30px;">		
+				<img  src="resources/images/loading.gif" />
 		</div>
-	</div>
-
+	
 
 	<script>
 		var $container = $('#container');
@@ -351,20 +345,6 @@ if (color.length !== 0) {
 	console.log("Request aborted");
 }
 
-//         $.ajax({
-//         url: "http://aftenposten.no",
-//         success: function(html)
-//         {
-//             if(html)
-//             {
-//                 $("#postswrapper").append(html);
-//                 $('div#loadmoreajaxloader').hide();
-//             }else
-//             {
-//                 $('div#loadmoreajaxloader').html('<center>No more posts to show.</center>');
-//             }
-//         }
-//         });
     }
 }
 });
