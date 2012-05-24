@@ -30,8 +30,9 @@ public class HomeController {
 
 	@Autowired
 	private ImageDao imageDao;
-	
+
 	private Integer maxPages = 100;
+	private Integer limit = 100;
 
 
 
@@ -46,63 +47,63 @@ public class HomeController {
 	@RequestMapping(value = "/color", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
 	public @ResponseBody Map<String, Object> color(@RequestParam(required=true) String colors,@RequestParam(required=true) String freqs,
-			@RequestParam(required=false) Integer limitLow, @RequestParam(required=false) Integer limitHigh){
+			@RequestParam(required=false) Integer pageCount){
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		long queryStart = System.currentTimeMillis();
-		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs + ", From/To:" + limitLow + "/" + limitHigh);
-		
-		limitHigh = validateLimitHight(limitHigh);
-		limitLow = validateLimitLow(limitLow);
-		
+		LOGGER.debug("Got request for colors and freq: " + colors +" and " + freqs + ", page count:" + pageCount);
+
+		pageCount = validateLimitLow(pageCount);
+
 		List<String> colorList = toColorList(colors);
-		
+
 		List<Integer> freqList = toFreqList(freqs);
-		
-		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, limitLow, limitHigh); 
-		Map<String,List<String>> imagePages = getPageUris(limitLow, limitHigh, images);
-		
-//		LOGGER.debug("ImagePages" + imagePages);
+
+		List<Image> images = imageDao.getImagesWithColor(colorList, freqList, limit, pageCount); 
+		Map<String,List<String>> imagePages = getPageUris(images);
+
+		//		LOGGER.debug("ImagePages" + imagePages);
 		long queryEnd = System.currentTimeMillis();
 		responseMap.put("imagePages", imagePages);
 		responseMap.put("queryTime", ((queryEnd - queryStart) / 1000.0));
-		
-		
-		
-		int pageCount = getPageCount(images);
-		
-		StringBuilder imageDivs = createImageDivs(limitLow, images);
-		
+
+
+
+		pageCount = 0; 
+		pageCount = getPageCount(images);
+
+		StringBuilder imageDivs = createImageDivs(pageCount, images);
+
 		responseMap.put("pageCount", pageCount);
 		LOGGER.debug("Found " +  images.size() + " images on " + pageCount + " pages");
 		responseMap.put("imageDivs", imageDivs.toString());
 		return responseMap;
 	}
 
-	private StringBuilder createImageDivs(Integer limitLow, List<Image> images) {
+	private StringBuilder createImageDivs(Integer pageCount, List<Image> images) {
 		StringBuilder imageUris = new StringBuilder();
 		for(int i = 0; i < images.size() ; i++) {
 			Image image = images.get(i);
-			
+
 			float height = 200 * image.getHeight() / image.getWidth();
-			
-			imageUris.append("<div class='box'> <a class='gallery' id=" + (limitLow + i) + " href='" + image.getImageUri() + "'><img width='200px' height='"+height+"px' src='" +  image.getImageUri() + "'></a></div>\n");
+
+			imageUris.append("<div class='box'> <a class='gallery' id=" + (pageCount + i) + " href='" + image.getImageUri() + "'><img width='200px' height='"+height+"px' src='" +  image.getImageUri() + "'></a></div>\n");
 		}
 		return imageUris;
 	}
 
 	private int getPageCount(List<Image> images) {
 		int pageCount = 0;
+		LOGGER.debug("Getting page count for list of size:" + images.size());
 		for(Image image : images){
 			pageCount += image.getPageUris().size();
 		}
 		return pageCount;
 	}
 
-	private Map<String, List<String>> getPageUris(Integer limitLow, Integer limitHigh,
-			List<Image> images) {
-		Map<String, List<String>> imagePages = new HashMap<String,List<String>>(limitHigh - limitLow); 
+	private Map<String, List<String>> getPageUris(List<Image> images) {
+		Map<String, List<String>> imagePages = new HashMap<String,List<String>>(); 
 		for(Image image : images){
-		imagePages.put(image.getImageUri(), image.getPageUris());
+			imagePages.put(image.getImageUri(), image.getPageUris());
 		}
 		return imagePages;
 	}
