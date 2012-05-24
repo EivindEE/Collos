@@ -30,7 +30,7 @@
 	href="resources/css/farbtastic.css" />
 
 <script type="text/javascript">
-	var imagesArray;
+	var imagePageMap;
 	var request =$.ajax();
 	var imageDivs;
 	var color = new Array();
@@ -149,8 +149,7 @@
 				pageCount = data.pageCount;
 				writeImages(data.imageDivs);
 				writeQueryTime(data.pageCount, data.queryTime);
-				imagesArray = data.imagePages;
-				$('#container').append('<nav id="page_bottom"></nav>')
+				imagePageMap = data.imagePages;
 			});
 		} else {
 			hideLoading();
@@ -190,35 +189,41 @@
 			$('#container').append(images)
 
 			$('#container').masonry('reload');
+			addColorbox();
 
-			$('a.gallery')
-					.colorbox(
-							{
-								next : "Next",
-								previous : "Previous",
-								width : 500,
-								title : function() {
-									var image = $(this).attr('id');
-									var pageUrisList = imagesArray[image];
-									var pageUris = "<div><div style='float:left'>Source:</div>";
-									console.log(pageUrisList);
-									for ( var i = 0; i < pageUrisList.length
-											&& i < 20; i++) {
-										console.log(pageUrisList[i]);
-										pageUris = pageUris
-												+ '<a style="float:left" href="' + pageUrisList[i] + '" target="_blank">'
-												+ (i + 1) + ' &nbsp;</a>'
-									}
-									console.log(pageUris);
-									return pageUris + "</div>";
-								}
-
-							});
+		
 		} else {
 			console.log("No images found")
 		}
 
 	};
+	
+	function addColorbox(){
+		$('a.gallery')
+		.colorbox(
+				{
+					next : "Next",
+					previous : "Previous",
+					width : 500,
+					title : function() {
+						console.log("this:" + this);
+						var pageUrisList = imagePageMap[this];
+						var pageUris = "<div><div style='float:left'>Source:</div>";
+						console.log(pageUrisList);
+						var count = 0;
+						for (var pageUri in pageUrisList) {
+							pageUris = pageUris
+									+ '<a style="float:left" href="' + pageUrisList[pageUri] + '" target="_blank">'
+									+ (count + 1) + ' &nbsp;</a>';
+									count++
+						}
+						console.log(pageUris);
+						return pageUris + "</div>";
+					}
+
+				});
+		
+	}
 
 	function writeQueryTime(pageCount, queryTime) {
 		var qt = $('#info_box').html('');
@@ -312,25 +317,33 @@
 		});
 	</script>
 	<script type="text/javascript">
+	var requestPending = false;
 $(window).scroll(function()
 {
-    if($(window).scrollTop() == $(document).height() - $(window).height())
+    if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending)
     {
 	var image_count = $('#container').children('.box').length;
 if(image_count >0){
         $('div#loadmoreajaxloader').show();
-
 if (color.length !== 0) {
 	var limitLow =pageCount;
 	var limitHigh = limitLow + 100;
+	requestPending = true;
 	request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&limitLow="+limitLow+"&limitHigh="+limitHigh, function(data) {
 		var $newImages = $(data.imageDivs);
 		$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
-// 		imageDivs += data.imageDivs;
-// 		writeImages(imageDivs);
-// 		writeQueryTime(data.pageCount, data.queryTime);
-// 		imagesArray = data.imagePages;
-		pageCount += data.pageCount;
+		addColorbox();
+		pageCount = data.pageCount;
+		console.log("data imagePages length" + Object.keys(data.imagePages).length);
+		console.log("Before length" + Object.keys(imagePageMap).length);
+		var properties = '';
+		for(property in data.imagePages){
+			imagePageMap[property]= data.imagePages[property]; 
+			properties += property + ', ' + data.imagePages[property] + ' \n';
+		}
+		console.log("Properties:" + properties);
+		console.log("After length" + Object.keys(imagePageMap).length);
+		requestPending = false;
 	});
 } else {
 	$('div#loadmoreajaxloader').show();
