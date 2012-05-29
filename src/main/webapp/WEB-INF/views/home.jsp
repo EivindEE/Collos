@@ -51,6 +51,7 @@
 			$('.color_box').resizable({
 				handles : 'e',
 				maxHeight : '50',
+				minWidth  : '0',
 				maxWidth : $('.color_box').parent().width(),
 				start: function(){
 					startWidth = $(this).width();				
@@ -64,6 +65,8 @@
 					var numberSiblings = $(this).siblings().size();
 					var siblingPercent = restPercent / numberSiblings;
 					$(this).css('width', percent + '%');
+					var intWidth = Math.round( percent );
+					$(this).children('.freq').html(intWidth + '%');
 					var next = $(this).next();
 					var siblingsWidth = 0;
 					$(next).siblings().each(function(i,el){
@@ -71,13 +74,23 @@
 					});
 					var nextWidth = parentWidth - siblingsWidth;
 					var nextPercent = (100 * nextWidth / parentWidth);
-					if($(next).width() <= 1){
+					if($(next).width() <= 5){
 						var id = $(next).index();
 						color.splice(id, 1);
 						$(next).remove();
 					}
+					if($(this).width() <= 5){
+						var id = $(this).index();
+						color.splice(id, 1);
+						$(this).remove();
+					}
+					if($(this).width() == $(this).parent().width()){
+						$('.color_box').resizeable('disable');
+					}
 					$(next).css('width', nextPercent + '%	');
-					
+					intWidth = Math.round( nextPercent );
+					$(next).children('.freq').html(intWidth + '%');
+				
 					
 				},
 				stop: function(){
@@ -95,19 +108,21 @@
 // end of palette click
 		
 		$('.delete_color').live('click', function() {
-			var id = $(this).parent().index();
+			var id = $(this).parents('.color_box').index();
 			console.log("index" + id);
-			$(this).parent().remove();
+			$(this).parents('.color_box').remove();
 			color.splice(id, 1);
 			var width = 100 / color.length;
 			$('.color_box').css('width', width + '%');
+			var intWidth = Math.round( width );
+			$('.freq').each(function(){$(this).html(intWidth + '%')});
 			getImages(color);
 		});
 			var color_picker_hidden = true;
 		
 		$('.pick_color').live('click',function(){
 			if(color_picker_hidden){
-			var id = $(this).parent().index();
+			var id = $(this).parents('.color_box').index();
 			pickedColor ="#"+color[id];
 			change_color = "#"+color[id];
 			$('#picker').show();
@@ -140,8 +155,9 @@
 	function getImages(color) {
 		request.abort();
 		clearInfoBox();
-		showLoading();
+		removeImages();
 		if (color.length !== 0) {
+			showLoading();
 			request = $.getJSON("/Collos/color?colors=" + color + "&freqs="
 					+ getFreqs(), function(data) {
 
@@ -161,12 +177,14 @@
 	function writeHtml(color) {
 		$('#col').html('');
 		for ( var i = 0; i < color.length; i++) {
-			var item = "<div id='"+color[i]+"' class=\"color_box ui-resizable\" style=\"background:#"+color[i]+"\"><img class=\"delete_color\" id=\"delete_color_"+i+"\" src=\"resources/images/delete-1.png\" title=\"Delete this color\"><img class=\"pick_color\" id=\"pick_color_"+i+"\" src=\"resources/images/palette-small.png\" title=\"Change this color\"></div>";
+			var item = "<div id='" + color[i] + "' class='color_box ui-resizable' style='background:#" + color[i] + "'><div class='color_box_element close_button' ><img class='delete_color' id='delete_color_"+i+"' src='resources/images/delete-1.png' title='Delete this color'></div><div class='color_box_element'><img class='pick_color' id='pick_color_" + i + "' src='resources/images/palette-small.png' title='Change this color'></div><div class='freq color_box_element'>100%</div></div>";
 			console.log(color);
 			$('#col').append(item);
 		}
 		var width = 100 / color.length;
 		$('.color_box').css('width', width + '%');
+		var intWidth = Math.round( width );
+		$('.freq').each(function(){$(this).html(intWidth + '%')});
 		console.log(color.length);
 		console.log(width);
 	};
@@ -235,9 +253,13 @@
 	function clearInfoBox() {
 		$('#info_box').html('');
 	}
-
+	
+	function removeImages(){
+		 $('#container').html('');
+	}
+	
 	function showLoading() {
-		var loading = $('#container').html('');
+		var loading = $('#container');
 		$('#info_box').html('Loading please wait.')
 		loading
 				.append('<div id="loading" style="visibility: show"> <img id="loadingImg" src="resources/images/loading.gif"/> </div>');
@@ -313,41 +335,38 @@
 	</script>
 	<script type="text/javascript">
 	var requestPending = false;
-$(window).scroll(function()
-{
-    if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending && pageCount % 100 == 0)
-    {
-	var image_count = $('#container').children('.box').length;
-if(image_count >0){
-        $('div#loadmoreajaxloader').show();
-if (color.length !== 0) {
-	
-	requestPending = true;
-	request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&pageCount=" + pageCount, function(data) {
-		var $newImages = $(data.imageDivs);
-		$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
-		addColorbox();
-		pageCount += data.pageCount;
-		console.log("data imagePages length" + Object.keys(data.imagePages).length);
-		console.log("Before length" + Object.keys(imagePageMap).length);
-		var properties = '';
-		for(property in data.imagePages){
-			imagePageMap[property]= data.imagePages[property]; 
-			properties += property + ', ' + data.imagePages[property] + ' \n';
+	$(window).scroll(function()
+	{
+    	if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending && pageCount % 100 == 0){
+			var image_count = $('#container').children('.box').length;
+			if(image_count >0){
+	     	   $('div#loadmoreajaxloader').show();
+				if (color.length !== 0) {
+					requestPending = true;
+					request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&pageCount=" + pageCount, function(data) {
+						var $newImages = $(data.imageDivs);
+						$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
+						addColorbox();
+						pageCount += data.pageCount;
+						console.log("data imagePages length" + Object.keys(data.imagePages).length);
+						console.log("Before length" + Object.keys(imagePageMap).length);
+						var properties = '';
+					for(property in data.imagePages){
+						imagePageMap[property]= data.imagePages[property]; 
+						properties += property + ', ' + data.imagePages[property] + ' \n';
+					}
+					console.log("Properties:" + properties);
+					console.log("After length" + Object.keys(imagePageMap).length);
+				requestPending = false;
+				});
+				} else {
+				$('div#loadmoreajaxloader').show();
+				request.abort();
+				console.log("Request aborted");
+				}
+	    	}
 		}
-		console.log("Properties:" + properties);
-		console.log("After length" + Object.keys(imagePageMap).length);
-		requestPending = false;
 	});
-} else {
-	$('div#loadmoreajaxloader').show();
-	request.abort();
-	console.log("Request aborted");
-}
-
-    }
-}
-});
 </script>
 
 </body>
