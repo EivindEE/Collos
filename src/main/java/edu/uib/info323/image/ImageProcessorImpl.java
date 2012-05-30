@@ -63,6 +63,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 				}
 			}
 		}
+		bufferedImage = null;
 		return colorFreq;
 	}
 
