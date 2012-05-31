@@ -311,9 +311,7 @@
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
 	</div>
-		<div id="loadmoreajaxloader" style="display: none; margin-left:auto; margin-right:auto;width:30px;">		
-				<img  src="resources/images/loading.gif" />
-		</div>
+		<div id="loadmoreajaxloader" style="display: none; margin-left:auto; margin-right:auto;width:30px;">&nbsp;</div>
 	
 
 	<script>
@@ -340,11 +338,12 @@
     	if($(window).scrollTop() == $(document).height() - $(window).height() && !requestPending && pageCount % 100 == 0){
 			var image_count = $('#container').children('.box').length;
 			if(image_count >0){
-	     	   $('div#loadmoreajaxloader').show();
 				if (color.length !== 0) {
 					requestPending = true;
+					showLoading();
 					request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&pageCount=" + pageCount, function(data) {
 						var $newImages = $(data.imageDivs);
+						hideLoading();
 						$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
 						addColorbox();
 						pageCount += data.pageCount;
@@ -360,7 +359,6 @@
 				requestPending = false;
 				});
 				} else {
-				$('div#loadmoreajaxloader').show();
 				request.abort();
 				console.log("Request aborted");
 				}
