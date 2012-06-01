@@ -100,9 +100,9 @@ public class ImageDaoMySql implements ImageDao{
 
 
 	public List<Image> getImagesWithColor(List<String> colorList, List<Integer> freqList, int limit, int offset) {
-		StringBuilder sql = new StringBuilder("SELECT i.image_uri, ip.page_uri, i.height, i.width " +
+		StringBuilder sql = new StringBuilder("SELECT *" +
 				"FROM image_page AS ip INNER JOIN image AS i ON ip.image = i.id " +
-				"WHERE ip.image IN ( SELECT a.image FROM ( ");
+				"INNER JOIN (");
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 		parameterSource.addValue("limit", limit);
 		parameterSource.addValue("offset", offset);
@@ -110,7 +110,7 @@ public class ImageDaoMySql implements ImageDao{
 			if(i>0) {
 				sql.append(" INNER JOIN ");
 			}
-			sql.append("(SELECT image FROM color WHERE color = :color" + i + " AND relative_freq >= :relative_freq_low" +  i +" AND relative_freq <= :relative_freq_high" +  i +") AS "+ Character.toChars((i+97))[0]);
+			sql.append("(SELECT * FROM color WHERE color = :color" + i + " AND relative_freq >= :relative_freq_low" +  i +" AND relative_freq <= :relative_freq_high" +  i +") AS "+ Character.toChars((i+97))[0]);
 			if( i > 0 ) {
 				sql.append(" USING (image) ");
 			}
@@ -124,7 +124,7 @@ public class ImageDaoMySql implements ImageDao{
 			parameterSource.addValue("relative_freq_high" + i, freqList.get(i) + 15);
 			}
 		}
-		sql.append(" ) WHERE reindexed = 1) LIMIT :limit OFFSET :offset");
+		sql.append(" ) USING(image) ORDER BY a.relative_freq DESC LIMIT :limit OFFSET :offset");
 		long startTime = System.currentTimeMillis();
 		List<Image> imagesWithDuplicates = jdbcTemplate.query(sql.toString(),parameterSource, new RowMapper<Image>() {
 
