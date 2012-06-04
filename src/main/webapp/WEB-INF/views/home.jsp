@@ -330,8 +330,6 @@
 	<div Id="pictures">
 		<div id="container" class="transitions-enabled infinite-scroll clearfix masonry"></div>
 	</div>
-		<div id="loadmoreajaxloader" style="display: none; margin-left:auto; margin-right:auto;width:30px;">&nbsp;</div>
-	
 
 	<script>
 		var $container = $('#container');
@@ -359,6 +357,7 @@
 			if(image_count >0){
 				if (color.length !== 0) {
 					requestPending = true;
+					hideLoading();
 					showLoading();
 					request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&pageCount=" + pageCount, function(data) {
 						var $newImages = $(data.imageDivs);
