@@ -294,7 +294,7 @@
 <body>
 	<div id="top">
 
-		<img src="resources/images/colloslogo.png" alt="Collos" id="collos" />
+		<a href="/Collos"><img src="resources/images/colloslogo.png" alt="Collos" id="collos" /></a>
 
 		<div id="palette_container">
 
