@@ -362,10 +362,11 @@
 					showLoading();
 					request = $.getJSON("/Collos/color?colors="+color+"&freqs="+relativeFreqs+"&pageCount=" + pageCount, function(data) {
 						var $newImages = $(data.imageDivs);
-						hideLoading();
+						hideLoading();	
 						$('#container').append( $newImages ).masonry( 'appended', $newImages, true );
-						addColorbox();
+						addColorbox();		
 						pageCount += data.pageCount;
+						writeQueryTime(pageCount, data.queryTime);
 						console.log("data imagePages length" + Object.keys(data.imagePages).length);
 						console.log("Before length" + Object.keys(imagePageMap).length);
 						var properties = '';
