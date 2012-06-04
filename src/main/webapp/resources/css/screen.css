@@ -330,12 +330,12 @@ button {
 	content: ' ';
 	cursor: pointer;
 }
-#palette_text {
-	width: 150px;
+#instruction_text {
+	width: 162px;
 	float: right;
 	text-align: left;
 	margin-right: 10px;
-	margin-top: 120px;
+	margin-top: 125px;
 }
 
 #col {
@@ -375,6 +375,7 @@ button {
 	overflow: hidden;
 	padding-left: 3px;
 	padding-right:3px;
+	color:gray;
 }
 
 .close_button{

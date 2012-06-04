@@ -47,6 +47,7 @@
 			console.log(colorPalette.current_display_color);
 			$('#picker').hide();
 			writeHtml(color);
+			instruction_text();
 			var startWidth = 0;
 			$('.color_box').resizable({
 				handles : 'e',
@@ -78,11 +79,13 @@
 						var id = $(next).index();
 						color.splice(id, 1);
 						$(next).remove();
+						instruction_text();
 					}
 					if($(this).width() <= 5){
 						var id = $(this).index();
 						color.splice(id, 1);
 						$(this).remove();
+						instruction_text();
 					}
 					if($(this).width() == $(this).parent().width()){
 						$('.color_box').resizeable('disable');
@@ -116,6 +119,7 @@
 			$('.color_box').css('width', width + '%');
 			var intWidth = Math.round( width );
 			$('.freq').each(function(){$(this).html(intWidth + '%')});
+			instruction_text();
 			getImages(color);
 		});
 			var color_picker_hidden = true;
@@ -269,6 +273,21 @@
 		var load = $('#loading');
 		load.css("visibility", "hidden");
 	}
+	
+	function instruction_text(){
+		if(color.length == 1){
+			$('#instruction_text').html('Click another color to add more colors to your search');
+			
+		}else if(color.length > 1){
+			$('#instruction_text').html('Click another color to add more colors to your search or to adjust the color ratio drag the black line between the color boxes');
+			$('#instruction_text').css('width','375px');
+		}else {
+			$('#instruction_text').html('Click on the color palette to select color for your search');	
+			$('#instruction_text').css('width','162px');
+
+		}
+		
+	}
 </script>
 </head>
 
@@ -282,8 +301,8 @@
 			<div id="palette">&nbsp;</div>
 
 		</div>
-		<div id="palette_text">Click on the color palette to select
-			color.</div>
+		<div id="instruction_text">Click on the color palette to select
+			color for your search.</div>
 
 	</div>
 
