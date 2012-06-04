@@ -100,7 +100,7 @@ public class ImageDaoMySql implements ImageDao{
 
 
 	public List<Image> getImagesWithColor(List<String> colorList, List<Integer> freqList, int limit, int offset) {
-		StringBuilder sql = new StringBuilder("SELECT *" +
+		StringBuilder sql = new StringBuilder("SELECT i.image_uri, ip.page_uri, i.height, i.width " +
 				"FROM image_page AS ip INNER JOIN image AS i ON ip.image = i.id " +
 				"INNER JOIN (");
 		MapSqlParameterSource parameterSource = new MapSqlParameterSource();
