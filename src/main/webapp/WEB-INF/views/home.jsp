@@ -280,7 +280,7 @@
 			
 		}else if(color.length > 1){
 			$('#instruction_text').html('Click another color to add more colors to your search or to adjust the color ratio drag the black line between the color boxes');
-			$('#instruction_text').css('width','375px');
+			$('#instruction_text').css('width','380px');
 		}else {
 			$('#instruction_text').html('Click on the color palette to select color for your search');	
 			$('#instruction_text').css('width','162px');
