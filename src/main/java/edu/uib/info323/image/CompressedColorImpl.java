@@ -1,6 +1,9 @@
 package edu.uib.info323.image;
 
+import java.awt.Color;
 import java.security.InvalidParameterException;
+import java.util.LinkedList;
+import java.util.List;
 /**
  * CompressedColor contains information about a color in a reduced RGB color space given a certain compression.
  * Accepts RGB color ranges (0-255), and comression rates 4. 
@@ -24,11 +27,11 @@ public class CompressedColorImpl implements CompressedColor {
 		return "CompressedColor [red=" + getRange(red) + ", green=" + getRange(green) + ", blue="
 				+ getRange(blue) + "]";
 	}
-	
+
 	private String getRange(int color){
 		return new String("(" + (color * compression) + "-" + (((color + 1) * compression) - 1 ) + ")");
 	}
-	
+
 	/**
 	 * Creates a new compressed color object.
 	 * Allowed ranges for colors is 0-255.
@@ -52,7 +55,7 @@ public class CompressedColorImpl implements CompressedColor {
 		if(compression < 4) {
 			exeptionString += "Compression rate: " + compression;
 		}
-		
+
 		if(!exeptionString.equals("")){
 			castInputException(exeptionString);
 		}
@@ -67,7 +70,7 @@ public class CompressedColorImpl implements CompressedColor {
 				+ incorrectInputsString.replace(".", ", ");
 		if(exceptionString.endsWith(", "))
 			exceptionString = exceptionString.substring(0, exceptionString.length()-2);
-		
+
 		throw new InvalidParameterException(exceptionString);
 	}
 
@@ -155,5 +158,38 @@ public class CompressedColorImpl implements CompressedColor {
 
 	public int getColor() {
 		return this.hashCode();
+	}
+
+
+	public static Color getColorFromHash(int compressedColorHash, int compression) {
+		for(int red = 0; red < 255; red += compression) {
+			for(int green = 0; green < 255; green += compression) {
+				for(int blue = 0; blue < 255; blue += compression) {
+					if(new CompressedColorImpl(red, green, blue, compression).getColor() == compressedColorHash) {
+						Color hashColor = new Color(red, green, blue);
+						return hashColor;
+					}
+				}
+			}
+		}
+
+		throw new InvalidParameterException("hashCode has no corresponding color");
+	}
+	
+	public static void main(String[] args) {
+		Integer[] colors = new Integer[] {131070,261120,455946};
+		List<Color> cl = new LinkedList<Color>();
+		for(Integer i : colors) {
+			cl.add(CompressedColorImpl.getColorFromHash(i, 32));
+		}
+		
+		for(Color c : cl) {
+			Integer r = c.getRed();
+			Integer b = c.getBlue();
+			Integer g = c.getGreen();
+			System.out.printf("[%x,%x,%x]", r, g, b);
+		}
+		
+		
 	}
 }
