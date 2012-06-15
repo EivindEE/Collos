@@ -177,7 +177,7 @@ public class CompressedColorImpl implements CompressedColor {
 	}
 	
 	public static void main(String[] args) {
-		Integer[] colors = new Integer[] {131070,261120,455946};
+		Integer[] colors = new Integer[] {0,456967,259,767,390406,456450};
 		List<Color> cl = new LinkedList<Color>();
 		for(Integer i : colors) {
 			cl.add(CompressedColorImpl.getColorFromHash(i, 32));

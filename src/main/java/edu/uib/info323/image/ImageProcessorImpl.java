@@ -147,13 +147,16 @@ public class ImageProcessorImpl implements ImageProcessor {
 		ApplicationContext context = new FileSystemXmlApplicationContext(new String[] {"src/main/webapp/WEB-INF/spring/app/model-context.xml", "src/main/webapp/WEB-INF/spring/app/db-context.xml"});   
 		ImageProcessor imageProcessor = context.getBean(ImageProcessor.class);
 		ImageFactory imageFactory = context.getBean(ImageFactory.class);
-		Image image = imageFactory.createImage("http://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Lojban_flag_public_domain.svg/300px-Lojban_flag_public_domain.svg.png","");
+		Image image = imageFactory.createImage("http://farm1.staticflickr.com/80/240221635_5d288593b5_m.jpg","");
 		imageProcessor.setImage(image);
 		imageProcessor.setColorFactory(new CompressedColorFactoryImpl());
 		List<ColorFreq> colors = imageProcessor.getColorFreqs();
 		for(ColorFreq color : colors) {
 			System.out.println(color);
 		}
+		
+		
+		
 	}
 
 

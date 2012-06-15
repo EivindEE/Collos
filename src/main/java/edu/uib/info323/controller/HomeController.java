@@ -83,9 +83,12 @@ public class HomeController {
 		StringBuilder imageUris = new StringBuilder();
 		for(int i = 0; i < images.size() ; i++) {
 			Image image = images.get(i);
-
-			float height = 200 * image.getHeight() / image.getWidth();
-
+			float height = 0;
+			try {
+				height = 200 * image.getHeight() / image.getWidth();
+			}catch (Throwable e) {
+				LOGGER.error("Got throwable " + e + " for image " + image);
+			}
 			imageUris.append("<div class='box'> <a class='gallery' id=" + (pageCount + i) + " href='" + image.getImageUri() + "'><img width='200px' height='"+height+"px' src='" +  image.getImageUri() + "'></a></div>\n");
 		}
 		return imageUris;
